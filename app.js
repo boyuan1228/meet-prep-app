@@ -7182,7 +7182,7 @@ function estimatedLoad(item) {
   if (!maxKey) return "";
   const oneRm = Number(state.profile[maxKey] || 0);
   const reps = numberFrom(item.reps);
-  const rpe = primaryRpe(item.rpe);
+  const rpe = primaryRpe(item.rpe) || implicitMainVolumeRpe(item);
   if (!oneRm || !reps || !rpe || String(item.sets) === "0") return "";
 
   const percent = rpePercent(reps, rpe);
@@ -7193,6 +7193,15 @@ function estimatedLoad(item) {
 
 function hasAutoWeightNote(item) {
   return String(item.notes || "").toUpperCase().includes("WEIGHT WILL BE AUTO GENERATED");
+}
+
+function implicitMainVolumeRpe(item) {
+  if (item.rpe || item.weight || item.notes) return 0;
+  if (!["bench", "squat", "deadlift"].includes(movementType(item))) return 0;
+  const sets = numberFrom(item.sets);
+  const reps = numberFrom(item.reps);
+  if (sets < 2 || reps < 3 || reps > 10) return 0;
+  return 6;
 }
 
 function estimatedLoadWithContext(item, index, items) {
