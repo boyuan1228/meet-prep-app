@@ -7242,6 +7242,9 @@ const RPE_PERCENT_TABLE = {
   7: [0.8895, 0.8579, 0.8421, 0.8105, 0.7895, 0.7579, 0.7421, 0.7105, 0.6789, 0.6526],
   6.5: [0.8789, 0.8526, 0.8211, 0.8, 0.7684, 0.7526, 0.7211, 0.6895, 0.6684, 0.6421],
   6: [0.8579, 0.8316, 0.8, 0.7789, 0.7526, 0.7316, 0.7, 0.6684, 0.6526, 0.6211],
+  5.5: [0.8421, 0.8211, 0.7895, 0.7684, 0.7421, 0.7211, 0.6895, 0.6579, 0.6421, 0.6105],
+  5: [0.8211, 0.8, 0.7789, 0.7579, 0.7316, 0.7105, 0.6789, 0.6526, 0.6211, 0.5895],
+  4: [0.8105, 0.7789, 0.7579, 0.7421, 0.7211, 0.6895, 0.6684, 0.6316, 0.6105, 0.5789],
 };
 
 function rpePercent(reps, rpe) {
@@ -7327,6 +7330,21 @@ function loadForItemAtRpe(item, rpe) {
   return `${roundLoad(oneRm * percent)} kg`;
 }
 
+function dropFactorFromNote(item) {
+  const note = String(item.notes || "").toUpperCase();
+  if (!note.includes("DROP")) return 0;
+  return 0.9;
+}
+
+function dropSetCountFromNote(item, remaining) {
+  const note = String(item.notes || "").toUpperCase();
+  if (!note.includes("DROP") || remaining <= 0) return 0;
+  if (note.includes("LAST 2 SETS")) return Math.min(2, remaining);
+  if (note.includes("LAST SET")) return Math.min(1, remaining);
+  if (note.includes("YOUR LAST SET")) return Math.min(1, remaining);
+  return remaining;
+}
+
 function expandedSetRows(item) {
   const note = String(item.notes || "").toUpperCase();
   if (!note.includes("ASCENDING SETS")) return [];
@@ -7343,14 +7361,29 @@ function expandedSetRows(item) {
   }));
 
   const remaining = Math.max(0, totalSets - rows.length);
-  if (note.includes("DROP 10") && remaining > 0) {
-    const topLoad = numberFrom(rows[rows.length - 1]?.load);
+  const dropSetCount = dropSetCountFromNote(item, remaining);
+  const repeatSetCount = remaining - dropSetCount;
+  if (repeatSetCount > 0) {
+    const lastRpe = rpes[rpes.length - 1];
     rows.push({
-      label: `降重 ${remaining} 组`,
-      sets: remaining,
+      label: `延续 RPE${lastRpe} ${repeatSetCount} 组`,
+      sets: repeatSetCount,
+      reps,
+      rpe: lastRpe,
+      load: loadForItemAtRpe(item, lastRpe) || "-",
+    });
+  }
+
+  const dropFactor = dropFactorFromNote(item);
+  if (dropFactor && dropSetCount > 0) {
+    const topAscendingLoad =
+      numberFrom(loadForItemAtRpe(item, rpes[rpes.length - 1])) || numberFrom(rows[rows.length - 1]?.load);
+    rows.push({
+      label: `降重 ${dropSetCount} 组`,
+      sets: dropSetCount,
       reps,
       rpe: `≤${rpes[rpes.length - 1]}`,
-      load: topLoad ? `${roundLoad(topLoad * 0.9)} kg` : "降 10%",
+      load: topAscendingLoad ? `${roundLoad(topAscendingLoad * dropFactor)} kg` : "降 8-10%",
     });
   }
   return rows;
