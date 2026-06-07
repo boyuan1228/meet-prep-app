@@ -7048,8 +7048,18 @@ function currentLog() {
   return state.logs[key];
 }
 
+function cleanWorkoutItems(items) {
+  const cableCrunchIndex = items.findIndex((item) => String(item.name || "").toUpperCase() === "CABLE CRUNCHES");
+  if (cableCrunchIndex === -1) return items;
+  const trailing = items.slice(cableCrunchIndex + 1);
+  const hasMalformedOptionRows = trailing.some(
+    (item) => !numberFrom(item.sets) || String(item.name || "").toUpperCase().includes("X")
+  );
+  return hasMalformedOptionRows ? items.slice(0, cableCrunchIndex + 1) : items;
+}
+
 function cloneWorkoutDay(day, items = day.items) {
-  return { ...day, items: items.map((item) => ({ ...item })) };
+  return { ...day, items: cleanWorkoutItems(items).map((item) => ({ ...item })) };
 }
 
 function isMainOrVariantItem(item) {
