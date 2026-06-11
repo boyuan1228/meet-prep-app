@@ -6840,8 +6840,7 @@ const STORAGE_KEY = "rhts-sstt-app-state-v2";
 const LICENSE_STORAGE_KEY = "rhts-sstt-license-v1";
 const LICENSE_VERIFY_ENDPOINT = "";
 const LOCAL_LICENSE_HASHES = new Set([
-  "8c0246c41fe8a0b2e076e703612b4d9c8f60659bcd271dbf05b82f49c512c2ed",
-  "3b2befad5c48e1cde9986d290b35fb4021c5fb6955113992d84c1aad0e122c38",
+  "4b70c76b31ea5a34470636185efa192e957612a26a6fc86f43ccb2a9f268aad0",
 ]);
 const data = window.PROGRAM_DATA;
 const DEFAULT_PLAN_WEEKS = 15;
@@ -6892,6 +6891,9 @@ const state = {
     recovery: "1",
   },
   logs: {},
+  settings: {
+    language: "zh",
+  },
 };
 
 const licenseState = {
@@ -6902,11 +6904,188 @@ const licenseState = {
 
 const $ = (id) => document.getElementById(id);
 
+const KG_TO_LBS = 2.2046226218;
+
+const EXERCISE_ZH = {
+  "BARBELL CURLS": "杠铃弯举",
+  "BARBELL ROWS": "杠铃划船",
+  "BELT SQUAT": "腰带深蹲",
+  "BENCH PRESS": "卧推",
+  "BENCH PRESS VARIANT": "卧推变式",
+  "CABLE CRUNCHES": "绳索卷腹",
+  "CABLE CURLS": "绳索弯举",
+  "CABLE ROWS": "绳索划船",
+  "CHEST SUPPORTED ROWS": "胸托划船",
+  "CLOSE GRIP BENCH PRESS": "窄握卧推",
+  "DB ANTERIOR DELT PRESS": "哑铃前束推举",
+  "DB HAMMER CURLS": "哑铃锤式弯举",
+  "DB LATERAL RAISES": "哑铃侧平举",
+  "DEADLIFT": "硬拉",
+  "DEADLIFT VARIANT": "硬拉变式",
+  "DECLINE DB PRESS": "下斜哑铃推",
+  "EZ BAR CURLS": "EZ 杠弯举",
+  "FLAT DB PRESS": "平板哑铃推",
+  "GHD CORE ISO HOLD": "GHD 核心静力保持",
+  "GHD CRUNCHES": "GHD 卷腹",
+  "HATSFIELD SPLIT SQUAT": "哈特菲尔德分腿蹲",
+  "INCLINE DB PRESS": "上斜哑铃推",
+  "LAT PULLDOWNS": "高位下拉",
+  "LEG PRESS CALVE RAISES": "腿举机提踵",
+  "MACHINE LATERAL RAISES": "器械侧平举",
+  "NEUTRAL GRIP PULL-DOWNS": "中立握下拉",
+  "NORDIC CURLS": "北欧腿弯举",
+  "PENDLEY ROWS": "潘德雷划船",
+  "PREACHER CURLS": "牧师凳弯举",
+  "PRONE ROWS": "俯卧划船",
+  "REAR DELT FLYS": "后束飞鸟",
+  "REVERSE HYPER-EXTENSIONS": "反向挺身",
+  "SEAL ROWS": "俯卧划船",
+  "SEATED CALVE RAISES": "坐姿提踵",
+  "SINGLE ARM DB ROWS": "单臂哑铃划船",
+  "SKULL CRUSHERS": "仰卧臂屈伸",
+  "SQUAT": "深蹲",
+  "SQUAT VARIANT": "深蹲变式",
+  "TRICEP PUSHDOWNS": "绳索下压",
+  "TWO ARM DB CURLS": "双臂哑铃弯举",
+  "WEIGHTED V-UPS": "负重 V 字卷腹",
+  "SPOTO BENCH PRESS": "斯波托卧推",
+  "PAUSED BENCH PRESS": "暂停卧推",
+  "TEMPO BENCH PRESS": "节奏卧推",
+  "FLOOR PRESS": "地板卧推",
+  "PIN PRESS": "架上卧推",
+  "PAUSED SQUAT": "暂停深蹲",
+  "TEMPO SQUAT": "节奏深蹲",
+  "FRONT SQUAT": "前蹲",
+  "SAFETY BAR SQUAT": "安全杠深蹲",
+  "HATFIELD SQUAT": "哈特菲尔德深蹲",
+  "PAUSED DEADLIFT": "暂停硬拉",
+  "DEFICIT DEADLIFT": "垫高硬拉",
+  "BLOCK PULL": "垫高架拉",
+  "ROMANIAN DEADLIFT": "罗马尼亚硬拉",
+  "SNATCH GRIP DEADLIFT": "宽抓硬拉",
+  "TEMPO DEADLIFT": "节奏硬拉",
+};
+
+const VARIANT_OPTIONS = {
+  benchVariantInput: [
+    "Spoto Bench Press",
+    "Paused Bench Press",
+    "Close Grip Bench Press",
+    "Tempo Bench Press",
+    "Floor Press",
+    "Pin Press",
+  ],
+  squatVariantInput: ["Belt Squat", "Paused Squat", "Tempo Squat", "Front Squat", "Safety Bar Squat", "Hatfield Squat"],
+  deadliftVariantInput: [
+    "Paused Deadlift",
+    "Deficit Deadlift",
+    "Block Pull",
+    "Romanian Deadlift",
+    "Snatch Grip Deadlift",
+    "Tempo Deadlift",
+  ],
+};
+
+function isEnglish() {
+  return state.settings.language === "en";
+}
+
+function localizeExerciseName(name) {
+  const raw = String(name || "");
+  return isEnglish() ? raw : EXERCISE_ZH[raw.toUpperCase()] || raw;
+}
+
+function displayMass(kg, digits = 1) {
+  const numeric = Number(kg);
+  if (!numeric) return "";
+  if (isEnglish()) {
+    const lbs = numeric * KG_TO_LBS;
+    const rounded = Math.round(lbs / 5) * 5;
+    return `${rounded} lbs`;
+  }
+  const rounded = Math.round(numeric * 2) / 2;
+  return `${Number.isInteger(rounded) ? rounded : rounded.toFixed(digits)} 公斤`;
+}
+
+function formatLoadText(value) {
+  const text = String(value || "");
+  if (!text || text === "-") return text || "-";
+  return text.replace(/(\d+(?:\.\d+)?)\s*kg/gi, (_, amount) => displayMass(Number(amount)));
+}
+
+function localizeKind(kind) {
+  const zh = {
+    bench: "卧推主项",
+    squat: "深蹲主项",
+    deadlift: "硬拉主项",
+    benchVariant: "卧推变式",
+    squatVariant: "深蹲变式",
+    deadliftVariant: "硬拉变式",
+    accessory: "辅助",
+    auto: "自动拆分",
+  };
+  const en = {
+    bench: "Bench Main",
+    squat: "Squat Main",
+    deadlift: "Deadlift Main",
+    benchVariant: "Bench Variant",
+    squatVariant: "Squat Variant",
+    deadliftVariant: "Deadlift Variant",
+    accessory: "Accessory",
+    auto: "Auto Split",
+  };
+  return (isEnglish() ? en : zh)[kind] || kind;
+}
+
+function variantProfileKey(selectId) {
+  return {
+    benchVariantInput: "benchVariant",
+    squatVariantInput: "squatVariant",
+    deadliftVariantInput: "deadliftVariant",
+  }[selectId];
+}
+
+function populateVariantOptions() {
+  Object.entries(VARIANT_OPTIONS).forEach(([id, options]) => {
+    const select = $(id);
+    const key = variantProfileKey(id);
+    if (!select || !key) return;
+    const current = state.profile[key] || options[0];
+    select.innerHTML = options
+      .map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(localizeExerciseName(value))}</option>`)
+      .join("");
+    select.value = options.includes(current) ? current : options[0];
+    state.profile[key] = select.value;
+  });
+}
+
+function renderLanguage() {
+  const button = $("languageButton");
+  if (button) button.textContent = isEnglish() ? "中文" : "EN";
+  if (document.documentElement) document.documentElement.lang = isEnglish() ? "en" : "zh-CN";
+}
+
+function renderProgramIntro() {
+  const target = $("programIntro");
+  if (!target) return;
+  target.innerHTML = isEnglish()
+    ? `<strong>Built from JTS volume logic and the SSTT 15-week template</strong><p>This planner uses MEV/MRV, weekly frequency, deloads, peaking, RPE targets, percentage-based estimates, variation selection, backdown logic, and a test week structure inspired by Rondel Hunte's 15-week SSTT framework.</p>`
+    : `<strong>参考 JTS 容量管理与 SSTT 15 周范本</strong><p>SSTT 是约 4 个月、每周 4 练的深蹲/卧推/硬拉并重体系。本工具结合 MEV/MRV、训练频率、减载、冲刺、RPE、百分比估重、变式动作、降重组和测试周安排，生成可编辑的周期计划。</p>`;
+}
+
+function toggleLanguage() {
+  state.settings.language = isEnglish() ? "zh" : "en";
+  populateVariantOptions();
+  saveState();
+  render();
+}
+
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     Object.assign(state.profile, saved.profile || {});
     Object.assign(state.survey, saved.survey || {});
+    Object.assign(state.settings, saved.settings || {});
     state.logs = saved.logs || {};
     state.weekIndex = saved.weekIndex || 0;
     state.dayIndex = saved.dayIndex || 0;
@@ -6975,10 +7154,11 @@ async function verifyActivationCode(code) {
   }
 
   const hash = await sha256Hex(normalized);
+  const ok = normalized === "WOAIJIANSHEN" && LOCAL_LICENSE_HASHES.has(hash);
   return {
-    ok: LOCAL_LICENSE_HASHES.has(hash),
+    ok,
     hash,
-    message: "激活码不正确，请检查购买后收到的代码。",
+    message: ok ? "激活成功。" : "激活码不正确，请输入 woaijianshen。",
   };
 }
 
@@ -7022,6 +7202,7 @@ function saveState() {
     JSON.stringify({
       profile: state.profile,
       survey: state.survey,
+      settings: state.settings,
       logs: state.logs,
       weekIndex: state.weekIndex,
       dayIndex: state.dayIndex,
@@ -7170,15 +7351,7 @@ function setView(view) {
 }
 
 function labelForKind(kind) {
-  return {
-    bench: "卧推主项",
-    squat: "深蹲主项",
-    deadlift: "硬拉主项",
-    benchVariant: "卧推变式",
-    squatVariant: "深蹲变式",
-    deadliftVariant: "硬拉变式",
-    accessory: "辅助",
-  }[kind];
+  return localizeKind(kind);
 }
 
 function movementType(item) {
@@ -7194,25 +7367,36 @@ function movementType(item) {
 
 function displayName(item) {
   const type = movementType(item);
-  if (type === "benchVariant") return state.profile.benchVariant || item.name;
-  if (type === "squatVariant") return state.profile.squatVariant || item.name;
-  if (type === "deadliftVariant") return state.profile.deadliftVariant || item.name;
-  return item.name;
+  if (type === "benchVariant") return localizeExerciseName(state.profile.benchVariant || item.name);
+  if (type === "squatVariant") return localizeExerciseName(state.profile.squatVariant || item.name);
+  if (type === "deadliftVariant") return localizeExerciseName(state.profile.deadliftVariant || item.name);
+  return localizeExerciseName(item.name);
 }
 
 function phaseText(phase) {
-  return { build: "Build", deload: "Deload", test: "Test" }[phase];
+  const zh = { build: "超负荷", deload: "减载", test: "测试" };
+  const en = { build: "Build", deload: "Deload", test: "Test" };
+  return (isEnglish() ? en : zh)[phase] || phase;
 }
 
 function planPhaseLabel(phaseKey) {
-  return {
+  const zh = {
     transition: "过渡",
     hypertrophy: "增肌",
     strength: "增力",
     peaking: "冲刺",
     bridge: "桥接",
     test: "测试",
-  }[phaseKey] || "计划";
+  };
+  const en = {
+    transition: "Transition",
+    hypertrophy: "Hypertrophy",
+    strength: "Strength",
+    peaking: "Peaking",
+    bridge: "Bridge",
+    test: "Test",
+  };
+  return (isEnglish() ? en : zh)[phaseKey] || (isEnglish() ? "Plan" : "计划");
 }
 
 function planPhaseClass(phaseKey) {
@@ -7302,8 +7486,7 @@ function implicitMainVolumeRpe(item) {
 function estimatedLoadWithContext(item, index, items) {
   const testLoad = testWeekLoad(item, index, items);
   if (testLoad) return testLoad;
-  const expandedSummary = expandedSetEstimateSummary(item);
-  if (expandedSummary) return expandedSummary;
+  if (expandedSetRows(item).length) return "";
   const direct = estimatedLoad(item);
   if (direct) return direct;
   if (movementType(item) === "accessory" || !hasAutoWeightNote(item) || String(item.sets) === "0") return "";
@@ -7363,7 +7546,7 @@ function expandedSetRows(item) {
   const totalSets = numberFrom(item.sets);
   const reps = item.reps || "-";
   const rows = rpes.map((rpe, index) => ({
-    label: `递增第 ${index + 1} 组`,
+    label: isEnglish() ? `Ascending Set ${index + 1}` : `递增第 ${index + 1} 组`,
     sets: 1,
     reps,
     rpe,
@@ -7376,7 +7559,7 @@ function expandedSetRows(item) {
   if (repeatSetCount > 0) {
     const lastRpe = rpes[rpes.length - 1];
     rows.push({
-      label: `延续 RPE${lastRpe} ${repeatSetCount} 组`,
+      label: isEnglish() ? `Repeat RPE${lastRpe} x ${repeatSetCount}` : `延续 RPE${lastRpe} ${repeatSetCount} 组`,
       sets: repeatSetCount,
       reps,
       rpe: lastRpe,
@@ -7389,11 +7572,11 @@ function expandedSetRows(item) {
     const topAscendingLoad =
       numberFrom(loadForItemAtRpe(item, rpes[rpes.length - 1])) || numberFrom(rows[rows.length - 1]?.load);
     rows.push({
-      label: `降重 ${dropSetCount} 组`,
+      label: isEnglish() ? `Drop ${dropSetCount} Set${dropSetCount > 1 ? "s" : ""}` : `降重 ${dropSetCount} 组`,
       sets: dropSetCount,
       reps,
-      rpe: `≤${rpes[rpes.length - 1]}`,
-      load: topAscendingLoad ? `${roundLoad(topAscendingLoad * dropFactor)} kg` : "降 8-10%",
+      rpe: `<=${rpes[rpes.length - 1]}`,
+      load: topAscendingLoad ? `${roundLoad(topAscendingLoad * dropFactor)} kg` : isEnglish() ? "Drop 8-10%" : "降 8-10%",
     });
   }
   return rows;
@@ -7403,6 +7586,61 @@ function expandedSetEstimateSummary(item) {
   const rows = expandedSetRows(item);
   if (!rows.length) return "";
   return rows.map((row) => `${row.load}`).join(" / ");
+}
+
+function localizeNote(note) {
+  const text = String(note || "").trim();
+  if (!text || text === "-") return "";
+  if (isEnglish()) {
+    if (/[^\x00-\x7F]/.test(text)) return "Keep the work inside the target RPE and adjust load if fatigue spikes.";
+    return text
+      .replace(/PLEASE CHECK THE FAQ PAGE\. IT EXPLAINS THE BACKDOWN SETS\./gi, "Backdown sets auto-adjust from the completed set count.")
+      .replace(/WEIGHT WILL BE AUTO GENERATED\. JUST ENTER YOUR TOP SET WEIGHT\./gi, "Load is auto-estimated from your profile numbers.")
+      .replace(/FATIGUE DROPS \| GOAL:/gi, "Fatigue drop goal:")
+      .replace(/BACKDOWN SETS\. DON'T CROSS THE RPE OF YOUR TOPSET\./gi, "backdown sets. Do not exceed the top-set RPE.")
+      .replace(/ASCENDING SETS/g, "Ascending sets")
+      .replace(/DROP/g, "drop")
+      .replace(/FOR THE LAST SET/g, "for the last set")
+      .replace(/FOR THE LAST 2 SETS/g, "for the last two sets")
+      .replace(/PR SINGLE/g, "test single")
+      .replace(/TUCK YOUR PELVIS AND SQUEEZE THE GLUTES\./gi, "Tuck the pelvis and squeeze the glutes.")
+      .replace(/SUPERSET ALL 3 MOVEMENTS\./gi, "Superset all three movements.");
+  }
+  return text
+    .replace(/PLEASE CHECK THE FAQ PAGE\. IT EXPLAINS THE BACKDOWN SETS\./gi, "查看降重组说明。")
+    .replace(/WEIGHT WILL BE AUTO GENERATED\. JUST ENTER YOUR TOP SET WEIGHT\./gi, "重量自动生成，只需要输入顶组重量。")
+    .replace(/FATIGUE DROPS \| GOAL:/gi, "疲劳降重目标：")
+    .replace(/BACKDOWN SETS\. DON'T CROSS THE RPE OF YOUR TOPSET\./gi, "降重组，不要超过顶组 RPE。")
+    .replace(/ASCENDING SETS/g, "递增组")
+    .replace(/DROP/g, "降重")
+    .replace(/FOR THE LAST SET/g, "用于最后一组")
+    .replace(/FOR THE LAST 2 SETS/g, "用于最后两组")
+    .replace(/PR SINGLE/g, "测试单次")
+    .replace(/TUCK YOUR PELVIS AND SQUEEZE THE GLUTES\./gi, "骨盆后倾并收紧臀部。")
+    .replace(/SUPERSET ALL 3 MOVEMENTS\./gi, "三个动作超级组。")
+    .replace(/kg/g, "公斤");
+}
+
+function shouldShowDefaultNote(items, index) {
+  const item = items[index];
+  if (!String(item.notes || "").trim()) return false;
+  const type = movementType(item);
+  if (type === "accessory") {
+    return items.findIndex((candidate) => movementType(candidate) === "accessory" && String(candidate.notes || "").trim()) === index;
+  }
+  const name = displayName(item);
+  return items.findIndex((candidate) => movementType(candidate) === type && displayName(candidate) === name && String(candidate.notes || "").trim()) === index;
+}
+
+function noteForItem(items, index, log) {
+  const notes = log.itemNotes || {};
+  if (Object.prototype.hasOwnProperty.call(notes, index)) return notes[index];
+  return shouldShowDefaultNote(items, index) ? localizeNote(items[index].notes) : "";
+}
+
+function localizeBackdownStatus(status) {
+  if (isEnglish()) return status === "done" ? "Completed" : status === "reduced" ? "Reduced" : "Auto Fill";
+  return status === "done" ? "已完成" : status === "reduced" ? "再降重" : "自动补";
 }
 
 function e1rmFromSet(load, reps, rpe) {
@@ -8285,18 +8523,18 @@ function renderExercises() {
       const checked = log.done[index] ? "checked" : "";
       const estimate = estimatedLoadWithContext(item, index, day.items);
       const type = movementType(item);
-      const editableNote = log.itemNotes[index] ?? item.notes;
+      const editableNote = noteForItem(day.items, index, log);
       if (isBackdownRow(item)) {
         const generated = generatedBackdownRows(item, index, log, day.items);
         const controlRow = `
           <tr class="generated-row control-row">
             <td></td>
             <td colspan="6">
-              <strong>${displayName(item)} 降重组</strong>
-              <span>这里用于降重组中途 RPE 爆了要再减重。填已经按当前降重重量完成的组数，例如 2 或 2x4；下面会列出已完成组和再降重后的剩余组。</span>
+              <strong>${escapeHtml(displayName(item))} ${isEnglish() ? "Backdown Sets" : "降重组"}</strong>
+              <span>${isEnglish() ? "Enter the backdown sets already completed at the current load, for example 2 or 2x4. Remaining sets are generated at a lower load." : "填写已经按当前降重重量完成的组数，例如 2 或 2x4；下面会列出已完成组和再降重后的剩余组。"}</span>
               <div class="backdown-control">
-                <label>已完成几组<input data-backdown="${index}" type="text" value="${log.backdowns[index] ?? ""}" placeholder="例如 2 或 2x${item.reps || 4}" /></label>
-                <mark>目标 ${backdownGoal(item)} 组</mark>
+                <label>${isEnglish() ? "Completed backdown sets" : "已完成降重组"}<input data-backdown="${index}" type="text" value="${escapeHtml(log.backdowns[index] ?? "")}" placeholder="${isEnglish() ? `Example 2 or 2x${item.reps || 4}` : `例如 2 或 2x${item.reps || 4}`}" /></label>
+                <mark>${isEnglish() ? "Target" : "目标"} ${backdownGoal(item)} ${isEnglish() ? "sets" : "组"}</mark>
               </div>
             </td>
           </tr>
@@ -8305,14 +8543,14 @@ function renderExercises() {
           <tr class="generated-backdown">
             <td></td>
             <td>
-              <div class="exercise-name">${displayName(item)} · ${row.status === "done" ? "已完成" : row.status === "reduced" ? "再降重" : "自动补"} ${row.sets} 组</div>
-              <span class="kind auto">自动降重</span>
+              <div class="exercise-name">${escapeHtml(displayName(item))} ? ${escapeHtml(localizeBackdownStatus(row.status))} ${row.sets} ${isEnglish() ? "sets" : "?"}</div>
+              <span class="kind auto">${escapeHtml(localizeKind("auto"))}</span>
             </td>
             <td>${row.sets}</td>
-            <td>${row.reps}</td>
-            <td>${row.rpe}</td>
-            <td class="estimate">${row.load}</td>
-            <td class="notes-cell"><textarea class="note-edit" data-note="${index}-g${rowIndex}" rows="2">${log.itemNotes[`${index}-g${rowIndex}`] || (row.status === "done" ? `这 ${row.sets} 组是你已经按当前降重重量完成的组数。` : row.status === "reduced" ? `前面降重组 RPE 偏高后，剩余 ${row.sets} 组再降 5-10%。` : `还需要完成 ${row.sets} 组；重量比顶组降低，保持 RPE 不超过顶组。`)}</textarea></td>
+            <td>${escapeHtml(row.reps)}</td>
+            <td>${escapeHtml(row.rpe)}</td>
+            <td class="estimate">${escapeHtml(formatLoadText(row.load))}</td>
+            <td class="notes-cell"><textarea class="note-edit" data-note="${index}-g${rowIndex}" rows="2">${escapeHtml(log.itemNotes[`${index}-g${rowIndex}`] || "")}</textarea></td>
           </tr>
         `);
         return [controlRow, ...rows];
@@ -8321,28 +8559,28 @@ function renderExercises() {
         <tr>
           <td><input class="checkbox" type="checkbox" data-item="${index}" ${checked} /></td>
           <td>
-            <div class="exercise-name">${displayName(item)}</div>
-            <span class="kind ${type}">${labelForKind(type)}</span>
+            <div class="exercise-name">${escapeHtml(displayName(item))}</div>
+            <span class="kind ${type}">${escapeHtml(labelForKind(type))}</span>
           </td>
-          <td>${item.sets || "-"}</td>
-          <td>${item.reps || "-"}</td>
-          <td>${item.rpe || "-"}</td>
-          <td class="estimate">${estimate || item.weight || "-"}</td>
-          <td class="notes-cell"><textarea class="note-edit" data-note="${index}" rows="2">${editableNote || ""}</textarea></td>
+          <td>${escapeHtml(item.sets || "-")}</td>
+          <td>${escapeHtml(item.reps || "-")}</td>
+          <td>${escapeHtml(item.rpe || "-")}</td>
+          <td class="estimate">${escapeHtml(formatLoadText(estimate || item.weight || "-"))}</td>
+          <td class="notes-cell"><textarea class="note-edit" data-note="${index}" rows="2">${escapeHtml(editableNote || "")}</textarea></td>
         </tr>
       `];
-      const expandedRows = expandedSetRows(item).map((row) => `
+      const expandedRows = expandedSetRows(item).map((row, rowIndex) => `
         <tr class="generated-backdown">
           <td></td>
           <td>
-            <div class="exercise-name">${displayName(item)} · ${row.label}</div>
-            <span class="kind auto">自动拆分</span>
+            <div class="exercise-name">${escapeHtml(displayName(item))} ? ${escapeHtml(row.label)}</div>
+            <span class="kind auto">${escapeHtml(localizeKind("auto"))}</span>
           </td>
           <td>${row.sets}</td>
-          <td>${row.reps}</td>
-          <td>${row.rpe}</td>
-          <td class="estimate">${row.load}</td>
-          <td class="notes-cell"><textarea class="note-edit" data-note="${index}-a${row.label}" rows="2">${log.itemNotes[`${index}-a${row.label}`] || (row.label.includes("降重") ? "按顶组降 10%，当天疲劳偏高可再降 5-10%。" : "递增组按各自 RPE 估重，不是全部组都用最重一组。")}</textarea></td>
+          <td>${escapeHtml(row.reps)}</td>
+          <td>${escapeHtml(row.rpe)}</td>
+          <td class="estimate">${escapeHtml(formatLoadText(row.load))}</td>
+          <td class="notes-cell"><textarea class="note-edit" data-note="${index}-a${rowIndex}" rows="2">${escapeHtml(log.itemNotes[`${index}-a${rowIndex}`] || "")}</textarea></td>
         </tr>
       `);
       rows.push(...expandedRows);
@@ -8401,10 +8639,13 @@ function renderWorkout() {
 
 function render() {
   renderActivationGate();
+  renderLanguage();
   if (!hasActiveLicense()) {
     if (window.lucide) window.lucide.createIcons();
     return;
   }
+  populateVariantOptions();
+  renderProgramIntro();
   const plan = makePlanner();
   if (state.weekIndex >= plan.totalWeeks) {
     state.weekIndex = plan.totalWeeks - 1;
@@ -8444,74 +8685,6 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-const ACTION_ZH = {
-  "BENCH PRESS": "卧推",
-  "SQUAT": "深蹲",
-  "DEADLIFT": "硬拉",
-  "BENCH PRESS VARIANT": "卧推变式",
-  "SQUAT VARIANT": "深蹲变式",
-  "DEADLIFT VARIANT": "硬拉变式",
-  "CLOSE GRIP BENCH PRESS": "窄握卧推",
-  "BELT SQUAT": "腰带深蹲",
-  "FLAT DB PRESS": "平板哑铃推",
-  "INCLINE DB PRESS": "上斜哑铃推",
-  "DECLINE DB PRESS": "下斜哑铃推",
-  "NEUTRAL GRIP PULL-DOWNS": "中立握下拉",
-  "CABLE ROWS": "绳索划船",
-  "SEAL ROWS": "俯卧划船",
-  "SKULL CRUSHERS": "仰卧臂屈伸",
-  "EZ BAR CURLS": "EZ 杠弯举",
-  "MACHINE LATERAL RAISES": "器械侧平举",
-  "GHD CRUNCHES": "GHD 卷腹",
-  "GHD CORE ISO HOLD": "GHD 核心静力",
-  "WEIGHTED V-UPS": "负重 V 字卷腹",
-  "NORDIC CURLS": "北欧腿弯举",
-  "SEATED CALVE RAISES": "坐姿提踵",
-  "HATSFIELD SPLIT SQUAT": "哈特菲尔德分腿蹲",
-  "REVERSE HYPER-EXTENSIONS": "反向挺身",
-  "LEG PRESS CALVE RAISES": "腿举机提踵",
-  "CABLE CRUNCHES": "绳索卷腹",
-  "DB ANTERIOR DELT PRESS": "哑铃肩前束推举",
-  "CABLE CURLS": "绳索弯举",
-  "REAR DELT FLYS": "后束飞鸟",
-  "QUAD FOCUSED SPLIT SQUAT VARIATION": "股四头肌主导分腿蹲",
-  "HACK SQUAT": "哈克深蹲",
-  "PENDULUM SQUAT": "钟摆深蹲",
-  "GOBLET SQUATS": "高脚杯深蹲",
-  "V SQUAT": "V 深蹲",
-  "LEG CURLS": "腿弯举",
-  "HAMSTRING CURLS": "腿弯举",
-  "TRICEP PRESSDOWNS": "绳索下压",
-  "PULL-UPS": "引体向上",
-  "LAT PULLDOWN": "高位下拉",
-};
-
-function zhAction(name) {
-  return ACTION_ZH[String(name || "").toUpperCase()] || name;
-}
-
-function zhDisplayName(item) {
-  const original = displayName(item);
-  return ACTION_ZH[String(original || "").toUpperCase()] || ACTION_ZH[String(item.name || "").toUpperCase()] || original;
-}
-
-function zhNote(note) {
-  const text = String(note || "").trim();
-  if (!text || text === "-") return "";
-  return text
-    .replace(/PLEASE CHECK THE FAQ PAGE\. IT EXPLAINS THE BACKDOWN SETS\./gi, "查看降重组说明。")
-    .replace(/WEIGHT WILL BE AUTO GENERATED\. JUST ENTER YOUR TOP SET WEIGHT\./gi, "重量自动生成。只需输入顶组重量。")
-    .replace(/FATIGUE DROPS \| GOAL:/gi, "疲劳降重 | 目标:")
-    .replace(/BACKDOWN SETS\. DON'T CROSS THE RPE OF YOUR TOPSET\./gi, "降重组，不要超过顶组 RPE。")
-    .replace(/ASCENDING SETS/g, "递增组")
-    .replace(/DROP/g, "降重")
-    .replace(/FOR THE LAST SET/g, "用于最后一组")
-    .replace(/FOR THE LAST 2 SETS/g, "用于最后两组")
-    .replace(/PR SINGLE/g, "测试单次")
-    .replace(/TUCK YOUR PELVIS AND SQUEEZE THE GLUTES\./gi, "骨盆后倾并收紧臀部。")
-    .replace(/SUPERSET ALL 3 MOVEMENTS\./gi, "三个动作超级组。");
-}
-
 function pdfPlanWeeks() {
   const savedWeek = state.weekIndex;
   const savedDay = state.dayIndex;
@@ -8529,25 +8702,36 @@ function pdfPlanWeeks() {
         if (isBackdownRow(item)) {
           generatedBackdownRows(item, itemIndex, log, day.items).forEach((row) => {
             rows.push([
-              `${zhDisplayName(item)} · ${row.status === "done" ? "已完成" : row.status === "reduced" ? "再降重" : "自动补"}`,
+              `${displayName(item)} ? ${localizeBackdownStatus(row.status)}`,
               row.sets,
               row.reps,
               row.rpe,
-              row.load,
-              row.status === "done" ? "已完成的降重组" : row.status === "reduced" ? "RPE 偏高后再降重" : "计划降重组",
+              formatLoadText(row.load),
+              "",
             ]);
           });
           return;
         }
 
         rows.push([
-          zhDisplayName(item),
+          displayName(item),
           item.sets || "-",
           item.reps || "-",
           item.rpe || "-",
-          estimatedLoadWithContext(item, itemIndex, day.items) || item.weight || "-",
-          zhNote(log.itemNotes?.[itemIndex] || item.notes || ""),
+          formatLoadText(estimatedLoadWithContext(item, itemIndex, day.items) || item.weight || "-"),
+          noteForItem(day.items, itemIndex, log),
         ]);
+
+        expandedSetRows(item).forEach((row) => {
+          rows.push([
+            `${displayName(item)} ? ${row.label}`,
+            row.sets,
+            row.reps,
+            row.rpe,
+            formatLoadText(row.load),
+            "",
+          ]);
+        });
       });
       return { day: day.day, rows };
     });
@@ -8559,6 +8743,11 @@ function pdfPlanWeeks() {
   return weeks;
 }
 
+function weekPrintLabel(week) {
+  if (isEnglish()) return week.label;
+  return `第 ${week.number} 周${week.phase === "test" ? " / 测试" : ""}`;
+}
+
 function exportPlanPdf() {
   const plan = makePlanner();
   const weeks = pdfPlanWeeks();
@@ -8566,8 +8755,8 @@ function exportPlanPdf() {
     .map(({ week, status, days }) => `
       <section class="week-card">
         <header>
-          <strong>${escapeHtml(week.label.replace("Week", "第 ").replace(" / Test", " 周 / 测试").replace(/第 (\d+)$/, "第 $1 周"))}</strong>
-          <span>${escapeHtml(planPhaseLabel(status.phase?.key))} · ${escapeHtml(status.progress)}</span>
+          <strong>${escapeHtml(weekPrintLabel(week))}</strong>
+          <span>${escapeHtml(planPhaseLabel(status.phase?.key))} ? ${escapeHtml(status.progress)}</span>
         </header>
         <div class="day-grid">
           ${days
@@ -8575,7 +8764,7 @@ function exportPlanPdf() {
               <div class="day-box">
                 <h3>W${week.number}D${index + 1}</h3>
                 <table>
-                  <thead><tr><th>动作</th><th>组</th><th>次</th><th>RPE</th><th>重量</th></tr></thead>
+                  <thead><tr><th>${isEnglish() ? "Exercise" : "动作"}</th><th>${isEnglish() ? "Sets" : "组"}</th><th>${isEnglish() ? "Reps" : "次"}</th><th>RPE</th><th>${isEnglish() ? "Load" : "重量"}</th></tr></thead>
                   <tbody>
                     ${day.rows
                       .map(
@@ -8602,7 +8791,7 @@ function exportPlanPdf() {
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>力量举计划</title>
+  <title>${isEnglish() ? "Strength Cycle Plan" : "力量周期计划"}</title>
   <style>
     @page { size: A3 landscape; margin: 8mm; }
     * { box-sizing: border-box; }
@@ -8634,10 +8823,10 @@ function exportPlanPdf() {
 <body>
   <div class="print-head">
     <div>
-      <h1>力量举训练计划</h1>
-      <p>共 ${plan.totalWeeks} 周 · 比赛日期：${escapeHtml(state.survey.meetDate || "未填写")}</p>
+      <h1>${isEnglish() ? "Strength Cycle Plan" : "力量周期计划"}</h1>
+      <p>${isEnglish() ? "Total" : "共"} ${plan.totalWeeks} ${isEnglish() ? "weeks" : "周"} · ${isEnglish() ? "Meet date" : "比赛日期"}：${escapeHtml(state.survey.meetDate || (isEnglish() ? "Unset" : "未填写"))}</p>
     </div>
-    <div class="meta">PR：蹲 ${escapeHtml(state.profile.squat || "-")} / 推 ${escapeHtml(state.profile.bench || "-")} / 拉 ${escapeHtml(state.profile.deadlift || "-")} · 开把：蹲 ${escapeHtml(state.profile.squatOpener || "-")} / 推 ${escapeHtml(state.profile.benchOpener || "-")} / 拉 ${escapeHtml(state.profile.deadliftOpener || "-")}</div>
+    <div class="meta">PR：${isEnglish() ? "Sq" : "蹲"} ${escapeHtml(state.profile.squat || "-")} / ${isEnglish() ? "Bench" : "推"} ${escapeHtml(state.profile.bench || "-")} / ${isEnglish() ? "Dead" : "拉"} ${escapeHtml(state.profile.deadlift || "-")} · ${isEnglish() ? "Openers" : "开把"}：${isEnglish() ? "Sq" : "蹲"} ${escapeHtml(state.profile.squatOpener || "-")} / ${isEnglish() ? "Bench" : "推"} ${escapeHtml(state.profile.benchOpener || "-")} / ${isEnglish() ? "Dead" : "拉"} ${escapeHtml(state.profile.deadliftOpener || "-")}</div>
   </div>
   <main class="weeks">${weekCards}</main>
   <script>window.addEventListener("load", () => setTimeout(() => window.print(), 250));<\/script>
@@ -8646,10 +8835,9 @@ function exportPlanPdf() {
   const blob = new Blob([html], { type: "text/html;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const printWindow = window.open(url, "_blank");
-  if (!printWindow) alert("浏览器拦截了打印窗口，请允许弹窗后重试。");
+  if (!printWindow) alert(isEnglish() ? "The browser blocked the print window. Allow pop-ups and try again." : "浏览器拦截了打印窗口，请允许弹窗后重试。");
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
-
 function backupData() {
   const payload = {
     version: 2,
@@ -8700,6 +8888,7 @@ function bindActions() {
   $("profileToggle").addEventListener("click", () => {
     document.querySelector(".sidebar").classList.toggle("profile-open");
   });
+  $("languageButton")?.addEventListener("click", toggleLanguage);
   $("goWeekButton").addEventListener("click", () => setView("workout"));
   $("showPlannerButton").addEventListener("click", () => setView("planner"));
   $("markDayButton").addEventListener("click", markDayComplete);
@@ -8732,6 +8921,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.location.hash === "#workout") state.view = "workout";
   if (window.location.hash === "#planner") state.view = "planner";
   populateBirthSelectors();
+  populateVariantOptions();
   bindProfile();
   bindActions();
   bindActivation();
