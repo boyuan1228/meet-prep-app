@@ -6868,6 +6868,7 @@ const state = {
   },
   survey: {
     meetDate: "",
+    testPr: false,
     templateMode: "auto",
     globalModel: "linear",
     hypertrophyModel: "linear",
@@ -6986,6 +6987,41 @@ const VARIANT_OPTIONS = {
   ],
 };
 
+const ACCESSORY_OPTIONS = [
+  "INCLINE DB PRESS",
+  "FLAT DB PRESS",
+  "DECLINE DB PRESS",
+  "DB ANTERIOR DELT PRESS",
+  "LAT PULLDOWNS",
+  "NEUTRAL GRIP PULL-DOWNS",
+  "CABLE ROWS",
+  "SEAL ROWS",
+  "CHEST SUPPORTED ROWS",
+  "PRONE ROWS",
+  "BARBELL ROWS",
+  "PENDLEY ROWS",
+  "SINGLE ARM DB ROWS",
+  "TRICEP PUSHDOWNS",
+  "SKULL CRUSHERS",
+  "EZ BAR CURLS",
+  "BARBELL CURLS",
+  "CABLE CURLS",
+  "TWO ARM DB CURLS",
+  "DB HAMMER CURLS",
+  "DB LATERAL RAISES",
+  "MACHINE LATERAL RAISES",
+  "REAR DELT FLYS",
+  "HATSFIELD SPLIT SQUAT",
+  "NORDIC CURLS",
+  "REVERSE HYPER-EXTENSIONS",
+  "LEG PRESS CALVE RAISES",
+  "SEATED CALVE RAISES",
+  "GHD CRUNCHES",
+  "GHD CORE ISO HOLD",
+  "WEIGHTED V-UPS",
+  "CABLE CRUNCHES",
+];
+
 function isEnglish() {
   return state.settings.language === "en";
 }
@@ -7060,8 +7096,9 @@ function populateVariantOptions() {
 }
 
 function renderLanguage() {
-  const button = $("languageButton");
-  if (button) button.textContent = isEnglish() ? "中文" : "EN";
+  document.querySelectorAll("[data-language-toggle]").forEach((button) => {
+    button.textContent = isEnglish() ? "中文" : "EN";
+  });
   if (document.documentElement) document.documentElement.lang = isEnglish() ? "en" : "zh-CN";
 }
 
@@ -7225,7 +7262,10 @@ function logKey(weekIndex = state.weekIndex, dayIndex = state.dayIndex) {
 
 function currentLog() {
   const key = logKey();
-  state.logs[key] ||= { done: [], bodyweight: "", notes: "", itemNotes: {}, backdowns: {} };
+  state.logs[key] ||= { done: [], bodyweight: "", notes: "", itemNotes: {}, backdowns: {}, accessories: {} };
+  state.logs[key].itemNotes ||= {};
+  state.logs[key].backdowns ||= {};
+  state.logs[key].accessories ||= {};
   return state.logs[key];
 }
 
@@ -7371,6 +7411,32 @@ function displayName(item) {
   if (type === "squatVariant") return localizeExerciseName(state.profile.squatVariant || item.name);
   if (type === "deadliftVariant") return localizeExerciseName(state.profile.deadliftVariant || item.name);
   return localizeExerciseName(item.name);
+}
+
+function selectedAccessoryName(item, index, log) {
+  if (movementType(item) !== "accessory") return item.name;
+  const saved = log?.accessories?.[index];
+  return saved || item.name;
+}
+
+function displayNameForRow(item, index, log) {
+  if (movementType(item) === "accessory") return localizeExerciseName(selectedAccessoryName(item, index, log));
+  return displayName(item);
+}
+
+function accessorySelectHtml(item, index, log) {
+  const current = selectedAccessoryName(item, index, log);
+  const options = [...new Set([current, item.name, ...ACCESSORY_OPTIONS])].filter(Boolean);
+  return `<select class="accessory-select" data-accessory="${index}" aria-label="${isEnglish() ? "Accessory exercise" : "辅助动作"}">
+    ${options
+      .map(
+        (option) =>
+          `<option value="${escapeHtml(option)}" ${option === current ? "selected" : ""}>${escapeHtml(
+            localizeExerciseName(option)
+          )}</option>`
+      )
+      .join("")}
+  </select>`;
 }
 
 function phaseText(phase) {
@@ -7595,7 +7661,7 @@ function localizeNote(note) {
     if (/[^\x00-\x7F]/.test(text)) return "Keep the work inside the target RPE and adjust load if fatigue spikes.";
     return text
       .replace(/PLEASE CHECK THE FAQ PAGE\. IT EXPLAINS THE BACKDOWN SETS\./gi, "Backdown sets auto-adjust from the completed set count.")
-      .replace(/WEIGHT WILL BE AUTO GENERATED\. JUST ENTER YOUR TOP SET WEIGHT\./gi, "Load is auto-estimated from your profile numbers.")
+      .replace(/WEIGHT WILL BE AUTO GENERATED\. JUST ENTER YOUR TOP SET WEIGHT\./gi, "")
       .replace(/FATIGUE DROPS \| GOAL:/gi, "Fatigue drop goal:")
       .replace(/BACKDOWN SETS\. DON'T CROSS THE RPE OF YOUR TOPSET\./gi, "backdown sets. Do not exceed the top-set RPE.")
       .replace(/ASCENDING SETS/g, "Ascending sets")
@@ -7604,11 +7670,12 @@ function localizeNote(note) {
       .replace(/FOR THE LAST 2 SETS/g, "for the last two sets")
       .replace(/PR SINGLE/g, "test single")
       .replace(/TUCK YOUR PELVIS AND SQUEEZE THE GLUTES\./gi, "Tuck the pelvis and squeeze the glutes.")
-      .replace(/SUPERSET ALL 3 MOVEMENTS\./gi, "Superset all three movements.");
+      .replace(/SUPERSET ALL 3 MOVEMENTS\./gi, "Superset all three movements.")
+      .trim();
   }
   return text
     .replace(/PLEASE CHECK THE FAQ PAGE\. IT EXPLAINS THE BACKDOWN SETS\./gi, "查看降重组说明。")
-    .replace(/WEIGHT WILL BE AUTO GENERATED\. JUST ENTER YOUR TOP SET WEIGHT\./gi, "重量自动生成，只需要输入顶组重量。")
+    .replace(/WEIGHT WILL BE AUTO GENERATED\. JUST ENTER YOUR TOP SET WEIGHT\./gi, "")
     .replace(/FATIGUE DROPS \| GOAL:/gi, "疲劳降重目标：")
     .replace(/BACKDOWN SETS\. DON'T CROSS THE RPE OF YOUR TOPSET\./gi, "降重组，不要超过顶组 RPE。")
     .replace(/ASCENDING SETS/g, "递增组")
@@ -7618,7 +7685,8 @@ function localizeNote(note) {
     .replace(/PR SINGLE/g, "测试单次")
     .replace(/TUCK YOUR PELVIS AND SQUEEZE THE GLUTES\./gi, "骨盆后倾并收紧臀部。")
     .replace(/SUPERSET ALL 3 MOVEMENTS\./gi, "三个动作超级组。")
-    .replace(/kg/g, "公斤");
+    .replace(/kg/g, "公斤")
+    .trim();
 }
 
 function shouldShowDefaultNote(items, index) {
@@ -7639,8 +7707,8 @@ function noteForItem(items, index, log) {
 }
 
 function localizeBackdownStatus(status) {
-  if (isEnglish()) return status === "done" ? "Completed" : status === "reduced" ? "Reduced" : "Auto Fill";
-  return status === "done" ? "已完成" : status === "reduced" ? "再降重" : "自动补";
+  if (isEnglish()) return status === "done" ? "Completed" : status === "reduced" ? "Reduced" : "Planned";
+  return status === "done" ? "已完成" : status === "reduced" ? "再降重" : "计划降重";
 }
 
 function e1rmFromSet(load, reps, rpe) {
@@ -8249,13 +8317,28 @@ function renderWeeks() {
 }
 
 function meetDateText(plan) {
-  if (!state.survey.meetDate) return `未填写比赛日期，先按默认 ${DEFAULT_PLAN_WEEKS} 周备赛`;
+  if (!state.survey.meetDate) return `未填写比赛日期，先按默认 ${DEFAULT_PLAN_WEEKS} 周周期`;
   return `比赛周为第 ${plan.totalWeeks} 周`;
 }
 
 function openerValue(lift) {
   const value = state.profile[`${lift}Opener`];
   return value ? `${escapeHtml(value)}` : "-";
+}
+
+function wantsOpenerPanel() {
+  return Boolean(state.survey.meetDate || state.survey.testPr);
+}
+
+function renderTestPrToggle() {
+  const button = $("testPrToggle");
+  if (!button) return;
+  const autoByDate = Boolean(state.survey.meetDate);
+  const active = wantsOpenerPanel();
+  button.classList.toggle("active", active);
+  button.setAttribute("aria-pressed", active ? "true" : "false");
+  button.disabled = autoByDate;
+  button.textContent = autoByDate ? "已按比赛日期显示开把" : active ? "隐藏测试 PR" : "需要测试 PR";
 }
 
 function phaseRailHtml(plan, activeWeek) {
@@ -8276,7 +8359,7 @@ function renderMeetPrepStrips() {
   const plannerWeek = 1;
   const workoutWeek = Math.min(state.weekIndex + 1, plan.totalWeeks);
   const blocks = [
-    ["plannerMeetPrepStrip", plannerWeek, "从问卷生成备赛结构", `共 ${plan.totalWeeks} 周`],
+    ["plannerMeetPrepStrip", plannerWeek, "从问卷生成周期结构", `共 ${plan.totalWeeks} 周`],
     ["workoutMeetPrepStrip", workoutWeek, `当前 ${currentWeek().label}`, `还剩 ${Math.max(0, plan.totalWeeks - workoutWeek)} 周`],
   ];
 
@@ -8284,6 +8367,16 @@ function renderMeetPrepStrips() {
     const target = $(id);
     if (!target) return;
     const status = weekStatusFor(activeWeek - 1, plan);
+    const openerBlock = wantsOpenerPanel()
+      ? `<div class="meet-prep-block">
+        <span>第 ${plan.totalWeeks} 周开把</span>
+        <div class="opener-summary">
+          <div><b>蹲</b><strong>${openerValue("squat")}</strong></div>
+          <div><b>推</b><strong>${openerValue("bench")}</strong></div>
+          <div><b>拉</b><strong>${openerValue("deadlift")}</strong></div>
+        </div>
+      </div>`
+      : "";
     target.innerHTML = `
       <div class="meet-prep-block">
         <span>Meet Prep</span>
@@ -8295,15 +8388,9 @@ function renderMeetPrepStrips() {
         <div class="phase-rail">${phaseRailHtml(plan, activeWeek)}</div>
         <small>${planPhaseLabel(status.phase?.key)} · ${status.progress}</small>
       </div>
-      <div class="meet-prep-block">
-        <span>第 ${plan.totalWeeks} 周开把</span>
-        <div class="opener-summary">
-          <div><b>蹲</b><strong>${openerValue("squat")}</strong></div>
-          <div><b>推</b><strong>${openerValue("bench")}</strong></div>
-          <div><b>拉</b><strong>${openerValue("deadlift")}</strong></div>
-        </div>
-      </div>
+      ${openerBlock}
     `;
+    target.classList.toggle("no-opener", !wantsOpenerPanel());
   });
 }
 
@@ -8429,12 +8516,44 @@ function renderTabs() {
 
 function renderMetrics() {
   $("completeMetric").textContent = `${completionForWeek(state.weekIndex)}%`;
+  const rpeTarget = $("rpeReference");
+  if (rpeTarget) {
+    const items = [
+      ["6", "4 RIR"],
+      ["6.5", "3-4 RIR"],
+      ["7", "3 RIR"],
+      ["7.5", "2-3 RIR"],
+      ["8", "2 RIR"],
+      ["8.5", "1-2 RIR"],
+      ["9", "1 RIR"],
+      ["9.5", "0-1 RIR"],
+    ];
+    rpeTarget.innerHTML = `
+      <span>${isEnglish() ? "RPE reference" : "RPE 参考"}</span>
+      <div class="rpe-grid">
+        ${items.map(([rpe, rir]) => `<div class="rpe-chip"><b>RPE ${rpe}</b>${rir}</div>`).join("")}
+      </div>
+    `;
+  }
+}
+
+function renderAmrapHint(day) {
+  const target = $("amrapHint");
+  if (!target) return;
+  const hasAmrap = day.items.some((item) => String(item.reps || "").toUpperCase().includes("AMRAP"));
+  target.classList.toggle("hidden", !hasAmrap);
+  if (!hasAmrap) return;
+  target.innerHTML = isEnglish()
+    ? `<strong>AMRAP:</strong> as many quality reps as possible within the planned RPE. Stop before form breaks or the set turns into a grind beyond the target.`
+    : `<strong>AMRAP：</strong>在计划 RPE 和动作质量允许的范围内尽可能多做；不是动作变形后硬顶，也不要超过当天目标强度。`;
 }
 
 function renderOpenerTitle() {
   const plan = makePlanner();
+  $("openerPanel")?.classList.toggle("hidden", !wantsOpenerPanel());
   $("openerWeekTitle").textContent = `第 ${plan.totalWeeks} 周开把`;
-  $("openerWeekHelp").textContent = `用于第 ${plan.totalWeeks} 周比赛/测试的 D1/D2/D3 和比赛日推荐重量`;
+  $("openerWeekHelp").textContent = `用于第 ${plan.totalWeeks} 周比赛/测试的 D1/D2/D3 和测试日推荐重量`;
+  renderTestPrToggle();
 }
 
 function phaseKeyForCurrentWeek() {
@@ -8524,6 +8643,7 @@ function renderExercises() {
       const estimate = estimatedLoadWithContext(item, index, day.items);
       const type = movementType(item);
       const editableNote = noteForItem(day.items, index, log);
+      const rowName = displayNameForRow(item, index, log);
       if (isBackdownRow(item)) {
         const generated = generatedBackdownRows(item, index, log, day.items);
         const controlRow = `
@@ -8543,7 +8663,7 @@ function renderExercises() {
           <tr class="generated-backdown">
             <td></td>
             <td>
-              <div class="exercise-name">${escapeHtml(displayName(item))} ? ${escapeHtml(localizeBackdownStatus(row.status))} ${row.sets} ${isEnglish() ? "sets" : "?"}</div>
+              <div class="exercise-name">${escapeHtml(displayName(item))} · ${escapeHtml(localizeBackdownStatus(row.status))} ${row.sets} ${isEnglish() ? "sets" : "组"}</div>
               <span class="kind auto">${escapeHtml(localizeKind("auto"))}</span>
             </td>
             <td>${row.sets}</td>
@@ -8559,7 +8679,11 @@ function renderExercises() {
         <tr>
           <td><input class="checkbox" type="checkbox" data-item="${index}" ${checked} /></td>
           <td>
-            <div class="exercise-name">${escapeHtml(displayName(item))}</div>
+            ${
+              type === "accessory"
+                ? accessorySelectHtml(item, index, log)
+                : `<div class="exercise-name">${escapeHtml(rowName)}</div>`
+            }
             <span class="kind ${type}">${escapeHtml(labelForKind(type))}</span>
           </td>
           <td>${escapeHtml(item.sets || "-")}</td>
@@ -8573,7 +8697,7 @@ function renderExercises() {
         <tr class="generated-backdown">
           <td></td>
           <td>
-            <div class="exercise-name">${escapeHtml(displayName(item))} ? ${escapeHtml(row.label)}</div>
+            <div class="exercise-name">${escapeHtml(displayName(item))} · ${escapeHtml(row.label)}</div>
             <span class="kind auto">${escapeHtml(localizeKind("auto"))}</span>
           </td>
           <td>${row.sets}</td>
@@ -8610,6 +8734,13 @@ function renderExercises() {
       renderExercises();
     });
   });
+  document.querySelectorAll("[data-accessory]").forEach((select) => {
+    select.addEventListener("change", () => {
+      currentLog().accessories[select.dataset.accessory] = select.value;
+      saveState();
+      renderExercises();
+    });
+  });
 }
 
 function renderLog() {
@@ -8633,6 +8764,7 @@ function renderWorkout() {
 
   renderTabs();
   renderMetrics();
+  renderAmrapHint(day);
   renderExercises();
   renderLog();
 }
@@ -8696,13 +8828,13 @@ function pdfPlanWeeks() {
     const days = week.days.map((day, dayIndex) => {
       state.weekIndex = weekIndex;
       state.dayIndex = dayIndex;
-      const log = state.logs[logKey(weekIndex, dayIndex)] || { itemNotes: {}, backdowns: {} };
+      const log = state.logs[logKey(weekIndex, dayIndex)] || { itemNotes: {}, backdowns: {}, accessories: {} };
       const rows = [];
       day.items.forEach((item, itemIndex) => {
         if (isBackdownRow(item)) {
           generatedBackdownRows(item, itemIndex, log, day.items).forEach((row) => {
             rows.push([
-              `${displayName(item)} ? ${localizeBackdownStatus(row.status)}`,
+              `${displayName(item)} · ${localizeBackdownStatus(row.status)}`,
               row.sets,
               row.reps,
               row.rpe,
@@ -8714,7 +8846,7 @@ function pdfPlanWeeks() {
         }
 
         rows.push([
-          displayName(item),
+          displayNameForRow(item, itemIndex, log),
           item.sets || "-",
           item.reps || "-",
           item.rpe || "-",
@@ -8724,7 +8856,7 @@ function pdfPlanWeeks() {
 
         expandedSetRows(item).forEach((row) => {
           rows.push([
-            `${displayName(item)} ? ${row.label}`,
+            `${displayName(item)} · ${row.label}`,
             row.sets,
             row.reps,
             row.rpe,
@@ -8756,7 +8888,7 @@ function exportPlanPdf() {
       <section class="week-card">
         <header>
           <strong>${escapeHtml(weekPrintLabel(week))}</strong>
-          <span>${escapeHtml(planPhaseLabel(status.phase?.key))} ? ${escapeHtml(status.progress)}</span>
+          <span>${escapeHtml(planPhaseLabel(status.phase?.key))} · ${escapeHtml(status.progress)}</span>
         </header>
         <div class="day-grid">
           ${days
@@ -8888,7 +9020,15 @@ function bindActions() {
   $("profileToggle").addEventListener("click", () => {
     document.querySelector(".sidebar").classList.toggle("profile-open");
   });
-  $("languageButton")?.addEventListener("click", toggleLanguage);
+  document.querySelectorAll("[data-language-toggle]").forEach((button) => {
+    button.addEventListener("click", toggleLanguage);
+  });
+  $("testPrToggle")?.addEventListener("click", () => {
+    if (state.survey.meetDate) return;
+    state.survey.testPr = !state.survey.testPr;
+    saveState();
+    render();
+  });
   $("goWeekButton").addEventListener("click", () => setView("workout"));
   $("showPlannerButton").addEventListener("click", () => setView("planner"));
   $("markDayButton").addEventListener("click", markDayComplete);
