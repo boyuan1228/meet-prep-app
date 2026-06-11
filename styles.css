@@ -72,6 +72,23 @@ button {
   line-height: 1.55;
 }
 
+.activation-disclaimer {
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.activation-disclaimer p {
+  margin: 0;
+}
+
+.activation-disclaimer strong {
+  color: var(--ink);
+}
+
 .activation-card label {
   display: grid;
   gap: 7px;
@@ -162,6 +179,22 @@ button {
   background: var(--accent);
   font-weight: 800;
   letter-spacing: 0;
+}
+
+.brand-logo {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #0b1118;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.sidebar-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
 }
 
 .brand h1,
@@ -424,6 +457,41 @@ textarea:focus {
 .top-actions {
   display: flex;
   gap: 10px;
+}
+
+.language-toggle {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 20;
+  min-width: 54px;
+  height: 38px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 850;
+}
+
+.program-intro {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.program-intro strong {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.program-intro p {
+  margin: 0;
+  line-height: 1.55;
 }
 
 .icon-button {
@@ -1171,6 +1239,15 @@ td {
 
   .activation-brand h1 {
     font-size: 24px;
+  }
+
+  .activation-brand {
+    align-items: flex-start;
+  }
+
+  .activation-brand .brand-logo {
+    width: 58px;
+    height: 58px;
   }
 
   .activation-notes {
