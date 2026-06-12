@@ -482,7 +482,7 @@ textarea:focus {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: #fbfaf7;
   box-shadow: 0 10px 24px rgba(24, 35, 50, 0.06);
 }
 
@@ -493,8 +493,8 @@ textarea:focus {
 .hero-banner img {
   display: block;
   width: 100%;
-  height: clamp(86px, 16vw, 180px);
-  object-fit: cover;
+  height: clamp(82px, 13vw, 150px);
+  object-fit: contain;
   object-position: center;
 }
 
@@ -517,6 +517,82 @@ textarea:focus {
 .program-intro p {
   margin: 0;
   line-height: 1.55;
+}
+
+.template-panel .program-intro {
+  margin: 12px 0 0;
+  padding: 12px;
+  box-shadow: none;
+}
+
+.program-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.program-card span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.program-card strong {
+  display: block;
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.program-card p,
+.program-note {
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+
+.program-card mark {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.system-questionnaire {
+  margin-top: 12px;
+}
+
+.system-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.system-mini-grid article {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  padding: 10px;
+}
+
+.system-mini-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.system-mini-grid strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink);
+}
+
+.system-mini-grid p {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .icon-button {
@@ -675,7 +751,7 @@ textarea:focus {
 }
 
 .compact-template .compact-grid {
-  grid-template-columns: minmax(220px, 420px);
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
   gap: 10px;
 }
 
@@ -1338,7 +1414,7 @@ td {
   }
 
   .hero-banner img {
-    height: 92px;
+    height: clamp(68px, 19vw, 92px);
   }
 
   .summary-grid {
@@ -1386,6 +1462,14 @@ td {
   .compact-template .compact-grid,
   .output-grid {
     grid-template-columns: 1fr;
+  }
+
+  .system-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .program-card {
+    flex-direction: column;
   }
 
   .planner-summary {
