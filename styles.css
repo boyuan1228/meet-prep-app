@@ -154,7 +154,8 @@ button:hover {
 }
 
 .generator-features,
-.activation-updates {
+.activation-updates,
+.activation-faq {
   margin-top: 10px;
   padding: 9px;
   border: 1px solid var(--line);
@@ -217,6 +218,40 @@ button:hover {
   cursor: pointer;
   color: var(--accent);
   font-weight: 800;
+}
+
+.activation-faq {
+  background: #fff;
+}
+
+.activation-faq summary {
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.faq-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.faq-list article {
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.faq-list strong {
+  color: var(--ink);
+}
+
+.faq-list span {
+  color: var(--muted);
 }
 
 .app-shell {
@@ -1251,19 +1286,26 @@ mark,
   width: min(680px, 100%);
 }
 
+.warmup-card,
+.analytics-card {
+  width: min(900px, 100%);
+}
+
 .diet-lead {
   margin: 0 0 12px;
   color: var(--muted);
   line-height: 1.55;
 }
 
-.diet-steps {
+.diet-steps,
+.warmup-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-.diet-steps article {
+.diet-steps article,
+.warmup-grid section {
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -1293,6 +1335,162 @@ mark,
   border-left: 4px solid var(--accent-2);
   border-radius: 8px;
   background: #fff8f4;
+}
+
+.warmup-grid section:last-child {
+  grid-column: 1 / -1;
+}
+
+.warmup-grid h4 {
+  margin: 0 0 8px;
+}
+
+.warmup-grid ol {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.analytics-charts {
+  display: grid;
+  gap: 12px;
+}
+
+.chart-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  padding: 12px;
+  overflow: hidden;
+}
+
+.chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.chart-head h4 {
+  margin: 0;
+}
+
+.chart-head > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chart-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.volume-bars {
+  min-height: 132px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 2px 2px;
+}
+
+.bar-week {
+  min-width: 34px;
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.bar-stack {
+  height: 100px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.bar-stack i {
+  width: 7px;
+  min-height: 3px;
+  border-radius: 999px 999px 2px 2px;
+}
+
+.chart-legend .squat,
+.bar-stack .squat {
+  background: #0e7c7b;
+}
+
+.chart-legend .bench,
+.bar-stack .bench {
+  background: #d84f2a;
+}
+
+.chart-legend .deadlift,
+.bar-stack .deadlift {
+  background: #526271;
+}
+
+.line-chart {
+  width: 100%;
+  min-width: 520px;
+  height: auto;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.line-chart line {
+  stroke: #d7e0e7;
+  stroke-width: 1;
+}
+
+.line-chart polyline {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.line-chart circle {
+  fill: var(--accent-2);
+}
+
+.line-chart text {
+  fill: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.empty-chart {
+  border-radius: 8px;
+  background: #fff;
+  padding: 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .projection-panel {
@@ -1710,7 +1908,8 @@ td {
   }
 
   .generator-features,
-  .activation-updates {
+  .activation-updates,
+  .activation-faq {
     padding: 8px;
   }
 
@@ -1968,8 +2167,25 @@ td {
     grid-template-columns: 1fr;
   }
 
-  .diet-steps {
+  .diet-steps,
+  .warmup-grid {
     grid-template-columns: 1fr;
+  }
+
+  .warmup-grid section:last-child {
+    grid-column: auto;
+  }
+
+  .chart-head {
+    display: grid;
+  }
+
+  .chart-legend {
+    justify-content: flex-start;
+  }
+
+  .chart-card {
+    padding: 10px;
   }
 
   .tool-button {

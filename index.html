@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>力量周期计划生成器</title>
+    <title>让卖计划的人没饭吃</title>
     <link rel="stylesheet" href="./styles.css" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260612-5"></script>
+    <script defer src="./app.js?v=20260612-6"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
@@ -14,7 +14,7 @@
         <div class="activation-brand">
           <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="力量周期训练体系" />
           <div>
-            <h1>力量周期计划生成器</h1>
+            <h1>让卖计划的人没饭吃</h1>
           </div>
         </div>
         <div class="activation-copy activation-disclaimer">
@@ -32,6 +32,8 @@
             <span>RPE 估重</span>
             <span>降重组拆分</span>
             <span>BMR 计算器</span>
+            <span>热身动作库</span>
+            <span>训练图表</span>
             <span>PDF 导出</span>
           </div>
         </section>
@@ -49,18 +51,32 @@
             <span>最新日志</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v1.4 · 工具与训练页细节优化</strong>
+          <strong>v1.5 · 热身、QA 与训练图表</strong>
           <ul>
-            <li>删除完成当天按钮，AMRAP 辅助行自动跟随上一行动作。</li>
-            <li>新增垂直饮食法说明，放在 BMR 旁边作为饮食参考。</li>
-            <li>阶段进度和 RPE 参考重新排版，避免手机端横向溢出。</li>
+            <li>激活页改名，加入热身动作库和常见问题 QA。</li>
+            <li>饮食右侧新增训练图表，展示三项周容量、体重变化和累计容量。</li>
+            <li>图表会跟随当前计划和当天日志里的体重记录更新。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v1.4</strong> 删除完成当天按钮，AMRAP 辅助行自动跟随上一行动作，新增垂直饮食法。</p>
             <p><strong>v1.3</strong> 手机端训练行更紧凑，新增右侧浮动 RPE 计算器和顶部 BMR 计算器。</p>
             <p><strong>v1.2</strong> 加入 Sheiko、Calgary、RTS、Westside、GZCL、Texas 基础模板。</p>
             <p><strong>v1.1</strong> 加入 PDF 导出、开把设置、RPE/e1RM 估重和降重组拆分。</p>
             <p><strong>v1.0</strong> 加入激活、个人数据、问卷和训练周表生成。</p>
+          </details>
+        </section>
+        <section class="activation-faq" aria-label="常见问题">
+          <details>
+            <summary>常见问题 QA</summary>
+            <div class="faq-list">
+              <article><strong>降重组为什么显示 0？</strong><span>不是错误。0 代表这里由疲劳下降系统生成；你填入已完成组数后，系统会自动列出剩余降重组。</span></article>
+              <article><strong>组间休息多久？</strong><span>主项和主项变式通常休息 3-5 分钟，特别重的日子可到 6 分钟；辅助项通常 1-2 分钟。</span></article>
+              <article><strong>变式动作怎么估重？</strong><span>大多数变式可先按主项低 10-15% 估算，再根据推荐 RPE 和热身手感微调。</span></article>
+              <article><strong>RPE 做高了怎么办？</strong><span>后续工作组下调约 5-7.5 公斤，或重复同重量但减少组数，优先完成目标次数和动作质量。</span></article>
+              <article><strong>本周工作组太难怎么办？</strong><span>直接降重约 5%，把目标次数、组数和动作质量放在第一位。</span></article>
+              <article><strong>辅助项每周都要加重量吗？</strong><span>不一定。辅助项可以先加次数；如果上周太难，重复同重量即可。</span></article>
+            </div>
           </details>
         </section>
       </div>
@@ -207,6 +223,14 @@
               <button class="tool-button" data-diet-open type="button" title="推荐饮食方法">
                 <i data-lucide="utensils"></i>
                 饮食
+              </button>
+              <button class="tool-button" data-analytics-open type="button" title="训练图表">
+                <i data-lucide="bar-chart-3"></i>
+                图表
+              </button>
+              <button class="tool-button" data-warmup-open type="button" title="热身动作">
+                <i data-lucide="flame"></i>
+                热身
               </button>
             </div>
           </header>
@@ -439,6 +463,14 @@
                 <i data-lucide="utensils"></i>
                 饮食
               </button>
+              <button class="tool-button" data-analytics-open type="button" title="训练图表">
+                <i data-lucide="bar-chart-3"></i>
+                图表
+              </button>
+              <button class="tool-button" data-warmup-open type="button" title="热身动作">
+                <i data-lucide="flame"></i>
+                热身
+              </button>
               <button class="icon-button" id="showPlannerButton" type="button" title="返回计划生成器">
                 <i data-lucide="clipboard-list"></i>
               </button>
@@ -659,6 +691,70 @@
         <div class="diet-warning">
           有肾脏疾病、消化系统疾病、糖尿病或特殊饮食限制时，先咨询医生或营养师。这个方法是训练饮食框架，不是医疗建议。
         </div>
+      </div>
+    </div>
+    <div id="warmupModal" class="tool-modal hidden" role="dialog" aria-modal="true" aria-labelledby="warmupModalTitle">
+      <div class="modal-card warmup-card">
+        <div class="modal-head">
+          <div>
+            <span class="eyebrow">WARM-UP</span>
+            <h3 id="warmupModalTitle">训练前热身动作</h3>
+          </div>
+          <button class="icon-button" type="button" data-modal-close="warmupModal" title="关闭">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <p class="diet-lead">每次训练前选 8-12 分钟完成。下肢日多做髋、踝和核心；上肢日多做胸椎、肩胛和肩袖。</p>
+        <div class="warmup-grid">
+          <section>
+            <h4>全身准备</h4>
+            <ol>
+              <li>反向雪天使 10-15 次</li>
+              <li>胸椎旋转 8-10 次/侧</li>
+              <li>弹力带侧向走 10-15 步/侧</li>
+              <li>高抬腿 15 米</li>
+              <li>虫爬 15 米</li>
+              <li>猫牛式 8-10 次</li>
+              <li>沙发拉伸 60 秒/侧</li>
+              <li>世界最伟大拉伸 5 次/侧</li>
+            </ol>
+          </section>
+          <section>
+            <h4>髋膝核心</h4>
+            <ol>
+              <li>髋飞机 10 次/侧</li>
+              <li>哥萨克深蹲 10 次/侧</li>
+              <li>单腿臀桥 10-12 次/侧</li>
+              <li>Y-T-W 肩胛激活 8-12 次</li>
+              <li>单腿分腿蹲 8-10 次/侧</li>
+              <li>鸟狗 8-10 次/侧</li>
+              <li>死虫 8-10 次/侧</li>
+              <li>前脚抬高膝前移 10 次/侧</li>
+            </ol>
+          </section>
+          <section>
+            <h4>踝关节灵活性</h4>
+            <ol>
+              <li>踝背屈 PAILs/RAILs 2-3 轮</li>
+              <li>弹力带踝背屈松动 12-15 次/侧</li>
+              <li>胫骨侧向滑动 10-12 次/侧</li>
+            </ol>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div id="analyticsModal" class="tool-modal hidden" role="dialog" aria-modal="true" aria-labelledby="analyticsModalTitle">
+      <div class="modal-card analytics-card">
+        <div class="modal-head">
+          <div>
+            <span class="eyebrow">TRAINING DASHBOARD</span>
+            <h3 id="analyticsModalTitle">训练可视图</h3>
+          </div>
+          <button class="icon-button" type="button" data-modal-close="analyticsModal" title="关闭">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div id="analyticsCharts" class="analytics-charts"></div>
       </div>
     </div>
   </body>

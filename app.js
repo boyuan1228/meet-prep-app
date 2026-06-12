@@ -9693,6 +9693,171 @@ function calculateRpeLoad() {
     : `<strong>建议重量：${displayMass(load)}</strong><span>${reps} 次 @ RPE ${rpe}。</span>`;
 }
 
+function liftKeyForItem(item) {
+  const type = movementType(item);
+  if (type === "bench" || type === "benchVariant") return "bench";
+  if (type === "squat" || type === "squatVariant") return "squat";
+  if (type === "deadlift" || type === "deadliftVariant") return "deadlift";
+  return "";
+}
+
+function plannedSetCountForVolume(item, index, items) {
+  if (isBackdownRow(item)) return backdownGoal(item);
+  const sets = numberFrom(item.sets);
+  return sets > 0 ? sets : 0;
+}
+
+function withTemporaryDay(weekIndex, dayIndex, callback) {
+  const savedWeek = state.weekIndex;
+  const savedDay = state.dayIndex;
+  state.weekIndex = weekIndex;
+  state.dayIndex = dayIndex;
+  try {
+    return callback();
+  } finally {
+    state.weekIndex = savedWeek;
+    state.dayIndex = savedDay;
+  }
+}
+
+function weeklyMainLiftVolumeData() {
+  const plan = makePlanner();
+  return planWeeks(plan).map((week, weekIndex) => {
+    const totals = { week: weekIndex + 1, squat: 0, bench: 0, deadlift: 0 };
+    week.days.forEach((day, dayIndex) => {
+      withTemporaryDay(weekIndex, dayIndex, () => {
+        day.items.forEach((item, itemIndex) => {
+          const lift = liftKeyForItem(item);
+          if (!lift) return;
+          totals[lift] += plannedSetCountForVolume(item, itemIndex, day.items);
+        });
+      });
+    });
+    return totals;
+  });
+}
+
+function cumulativeVolumeData(rows) {
+  const running = { squat: 0, bench: 0, deadlift: 0 };
+  return rows.map((row) => {
+    running.squat += row.squat;
+    running.bench += row.bench;
+    running.deadlift += row.deadlift;
+    return { week: row.week, squat: running.squat, bench: running.bench, deadlift: running.deadlift };
+  });
+}
+
+function weeklyBodyweightData() {
+  const plan = makePlanner();
+  const weeks = planWeeks(plan);
+  return weeks
+    .map((week, weekIndex) => {
+      const values = week.days
+        .map((day, dayIndex) => Number(state.logs[`w${weekIndex + 1}-d${dayIndex + 1}`]?.bodyweight || 0))
+        .filter(Boolean);
+      if (!values.length) return { week: weekIndex + 1, value: 0 };
+      const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+      return { week: weekIndex + 1, value: isEnglish() ? average * KG_TO_LBS : average };
+    })
+    .filter((row) => row.value);
+}
+
+function liftLegendHtml() {
+  const labels = isEnglish()
+    ? { squat: "Squat", bench: "Bench", deadlift: "Deadlift" }
+    : { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
+  return `<div class="chart-legend">
+    <span><i class="squat"></i>${labels.squat}</span>
+    <span><i class="bench"></i>${labels.bench}</span>
+    <span><i class="deadlift"></i>${labels.deadlift}</span>
+  </div>`;
+}
+
+function volumeBarsHtml(title, rows) {
+  const max = Math.max(1, ...rows.flatMap((row) => [row.squat, row.bench, row.deadlift]));
+  const labels = isEnglish()
+    ? { squat: "Squat", bench: "Bench", deadlift: "Deadlift" }
+    : { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
+  const bars = rows
+    .map(
+      (row) => `<div class="bar-week">
+        <div class="bar-stack">
+          ${["squat", "bench", "deadlift"]
+            .map((lift) => {
+              const value = row[lift];
+              const height = Math.max(3, Math.round((value / max) * 96));
+              return `<i class="${lift}" style="height:${height}px" title="W${row.week} ${labels[lift]} ${value}"></i>`;
+            })
+            .join("")}
+        </div>
+        <span>W${row.week}</span>
+      </div>`
+    )
+    .join("");
+  return `<section class="chart-card">
+    <div class="chart-head"><h4>${escapeHtml(title)}</h4>${liftLegendHtml()}</div>
+    <div class="volume-bars">${bars}</div>
+  </section>`;
+}
+
+function bodyweightChartHtml(rows) {
+  const title = isEnglish() ? "Bodyweight Change" : "体重变化";
+  const unit = isEnglish() ? "lbs" : "公斤";
+  if (!rows.length) {
+    return `<section class="chart-card">
+      <div class="chart-head"><h4>${title}</h4></div>
+      <div class="empty-chart">${isEnglish() ? "No bodyweight logs yet." : "还没有体重日志。训练日里填写当天体重后会显示趋势。"}</div>
+    </section>`;
+  }
+  const width = 520;
+  const height = 150;
+  const pad = 24;
+  const min = Math.min(...rows.map((row) => row.value));
+  const max = Math.max(...rows.map((row) => row.value));
+  const range = Math.max(1, max - min);
+  const xStep = rows.length > 1 ? (width - pad * 2) / (rows.length - 1) : 0;
+  const points = rows
+    .map((row, index) => {
+      const x = rows.length > 1 ? pad + index * xStep : width / 2;
+      const y = height - pad - ((row.value - min) / range) * (height - pad * 2);
+      return { x, y, row };
+    });
+  const polyline = points.map((point) => `${point.x},${point.y}`).join(" ");
+  const circles = points
+    .map(
+      (point) =>
+        `<circle cx="${point.x}" cy="${point.y}" r="3"><title>W${point.row.week}: ${point.row.value.toFixed(1)} ${unit}</title></circle>`
+    )
+    .join("");
+  const labels = points
+    .filter((_, index) => index === 0 || index === points.length - 1 || index % 4 === 0)
+    .map((point) => `<text x="${point.x}" y="${height - 5}" text-anchor="middle">W${point.row.week}</text>`)
+    .join("");
+  return `<section class="chart-card">
+    <div class="chart-head"><h4>${title}</h4><span>${min.toFixed(1)}-${max.toFixed(1)} ${unit}</span></div>
+    <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${title}">
+      <line x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}"></line>
+      <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${height - pad}"></line>
+      <polyline points="${polyline}"></polyline>
+      ${circles}
+      ${labels}
+    </svg>
+  </section>`;
+}
+
+function renderAnalyticsCharts() {
+  const target = $("analyticsCharts");
+  if (!target) return;
+  const weekly = weeklyMainLiftVolumeData();
+  const cumulative = cumulativeVolumeData(weekly);
+  const bodyweight = weeklyBodyweightData();
+  target.innerHTML = [
+    volumeBarsHtml("Weekly Volume For Each Main Lift", weekly),
+    bodyweightChartHtml(bodyweight),
+    volumeBarsHtml("Weekly Cumulative Volume For Each Main Lift", cumulative),
+  ].join("");
+}
+
 function bindActions() {
   $("profileToggle").addEventListener("click", () => {
     document.querySelector(".sidebar").classList.toggle("profile-open");
@@ -9708,6 +9873,15 @@ function bindActions() {
   });
   document.querySelectorAll("[data-diet-open]").forEach((button) => {
     button.addEventListener("click", () => toggleModal("dietModal", true));
+  });
+  document.querySelectorAll("[data-warmup-open]").forEach((button) => {
+    button.addEventListener("click", () => toggleModal("warmupModal", true));
+  });
+  document.querySelectorAll("[data-analytics-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      renderAnalyticsCharts();
+      toggleModal("analyticsModal", true);
+    });
   });
   $("floatingRpeButton")?.addEventListener("click", () => toggleModal("rpeModal", true));
   document.querySelectorAll("[data-modal-close]").forEach((button) => {
