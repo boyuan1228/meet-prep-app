@@ -6867,6 +6867,7 @@ const state = {
     deadliftVariantMax: "",
   },
   survey: {
+    programSystem: "jtsSstt",
     meetDate: "",
     testPr: false,
     templateMode: "auto",
@@ -6987,6 +6988,190 @@ const VARIANT_OPTIONS = {
   ],
 };
 
+const VARIANT_OPTIONS_BY_SYSTEM = {
+  sheiko: {
+    benchVariantInput: ["Paused Bench Press", "Tempo Bench Press", "Close Grip Bench Press"],
+    squatVariantInput: ["Paused Squat", "Tempo Squat", "Front Squat"],
+    deadliftVariantInput: ["Paused Deadlift", "Deficit Deadlift", "Block Pull"],
+  },
+  calgary: {
+    benchVariantInput: ["Spoto Bench Press", "Paused Bench Press", "Close Grip Bench Press", "Floor Press"],
+    squatVariantInput: ["Paused Squat", "Front Squat", "Safety Bar Squat"],
+    deadliftVariantInput: ["Paused Deadlift", "Deficit Deadlift", "Romanian Deadlift"],
+  },
+  jts: {
+    benchVariantInput: ["Spoto Bench Press", "Paused Bench Press", "Close Grip Bench Press", "Tempo Bench Press"],
+    squatVariantInput: ["Belt Squat", "Paused Squat", "Tempo Squat", "Safety Bar Squat"],
+    deadliftVariantInput: ["Paused Deadlift", "Deficit Deadlift", "Romanian Deadlift", "Tempo Deadlift"],
+  },
+  rts: {
+    benchVariantInput: ["Paused Bench Press", "Spoto Bench Press", "Close Grip Bench Press"],
+    squatVariantInput: ["Paused Squat", "Tempo Squat", "Front Squat"],
+    deadliftVariantInput: ["Paused Deadlift", "Deficit Deadlift", "Block Pull"],
+  },
+  westside: {
+    benchVariantInput: ["Floor Press", "Pin Press", "Close Grip Bench Press"],
+    squatVariantInput: ["Safety Bar Squat", "Front Squat", "Hatfield Squat"],
+    deadliftVariantInput: ["Block Pull", "Deficit Deadlift", "Romanian Deadlift"],
+  },
+  gzcl: {
+    benchVariantInput: ["Close Grip Bench Press", "Paused Bench Press", "Spoto Bench Press"],
+    squatVariantInput: ["Paused Squat", "Front Squat", "Belt Squat"],
+    deadliftVariantInput: ["Paused Deadlift", "Romanian Deadlift", "Deficit Deadlift"],
+  },
+  texas: {
+    benchVariantInput: ["Close Grip Bench Press", "Paused Bench Press", "Floor Press"],
+    squatVariantInput: ["Paused Squat", "Front Squat", "Belt Squat"],
+    deadliftVariantInput: ["Romanian Deadlift", "Paused Deadlift", "Block Pull"],
+  },
+};
+
+const PROGRAM_SYSTEMS = {
+  jtsSstt: {
+    short: "JTS × SSTT",
+    brandTitle: "力量周期",
+    defaultDays: 4,
+    usesJtsSurvey: true,
+    zhTitle: "JTS × SSTT 15 周混合",
+    enTitle: "JTS × SSTT 15-Week Hybrid",
+    zhText:
+      "当前可完整生成训练表。以 JTS 容量管理为主线，结合 SSTT 15 周范本的 RPE、百分比估重、变式、降重组和测试周结构。",
+    enText:
+      "Fully available. It combines JTS-style volume management with the SSTT 15-week template: RPE, percentage estimates, variants, backdown sets, and test-week structure.",
+    status: "active",
+  },
+  sheiko: {
+    short: "Sheiko",
+    brandTitle: "Sheiko",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Sheiko 高频技术量",
+    enTitle: "Sheiko High-Frequency Skill Volume",
+    zhText: "偏高频、较多中等强度技术量，适合动作稳定性和比赛动作熟练度优先的周期。使用简化 Sheiko 周结构生成基础版计划。",
+    enText: "High-frequency moderate-intensity skill volume. Generates a simplified Sheiko-style plan.",
+    status: "active",
+  },
+  calgary: {
+    short: "Calgary",
+    brandTitle: "Calgary",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Calgary Barbell 风格",
+    enTitle: "Calgary Barbell Style",
+    zhText: "偏 RPE 和专项变式驱动，适合中高级训练者的比赛前周期。使用简化 Calgary 周结构生成基础版计划。",
+    enText: "RPE and specific-variation driven prep style. Generates a simplified Calgary-style plan.",
+    status: "active",
+  },
+  jts: {
+    short: "JTS",
+    brandTitle: "JTS",
+    defaultDays: 4,
+    usesJtsSurvey: true,
+    zhTitle: "JTS 容量管理",
+    enTitle: "JTS Volume Management",
+    zhText: "强调 MEV/MRV、阶段分配、频率和恢复能力匹配。当前已通过 JTS × SSTT 混合模板落地。",
+    enText: "MEV/MRV, phase allocation, frequency, and recovery matching with a JTS-style base layout.",
+    status: "active",
+  },
+  rts: {
+    short: "RTS",
+    brandTitle: "RTS",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "RTS 自我调节",
+    enTitle: "RTS Autoregulation",
+    zhText: "以 RPE、e1RM 和疲劳管理为核心，强调按当日状态调节训练。使用简化 RTS 周结构生成基础版计划。",
+    enText: "RPE, e1RM, and fatigue management. Generates a simplified RTS-style plan.",
+    status: "active",
+  },
+  westside: {
+    short: "Westside",
+    brandTitle: "Westside",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Westside Conjugate",
+    enTitle: "Westside Conjugate",
+    zhText: "最大努力、动态努力与薄弱环节辅助并行，适合熟悉变式轮换的训练者。使用 ME/DE 上下肢结构生成基础版计划。",
+    enText: "Max-effort, dynamic-effort, and weak-point accessories. Generates a basic ME/DE upper/lower plan.",
+    status: "active",
+  },
+  gzcl: {
+    short: "GZCL",
+    brandTitle: "GZCL",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "GZCL T1/T2/T3",
+    enTitle: "GZCL T1/T2/T3",
+    zhText: "以主项、次主项和容量辅助分层推进，结构清晰，适合长期训练积累。使用 T1/T2/T3 结构生成基础版计划。",
+    enText: "Tiered T1/T2/T3 progression for main work, secondary work, and volume accessories. Generates a basic GZCL-style plan.",
+    status: "active",
+  },
+  texas: {
+    short: "Texas",
+    brandTitle: "Texas",
+    defaultDays: 3,
+    usesJtsSurvey: false,
+    zhTitle: "Texas Method",
+    enTitle: "Texas Method",
+    zhText: "容量日、恢复日和强度日的经典周结构，适合部分中级训练者。使用 Texas Method 周结构生成基础版计划。",
+    enText: "Classic volume, recovery, and intensity weekly structure. Generates a basic Texas Method plan.",
+    status: "active",
+  },
+};
+
+const ACCESSORY_GROUPS = {
+  upper: [
+    "INCLINE DB PRESS",
+    "FLAT DB PRESS",
+    "DECLINE DB PRESS",
+    "DB ANTERIOR DELT PRESS",
+    "LAT PULLDOWNS",
+    "NEUTRAL GRIP PULL-DOWNS",
+    "CABLE ROWS",
+    "SEAL ROWS",
+    "CHEST SUPPORTED ROWS",
+    "PRONE ROWS",
+    "BARBELL ROWS",
+    "PENDLEY ROWS",
+    "SINGLE ARM DB ROWS",
+    "TRICEP PUSHDOWNS",
+    "SKULL CRUSHERS",
+    "EZ BAR CURLS",
+    "BARBELL CURLS",
+    "CABLE CURLS",
+    "TWO ARM DB CURLS",
+    "DB HAMMER CURLS",
+    "PREACHER CURLS",
+    "DB LATERAL RAISES",
+    "MACHINE LATERAL RAISES",
+    "REAR DELT FLYS",
+    "GHD CRUNCHES",
+    "GHD CORE ISO HOLD",
+    "WEIGHTED V-UPS",
+    "CABLE CRUNCHES",
+  ],
+  lower: [
+    "HATSFIELD SPLIT SQUAT",
+    "NORDIC CURLS",
+    "REVERSE HYPER-EXTENSIONS",
+    "LEG PRESS CALVE RAISES",
+    "SEATED CALVE RAISES",
+    "LAT PULLDOWNS",
+    "NEUTRAL GRIP PULL-DOWNS",
+    "CABLE ROWS",
+    "SEAL ROWS",
+    "CHEST SUPPORTED ROWS",
+    "PRONE ROWS",
+    "BARBELL ROWS",
+    "PENDLEY ROWS",
+    "SINGLE ARM DB ROWS",
+    "GHD CRUNCHES",
+    "GHD CORE ISO HOLD",
+    "WEIGHTED V-UPS",
+    "CABLE CRUNCHES",
+  ],
+};
+
 const ACCESSORY_OPTIONS = [
   "INCLINE DB PRESS",
   "FLAT DB PRESS",
@@ -7008,6 +7193,7 @@ const ACCESSORY_OPTIONS = [
   "CABLE CURLS",
   "TWO ARM DB CURLS",
   "DB HAMMER CURLS",
+  "PREACHER CURLS",
   "DB LATERAL RAISES",
   "MACHINE LATERAL RAISES",
   "REAR DELT FLYS",
@@ -7029,6 +7215,18 @@ function isEnglish() {
 function localizeExerciseName(name) {
   const raw = String(name || "");
   return isEnglish() ? raw : EXERCISE_ZH[raw.toUpperCase()] || raw;
+}
+
+function currentProgramSystem() {
+  return PROGRAM_SYSTEMS[state.survey.programSystem] || PROGRAM_SYSTEMS.jtsSstt;
+}
+
+function programTitle(system = currentProgramSystem()) {
+  return isEnglish() ? system.enTitle : system.zhTitle;
+}
+
+function programText(system = currentProgramSystem()) {
+  return isEnglish() ? system.enText : system.zhText;
 }
 
 function displayMass(kg, digits = 1) {
@@ -7081,8 +7279,13 @@ function variantProfileKey(selectId) {
   }[selectId];
 }
 
+function variantOptionsFor(selectId) {
+  return VARIANT_OPTIONS_BY_SYSTEM[state.survey.programSystem]?.[selectId] || VARIANT_OPTIONS[selectId] || [];
+}
+
 function populateVariantOptions() {
-  Object.entries(VARIANT_OPTIONS).forEach(([id, options]) => {
+  Object.keys(VARIANT_OPTIONS).forEach((id) => {
+    const options = variantOptionsFor(id);
     const select = $(id);
     const key = variantProfileKey(id);
     if (!select || !key) return;
@@ -7102,12 +7305,81 @@ function renderLanguage() {
   if (document.documentElement) document.documentElement.lang = isEnglish() ? "en" : "zh-CN";
 }
 
+function renderSystemChrome() {
+  const system = currentProgramSystem();
+  const usesJts = Boolean(system.usesJtsSurvey);
+  document.body.dataset.system = state.survey.programSystem || "jtsSstt";
+  const brandTitle = system.brandTitle || system.short;
+  const brandSub = state.survey.programSystem === "jtsSstt" ? "JTS 思路 · SSTT 15 周范本" : `${system.short} 基础周期模板`;
+  $("sidebarBrandTitle").textContent = brandTitle;
+  $("sidebarBrandSub").textContent = brandSub;
+  $("plannerEyebrow").textContent = `${system.short} 力量周期训练体系`;
+  $("plannerTitle").textContent = `${brandTitle} 计划生成器`;
+  $("plannerSubtitle").textContent = usesJts
+    ? "先确定比赛日期、基础信息、MEV/MRV、阶段长度和三大项频率，再进入训练周表。"
+    : "先选择体系、比赛或测试日期、训练天数和基础水平，再生成对应风格的训练周表。";
+  document.querySelectorAll(".jts-only").forEach((node) => node.classList.toggle("hidden", !usesJts));
+  document.querySelectorAll(".jts-sstt-only").forEach((node) =>
+    node.classList.toggle("hidden", state.survey.programSystem !== "jtsSstt")
+  );
+  const jtsSpecificInputs = [
+    "sexInput",
+    "birthYearInput",
+    "birthMonthInput",
+    "heightInput",
+    "surveyBodyweightInput",
+    "squatLevelInput",
+    "benchLevelInput",
+    "deadliftLevelInput",
+    "nutritionInput",
+    "sleepInput",
+    "stressInput",
+    "historyVolumeInput",
+    "recoveryInput",
+  ];
+  jtsSpecificInputs.forEach((id) => {
+    const label = $(id)?.closest("label");
+    if (label) label.classList.toggle("hidden", !usesJts);
+  });
+  const systemQuestionnaire = $("systemQuestionnaire");
+  if (systemQuestionnaire) {
+    systemQuestionnaire.classList.toggle("hidden", usesJts);
+    if (!usesJts) {
+      systemQuestionnaire.innerHTML = `
+        <div class="system-mini-grid">
+          <article><span>问卷</span><strong>核心参数</strong><p>该体系只使用比赛/测试日期、训练经验、每周训练天数和三项 PR，不套用 JTS 睡眠、压力、MEV/MRV 问卷。</p></article>
+          <article><span>变式</span><strong>按体系切换</strong><p>卧推、深蹲、硬拉变式会随体系切换，训练表按该体系的主项顺序生成。</p></article>
+          <article><span>模型</span><strong>${escapeHtml(system.short)}</strong><p>线性、交替、低中高模型只用于 JTS × SSTT；当前体系使用自身周结构。</p></article>
+        </div>
+      `;
+    }
+  }
+}
+
 function renderProgramIntro() {
   const target = $("programIntro");
   if (!target) return;
-  target.innerHTML = isEnglish()
-    ? `<strong>Built from JTS volume logic and the SSTT 15-week template</strong><p>This planner uses MEV/MRV, weekly frequency, deloads, peaking, RPE targets, percentage-based estimates, variation selection, backdown logic, and a test week structure inspired by Rondel Hunte's 15-week SSTT framework.</p>`
-    : `<strong>参考 JTS 容量管理与 SSTT 15 周范本</strong><p>SSTT 是约 4 个月、每周 4 练的深蹲/卧推/硬拉并重体系。本工具结合 MEV/MRV、训练频率、减载、冲刺、RPE、百分比估重、变式动作、降重组和测试周安排，生成可编辑的周期计划。</p>`;
+  const system = currentProgramSystem();
+  const usesJts = Boolean(system.usesJtsSurvey);
+  const statusLabel = usesJts ? "MEV/MRV" : "体系模板";
+  const statusNote = isEnglish()
+    ? usesJts
+      ? "Uses the JTS questionnaire, MEV/MRV, frequency logic, deloads, peaking, and SSTT-style backdown/test-week structure."
+      : "Uses this system's own weekly structure and simplified progression. JTS questionnaire fields are hidden for this system."
+    : usesJts
+      ? "使用 JTS 问卷、MEV/MRV、频率逻辑、减载、冲刺和 SSTT 风格的降重/测试周结构。"
+      : "使用该体系自己的周结构和简化进展逻辑；JTS 的睡眠、压力、MEV/MRV 问卷不会套用到这个体系。";
+  target.innerHTML = `
+    <div class="program-card active">
+      <div>
+        <span>${escapeHtml(system.short)}</span>
+        <strong>${escapeHtml(programTitle(system))}</strong>
+        <p>${escapeHtml(programText(system))}</p>
+      </div>
+      <mark>${escapeHtml(statusLabel)}</mark>
+    </div>
+    <p class="program-note">${escapeHtml(statusNote)}</p>
+  `;
 }
 
 function toggleLanguage() {
@@ -7357,7 +7629,147 @@ function applyTrainingDayCount(source, desiredDays, weekNumber, isTestWeek) {
   }));
 }
 
+function phasePrescription(phaseKey, slot = 0, systemKey = state.survey.programSystem) {
+  const base = {
+    hypertrophy: { mainSets: 4, mainReps: 6, mainRpe: slot % 2 ? "6.5" : "7", variantSets: 3, variantReps: 8, variantRpe: "6-7" },
+    strength: { mainSets: 3, mainReps: 4, mainRpe: slot % 2 ? "7" : "8", variantSets: 3, variantReps: 5, variantRpe: "6-7" },
+    peaking: { mainSets: 2, mainReps: 2, mainRpe: slot % 2 ? "7.5" : "8.5", variantSets: 2, variantReps: 3, variantRpe: "6-7" },
+    test: { mainSets: 1, mainReps: 1, mainRpe: "9", variantSets: 1, variantReps: 3, variantRpe: "6" },
+  }[phaseKey] || { mainSets: 3, mainReps: 5, mainRpe: "7", variantSets: 2, variantReps: 6, variantRpe: "6-7" };
+
+  if (systemKey === "sheiko") return { ...base, mainSets: base.mainSets + 1, mainRpe: phaseKey === "peaking" ? "8" : "6-7" };
+  if (systemKey === "westside") return { ...base, mainSets: phaseKey === "hypertrophy" ? 3 : 1, mainReps: phaseKey === "hypertrophy" ? 5 : 1, mainRpe: phaseKey === "peaking" ? "9" : "8" };
+  if (systemKey === "texas" && slot === 0) return { ...base, mainSets: 5, mainReps: 5, mainRpe: phaseKey === "peaking" ? "7" : "6-7" };
+  return base;
+}
+
+function row(name, sets, reps, rpe = "", notes = "", kind = "") {
+  return { name, sets: String(sets), reps: String(reps), weight: "", volume: "", rpe: String(rpe || ""), tempo: "", notes, kind };
+}
+
+function accessoryRows(group, compact = false) {
+  const tag = (items) => items.map((item) => ({ ...item, accessoryGroup: group }));
+  if (group === "upper") {
+    return tag([
+      row("LAT PULLDOWNS", compact ? 2 : 3, "8-12", "6-8", "", "accessory"),
+      row("TRICEP PUSHDOWNS", 2, "10-15", "6-8", "", "accessory"),
+      row("DB LATERAL RAISES", 2, "12-20", "6-8", "", "accessory"),
+    ]);
+  }
+  return tag([
+    row("CABLE ROWS", compact ? 2 : 3, "8-12", "6-8", "", "accessory"),
+    row("REVERSE HYPER-EXTENSIONS", 2, "10-15", "6-8", "", "accessory"),
+    row("CABLE CRUNCHES", 3, "12-20", "6-8", "", "accessory"),
+  ]);
+}
+
+function systemDayItems(systemKey, dayNumber, days, phaseKey, weekIndex) {
+  const p = phasePrescription(phaseKey, dayNumber, systemKey);
+  const compact = days >= 5;
+  const topNote = "按当天 RPE 调整重量，动作质量优先。";
+  const backoffNote = "降重 8-12%，保持速度和目标 RPE。";
+  const templates = {
+    sheiko: [
+      [row("SQUAT", p.mainSets, p.mainReps, p.mainRpe, topNote), row("BENCH PRESS", p.mainSets, p.mainReps, p.mainRpe, topNote), ...accessoryRows("lower", compact)],
+      [row("DEADLIFT", p.mainSets, p.mainReps, p.mainRpe, topNote), row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), row("BENCH PRESS", p.mainSets, p.mainReps, p.mainRpe, topNote), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("lower", compact)],
+      [row("SQUAT", 3, 5, "6", "技术容量日。"), row("BENCH PRESS", 3, 6, "6", "技术容量日。"), ...accessoryRows("upper", true)],
+      [row("DEADLIFT", 2, 4, "6", "轻技术拉。"), ...accessoryRows("lower", true)],
+    ],
+    calgary: [
+      [row("SQUAT", 1, Math.max(1, p.mainReps - 2), p.mainRpe, topNote), row("SQUAT", p.mainSets, p.mainReps, "6-7", backoffNote), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 1, Math.max(1, p.mainReps - 2), p.mainRpe, topNote), row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", 1, Math.max(1, p.mainReps - 2), p.mainRpe, topNote), row("DEADLIFT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", p.mainSets, p.mainReps, "6-7", "容量推。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("lower", true)],
+      [row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("upper", true)],
+    ],
+    jts: [
+      [row("SQUAT", p.mainSets, p.mainReps, p.mainRpe, topNote), row("BENCH PRESS", p.variantSets, p.variantReps, "6-7", "中等容量推。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", p.mainSets, p.mainReps, p.mainRpe, topNote), row("DEADLIFT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", p.mainSets, p.mainReps, p.mainRpe, topNote), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 3, 6, "6", "补足卧推频率。"), ...accessoryRows("upper", true)],
+      [row("SQUAT", 2, 5, "6", "轻技术深蹲。"), row("DEADLIFT", 2, 4, "6", "轻技术硬拉。"), ...accessoryRows("lower", true)],
+    ],
+    rts: [
+      [row("SQUAT", 1, Math.max(1, p.mainReps - 2), p.mainRpe, "顶组用于校准 e1RM。"), row("SQUAT", p.mainSets, p.mainReps, "6-7", backoffNote), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 1, Math.max(1, p.mainReps - 2), p.mainRpe, "顶组用于校准 e1RM。"), row("BENCH PRESS", p.mainSets, p.mainReps, "6-7", backoffNote), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", 1, Math.max(1, p.mainReps - 2), p.mainRpe, "顶组用于校准 e1RM。"), row("DEADLIFT", p.mainSets, p.mainReps, "6-7", backoffNote), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("lower", true)],
+      [row("DEADLIFT VARIANT", p.variantSets, p.variantReps, p.variantRpe, topNote), ...accessoryRows("lower", true)],
+    ],
+    westside: [
+      [row("SQUAT VARIANT", p.mainSets, p.mainReps, p.mainRpe, "最大努力下肢，不必每周同一变式。"), row("DEADLIFT VARIANT", 2, 3, "6-7", "后链补量。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS VARIANT", p.mainSets, p.mainReps, p.mainRpe, "最大努力上肢，不必每周同一变式。"), row("BENCH PRESS", 3, 5, "6", "补技术量。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT", 6, 2, "6", "动态努力下肢，速度优先。"), row("DEADLIFT", 6, 1, "6", "动态拉，速度优先。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 8, 3, "6", "动态努力上肢，速度优先。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", 3, 5, "6-7", "弱项辅助。"), ...accessoryRows("lower", true)],
+      [row("BENCH PRESS VARIANT", 3, 6, "6-7", "弱项辅助。"), ...accessoryRows("upper", true)],
+    ],
+    gzcl: [
+      [row("SQUAT", p.mainSets, p.mainReps, p.mainRpe, "T1 主项。"), row("BENCH PRESS VARIANT", 3, 6, "6-7", "T2 次主项。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", p.mainSets, p.mainReps, p.mainRpe, "T1 主项。"), row("SQUAT VARIANT", 3, 6, "6-7", "T2 次主项。"), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", p.mainSets, p.mainReps, p.mainRpe, "T1 主项。"), row("BENCH PRESS", 3, 6, "6-7", "T2 次主项。"), ...accessoryRows("lower", compact)],
+      [row("SQUAT VARIANT", p.variantSets, p.variantReps, p.variantRpe, "T2/T3 容量。"), row("DEADLIFT VARIANT", p.variantSets, p.variantReps, p.variantRpe, "T2/T3 容量。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, "T2/T3 容量。"), ...accessoryRows("upper", true)],
+      [row("DEADLIFT VARIANT", p.variantSets, p.variantReps, p.variantRpe, "T2/T3 容量。"), ...accessoryRows("lower", true)],
+    ],
+    texas: [
+      [row("SQUAT", 5, 5, "6-7", "容量日。"), row("BENCH PRESS", 5, 5, "6-7", "容量日。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", 2, 5, "5-6", "恢复日。"), row("BENCH PRESS VARIANT", 3, 5, "5-6", "恢复日。"), ...accessoryRows("lower", compact)],
+      [row("SQUAT", 1, Math.max(1, p.mainReps - 2), p.mainRpe, "强度日。"), row("BENCH PRESS", 1, Math.max(1, p.mainReps - 2), p.mainRpe, "强度日。"), row("DEADLIFT", 1, Math.max(1, p.mainReps - 2), p.mainRpe, "强度日。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 3, 5, "6", "上肢补量。"), ...accessoryRows("upper", true)],
+      [row("DEADLIFT VARIANT", 3, 5, "6", "后链补量。"), ...accessoryRows("lower", true)],
+      [row("BENCH PRESS VARIANT", 3, 6, "6", "轻技术推。"), ...accessoryRows("upper", true)],
+    ],
+  };
+  const pool = templates[systemKey] || templates.jts;
+  return pool[(dayNumber - 1) % pool.length].map((item) => ({ ...item }));
+}
+
+function systemTestDayItems(dayNumber) {
+  const easy = dayNumber < 4;
+  if (easy) {
+    const p = phasePrescription("test", dayNumber);
+    const map = [
+      [row("BENCH PRESS", 1, 1, "6.5", "测试周轻开把准备。"), row("BENCH PRESS", 2, 3, "6", "轻降重。")],
+      [row("SQUAT", 1, 1, "6.5", "测试周轻开把准备。"), row("DEADLIFT", 1, 1, "6.5", "测试周轻开把准备。")],
+      [row("BENCH PRESS", 2, 2, "5-6", "轻技术，不累积疲劳。")],
+    ];
+    return (map[dayNumber - 1] || map[0]).map((item) => ({ ...item }));
+  }
+  return [
+    row("SQUAT", 1, 1, "9-10", "测试/比赛日。"),
+    row("BENCH PRESS", 1, 1, "9-10", "测试/比赛日。"),
+    row("DEADLIFT", 1, 1, "9-10", "测试/比赛日。"),
+  ];
+}
+
+function systemVirtualWeek(index) {
+  const plan = makePlanner();
+  const weekNumber = index + 1;
+  const isTestWeek = index === plan.totalWeeks - 1;
+  const phase = isTestWeek ? { key: "test", name: "测试周" } : phaseForWeek(weekNumber, plan.phases);
+  const days = Array.from({ length: plan.days }, (_, dayIndex) => ({
+    day: `W${weekNumber}D${dayIndex + 1}`,
+    originalDay: `D${dayIndex + 1}`,
+    items: isTestWeek
+      ? systemTestDayItems(dayIndex + 1)
+      : systemDayItems(plan.systemKey, dayIndex + 1, plan.days, phase.key, index),
+  }));
+  return {
+    number: weekNumber,
+    label: `Week ${weekNumber}${isTestWeek ? " / Test" : ""}`,
+    phase: isTestWeek ? "test" : phase.key,
+    days,
+  };
+}
+
 function virtualWeek(index) {
+  if ((state.survey.programSystem || "jtsSstt") !== "jtsSstt") return systemVirtualWeek(index);
   const totalWeeks = weeksUntilMeet();
   const testTemplate = data.weeks.find((week) => week.phase === "test") || data.weeks[data.weeks.length - 1];
   const trainingTemplates = data.weeks.filter((week) => week.phase !== "test");
@@ -7413,20 +7825,41 @@ function displayName(item) {
   return localizeExerciseName(item.name);
 }
 
-function selectedAccessoryName(item, index, log) {
-  if (movementType(item) !== "accessory") return item.name;
-  const saved = log?.accessories?.[index];
-  return saved || item.name;
+function accessoryContextForItem(items, index) {
+  if (items[index]?.accessoryGroup) return items[index].accessoryGroup;
+  for (let cursor = index - 1; cursor >= 0; cursor -= 1) {
+    const type = movementType(items[cursor]);
+    if (type === "bench" || type === "benchVariant") return "upper";
+    if (type === "squat" || type === "squatVariant" || type === "deadlift" || type === "deadliftVariant") return "lower";
+  }
+  const daySlot = (state.dayIndex % 4) + 1;
+  return daySlot === 1 || daySlot === 3 ? "upper" : "lower";
 }
 
-function displayNameForRow(item, index, log) {
-  if (movementType(item) === "accessory") return localizeExerciseName(selectedAccessoryName(item, index, log));
+function accessoryOptionsForItem(item, index, items = currentDay()?.items || []) {
+  if (movementType(item) !== "accessory") return ACCESSORY_OPTIONS;
+  const group = accessoryContextForItem(items, index);
+  const options = ACCESSORY_GROUPS[group] || ACCESSORY_OPTIONS;
+  return [...new Set(options)];
+}
+
+function selectedAccessoryName(item, index, log, items) {
+  if (movementType(item) !== "accessory") return item.name;
+  const options = accessoryOptionsForItem(item, index, items);
+  const saved = log?.accessories?.[index];
+  if (saved && options.includes(saved)) return saved;
+  if (options.includes(item.name)) return item.name;
+  return options[0] || item.name;
+}
+
+function displayNameForRow(item, index, log, items) {
+  if (movementType(item) === "accessory") return localizeExerciseName(selectedAccessoryName(item, index, log, items));
   return displayName(item);
 }
 
-function accessorySelectHtml(item, index, log) {
-  const current = selectedAccessoryName(item, index, log);
-  const options = [...new Set([current, item.name, ...ACCESSORY_OPTIONS])].filter(Boolean);
+function accessorySelectHtml(item, index, log, items) {
+  const current = selectedAccessoryName(item, index, log, items);
+  const options = accessoryOptionsForItem(item, index, items).filter(Boolean);
   return `<select class="accessory-select" data-accessory="${index}" aria-label="${isEnglish() ? "Accessory exercise" : "辅助动作"}">
     ${options
       .map(
@@ -7984,6 +8417,48 @@ function allocatePhaseWeeks(totalWeeks) {
   ].filter((phase) => phase.weeks > 0);
 }
 
+function allocateSystemPhaseWeeks(totalWeeks, systemKey = state.survey.programSystem) {
+  const trainingWeeks = Math.max(3, totalWeeks - 1);
+  const ratios = {
+    sheiko: [0.5, 0.35, 0.15],
+    calgary: [0.25, 0.5, 0.25],
+    jts: [0.3, 0.45, 0.25],
+    rts: [0.25, 0.45, 0.3],
+    westside: [0.2, 0.55, 0.25],
+    gzcl: [0.4, 0.4, 0.2],
+    texas: [0.45, 0.4, 0.15],
+  }[systemKey] || [0.3, 0.45, 0.25];
+  let hypertrophy = Math.max(1, Math.round(trainingWeeks * ratios[0]));
+  let strength = Math.max(1, Math.round(trainingWeeks * ratios[1]));
+  let peaking = Math.max(1, trainingWeeks - hypertrophy - strength);
+  if (peaking < 1) {
+    peaking = 1;
+    strength = Math.max(1, trainingWeeks - hypertrophy - peaking);
+  }
+  return [
+    { key: "hypertrophy", name: systemKey === "sheiko" ? "技术容量期" : "增肌/容量期", weeks: hypertrophy, note: "建立可恢复训练量和稳定动作技术。" },
+    { key: "strength", name: "专项增力期", weeks: strength, note: "提高专项强度，保留足够练习频率。" },
+    { key: "peaking", name: "冲刺/测试准备期", weeks: peaking, note: "降低不必要疲劳，提高单次或低次数表现。" },
+  ].filter((phase) => phase.weeks > 0);
+}
+
+function recommendedDaysForSystem(systemKey = state.survey.programSystem) {
+  return PROGRAM_SYSTEMS[systemKey]?.defaultDays || 4;
+}
+
+function systemFrequencies(days, systemKey = state.survey.programSystem) {
+  const presets = {
+    sheiko: { squat: days >= 4 ? 2.5 : 2, bench: Math.min(days, days >= 5 ? 4 : 3), deadlift: days >= 4 ? 2 : 1.5 },
+    calgary: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
+    jts: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
+    rts: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
+    westside: { squat: 2, bench: 2, deadlift: days >= 4 ? 1.5 : 1 },
+    gzcl: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
+    texas: { squat: days >= 4 ? 2 : 1.5, bench: days >= 4 ? 2.5 : 2, deadlift: 1 },
+  };
+  return presets[systemKey] || presets.jts;
+}
+
 function averageGap(capacities, phase) {
   const gaps = Object.values(capacities).map((lift) => lift.phases[phase]?.gap || 0);
   return gaps.reduce((sum, value) => sum + value, 0) / gaps.length;
@@ -8097,34 +8572,58 @@ function dayIntensity(model, dayIndex) {
 }
 
 function makeWeeklyLayout(days, frequencies, model) {
-  const templates = {
-    3: [
-      ["深蹲主项", "卧推中等量"],
-      ["卧推主项", "硬拉主项"],
-      ["深蹲变式", "卧推轻变式"],
-    ],
-    4: [
-      ["深蹲主项", "卧推中等量"],
-      ["卧推主项", "硬拉变式"],
-      ["深蹲变式", "卧推轻变式"],
-      ["硬拉主项", "卧推辅助量"],
-    ],
-    5: [
-      ["深蹲主项", "卧推中等量"],
-      ["卧推主项", "硬拉变式"],
-      ["深蹲变式", "卧推轻变式"],
-      ["硬拉主项"],
-      ["卧推容量", "深蹲轻技术"],
-    ],
-    6: [
-      ["深蹲主项", "卧推中等量"],
-      ["卧推主项"],
-      ["硬拉主项", "深蹲轻技术"],
-      ["卧推轻变式"],
-      ["深蹲变式", "卧推容量"],
-      ["硬拉变式", "卧推辅助量"],
-    ],
+  const system = state.survey.programSystem || "jtsSstt";
+  const templatesBySystem = {
+    jtsSstt: {
+      3: [["上肢主项", "卧推容量"], ["下肢主项", "硬拉主项"], ["上肢变式", "轻技术"]],
+      4: [["上肢主项", "卧推容量"], ["下肢主项", "硬拉变式"], ["上肢变式", "卧推轻量"], ["下肢主项", "后链容量"]],
+      5: [["上肢主项"], ["下肢主项"], ["上肢变式"], ["下肢主项"], ["轻技术", "容量补足"]],
+      6: [["上肢主项"], ["下肢主项"], ["上肢容量"], ["下肢变式"], ["上肢轻技术"], ["下肢后链"]],
+    },
+    sheiko: {
+      3: [["深蹲技术量", "卧推技术量"], ["硬拉技术量", "卧推技术量"], ["深蹲技术量", "卧推技术量"]],
+      4: [["深蹲", "卧推"], ["硬拉", "卧推"], ["深蹲变式", "卧推"], ["硬拉变式", "卧推"]],
+      5: [["深蹲", "卧推"], ["硬拉技术"], ["卧推容量"], ["深蹲变式", "卧推"], ["硬拉变式"]],
+      6: [["深蹲技术"], ["卧推技术"], ["硬拉技术"], ["卧推容量"], ["深蹲变式"], ["硬拉变式"]],
+    },
+    calgary: {
+      3: [["深蹲强度", "卧推容量"], ["硬拉强度", "卧推变式"], ["深蹲变式", "卧推强度"]],
+      4: [["深蹲强度", "卧推容量"], ["硬拉变式", "卧推强度"], ["深蹲变式", "卧推容量"], ["硬拉强度", "背部容量"]],
+      5: [["深蹲强度"], ["卧推强度"], ["硬拉变式"], ["卧推容量"], ["深蹲变式", "硬拉强度"]],
+      6: [["深蹲强度"], ["卧推强度"], ["硬拉强度"], ["卧推容量"], ["深蹲变式"], ["硬拉变式"]],
+    },
+    jts: {
+      3: [["深蹲容量", "卧推容量"], ["硬拉容量", "卧推强度"], ["深蹲变式", "卧推变式"]],
+      4: [["深蹲容量", "卧推容量"], ["硬拉容量"], ["深蹲强度", "卧推变式"], ["硬拉强度", "卧推轻量"]],
+      5: [["深蹲容量"], ["卧推容量"], ["硬拉容量"], ["深蹲强度", "卧推轻量"], ["硬拉强度"]],
+      6: [["深蹲容量"], ["卧推容量"], ["硬拉容量"], ["深蹲强度"], ["卧推强度"], ["硬拉强度"]],
+    },
+    rts: {
+      3: [["主项 RPE 顶组", "卧推容量"], ["硬拉 RPE 顶组"], ["变式 e1RM 校准"]],
+      4: [["深蹲 RPE 顶组"], ["卧推 RPE 顶组"], ["硬拉 RPE 顶组"], ["变式容量", "弱项辅助"]],
+      5: [["深蹲 RPE"], ["卧推 RPE"], ["硬拉 RPE"], ["卧推容量"], ["变式校准"]],
+      6: [["深蹲 RPE"], ["卧推 RPE"], ["硬拉 RPE"], ["卧推容量"], ["深蹲变式"], ["硬拉变式"]],
+    },
+    westside: {
+      3: [["最大努力下肢"], ["最大努力上肢"], ["动态努力下肢", "动态努力上肢"]],
+      4: [["最大努力下肢"], ["最大努力上肢"], ["动态努力下肢"], ["动态努力上肢"]],
+      5: [["最大努力下肢"], ["最大努力上肢"], ["恢复/GPP"], ["动态努力下肢"], ["动态努力上肢"]],
+      6: [["最大努力下肢"], ["最大努力上肢"], ["GPP"], ["动态努力下肢"], ["动态努力上肢"], ["弱项辅助"]],
+    },
+    gzcl: {
+      3: [["T1 深蹲", "T2 卧推"], ["T1 卧推", "T2 硬拉"], ["T1 硬拉", "T2 深蹲"]],
+      4: [["T1 深蹲"], ["T1 卧推"], ["T1 硬拉"], ["T2/T3 容量"]],
+      5: [["T1 深蹲"], ["T1 卧推"], ["T1 硬拉"], ["T2 深蹲/卧推"], ["T3 容量"]],
+      6: [["T1 深蹲"], ["T1 卧推"], ["T1 硬拉"], ["T2 深蹲"], ["T2 卧推"], ["T2 硬拉"]],
+    },
+    texas: {
+      3: [["容量日"], ["恢复日"], ["强度日"]],
+      4: [["容量日上肢"], ["容量日下肢"], ["恢复日"], ["强度日"]],
+      5: [["容量日下肢"], ["容量日上肢"], ["恢复日"], ["强度日上肢"], ["强度日下肢"]],
+      6: [["容量日下肢"], ["容量日上肢"], ["恢复日下肢"], ["恢复日上肢"], ["强度日下肢"], ["强度日上肢"]],
+    },
   };
+  const templates = templatesBySystem[system] || templatesBySystem.jtsSstt;
   return templates[days].map((items, index) => ({
     day: `D${index + 1}`,
     intensity: dayIntensity(model, index),
@@ -8138,10 +8637,30 @@ function makeWeeklyLayout(days, frequencies, model) {
 function makePlanner() {
   const capacities = makeCapacities();
   const totalWeeks = weeksUntilMeet();
+  const systemKey = state.survey.programSystem || "jtsSstt";
+  if (systemKey !== "jtsSstt") {
+    const recommendedDays = recommendedDaysForSystem(systemKey);
+    const requestedDays = state.survey.trainingDays === "auto" ? recommendedDays : Number(state.survey.trainingDays);
+    const days = clamp(requestedDays || recommendedDays, 3, 6);
+    const phases = systemKey === "jts" ? allocatePhaseWeeks(totalWeeks) : allocateSystemPhaseWeeks(totalWeeks, systemKey);
+    const frequencies = systemKey === "jts" ? makeFrequencies(capacities).frequencies : systemFrequencies(days, systemKey);
+    const weeklyLayout = makeWeeklyLayout(days, frequencies, systemKey === "jts" ? "linear" : systemKey);
+    return {
+      capacities,
+      totalWeeks,
+      phases,
+      frequencies,
+      days,
+      recommendedDays,
+      weeklyLayout,
+      systemKey,
+      usesJtsVolume: systemKey === "jts",
+    };
+  }
   const phases = allocatePhaseWeeks(totalWeeks);
   const { days, recommendedDays, frequencies } = makeFrequencies(capacities);
   const weeklyLayout = makeWeeklyLayout(days, frequencies, modelForPhase("strength"));
-  return { capacities, totalWeeks, phases, frequencies, days, recommendedDays, weeklyLayout };
+  return { capacities, totalWeeks, phases, frequencies, days, recommendedDays, weeklyLayout, systemKey, usesJtsVolume: true };
 }
 
 function phaseForWeek(weekNumber, phases) {
@@ -8259,6 +8778,7 @@ function bindProfile() {
 
   bindFields(
     [
+      ["programSystemInput", "programSystem"],
       ["templateModeInput", "templateMode"],
       ["meetDateInput", "meetDate"],
       ["sexInput", "sex"],
@@ -8284,9 +8804,10 @@ function bindProfile() {
 function renderWeeks() {
   const plannerActive = state.view === "planner" ? "active" : "";
   const plan = makePlanner();
+  const navPill = plan.systemKey === "jtsSstt" ? "MEV/MRV" : currentProgramSystem().short;
   $("weekNav").innerHTML =
     `<button class="week-button ${plannerActive}" type="button" data-planner="true">
-      <span>计划生成器</span><span class="phase-pill">MEV/MRV</span>
+      <span>计划生成器</span><span class="phase-pill">${escapeHtml(navPill)}</span>
     </button>` +
     planWeeks(plan)
       .map((week, index) => {
@@ -8343,19 +8864,28 @@ function renderTestPrToggle() {
 
 function phaseRailHtml(plan, activeWeek) {
   const activeStatus = weekStatusFor(activeWeek - 1, plan);
-  const phaseKeys = plan.phases.map((phase) => phase.key).concat("test");
-  const uniqueKeys = [...new Set(phaseKeys)];
-  return uniqueKeys
+  const visibleKeys = ["hypertrophy", "strength", "peaking"].filter((key) =>
+    plan.phases.some((phase) => phase.key === key)
+  );
+  return visibleKeys
     .map((key) => {
       const active = activeStatus.phase?.key === key ? "active" : "";
-      const test = key === "test" ? "test" : "";
-      return `<span class="rail-step ${active} ${test}">${planPhaseLabel(key)}</span>`;
+      return `<span class="rail-step ${active}">${planPhaseLabel(key)}</span>`;
     })
     .join("");
 }
 
+function phaseProgressSummary(status) {
+  const key = status.phase?.key;
+  if (["hypertrophy", "strength", "peaking"].includes(key)) {
+    return `${planPhaseLabel(key)} · ${status.progress}`;
+  }
+  return "按当前周训练表执行";
+}
+
 function renderMeetPrepStrips() {
   const plan = makePlanner();
+  const system = currentProgramSystem();
   const plannerWeek = 1;
   const workoutWeek = Math.min(state.weekIndex + 1, plan.totalWeeks);
   const blocks = [
@@ -8379,14 +8909,14 @@ function renderMeetPrepStrips() {
       : "";
     target.innerHTML = `
       <div class="meet-prep-block">
-        <span>Meet Prep</span>
+        <span>${escapeHtml(system.short)}</span>
         <strong>${headline}</strong>
         <small>${meetDateText(plan)} · ${subline}</small>
       </div>
       <div class="meet-prep-block">
         <span>阶段进度</span>
         <div class="phase-rail">${phaseRailHtml(plan, activeWeek)}</div>
-        <small>${planPhaseLabel(status.phase?.key)} · ${status.progress}</small>
+        <small>${phaseProgressSummary(status)}</small>
       </div>
       ${openerBlock}
     `;
@@ -8394,11 +8924,73 @@ function renderMeetPrepStrips() {
   });
 }
 
+function renderSystemPlanner(plan) {
+  const system = currentProgramSystem();
+  $("plannerSummary").innerHTML = `
+    <article class="summary-card"><span>训练体系</span><strong>${escapeHtml(system.short)}</strong></article>
+    <article class="summary-card"><span>周期长度</span><strong>${plan.totalWeeks} 周</strong></article>
+    <article class="summary-card"><span>每周训练</span><strong>${plan.days} 天</strong><small>推荐 ${plan.recommendedDays} 天</small></article>
+    <article class="summary-card"><span>三项频率</span><strong>蹲${plan.frequencies.squat} / 推${plan.frequencies.bench} / 拉${plan.frequencies.deadlift}</strong></article>
+  `;
+  $("capacityCards").innerHTML = `
+    <article class="capacity-card"><h4>${escapeHtml(system.short)}</h4><div><span>容量逻辑</span><strong>体系内置</strong></div><div><span>问卷</span><strong>核心参数</strong></div></article>
+    <article class="capacity-card"><h4>强度逻辑</h4><div><span>主项</span><strong>按 RPE 估重</strong></div><div><span>辅助</span><strong>按当天类型筛选</strong></div></article>
+    <article class="capacity-card"><h4>测试周</h4><div><span>最后一周</span><strong>保留</strong></div><div><span>开把</span><strong>${wantsOpenerPanel() ? "启用" : "可选"}</strong></div></article>
+  `;
+  $("phasePlan").innerHTML = plan.phases
+    .filter((phase) => ["hypertrophy", "strength", "peaking"].includes(phase.key))
+    .map((phase) => `<div class="phase-row"><strong>${phase.name}</strong><span><mark>${phase.weeks} 周</mark> ${phase.note}</span></div>`)
+    .join("");
+  const liftNames = { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
+  const frequencyRows = Object.entries(plan.frequencies)
+    .map(([lift, freq]) => `<div class="phase-row"><strong>${liftNames[lift]}</strong><span>每周约 <mark>${freq} 次</mark>，按 ${escapeHtml(system.short)} 周结构分配。</span></div>`)
+    .join("");
+  const layoutRows = plan.weeklyLayout
+    .map((day) => `<div class="phase-row"><strong>${day.day}</strong><span>${day.items.join(" + ")}。${day.note}</span></div>`)
+    .join("");
+  $("frequencyPlan").innerHTML =
+    `<div class="phase-row"><strong>每周天数</strong><span>当前 <mark>${plan.days} 天/周</mark>，该体系推荐 ${plan.recommendedDays} 天/周。切换 3-6 天会重新生成每日内容。</span></div>` +
+    frequencyRows +
+    `<div class="phase-row"><strong>周模板</strong><span>${escapeHtml(system.short)} 下的 ${plan.days} 天安排如下。</span></div>` +
+    layoutRows;
+  const reasons = [
+    `${system.short} 不套用 JTS × SSTT 的线性/交替/低中高模型，使用自己的周结构。`,
+    "非 JTS × SSTT 体系不显示睡眠、压力、历史恢复等 MEV/MRV 问卷；这些字段只服务于 JTS 容量计算。",
+    `当前变式动作池已按 ${system.short} 切换，卧推、深蹲、硬拉变式会影响训练表中的变式日。`,
+    "辅助项下拉会根据最近的主项/变式判断上肢或下肢，不会在上肢日混入腿部辅助。",
+    "所有主项重量仍按你的三项 PR、次数和 RPE 自动估算；辅助项默认不绑定三项 PR。",
+  ];
+  $("reasonList").innerHTML = reasons.map((reason) => `<li>${reason}</li>`).join("");
+
+  let week = 1;
+  $("planLayout").innerHTML = plan.phases
+    .flatMap((phase) =>
+      Array.from({ length: phase.weeks }, (_, index) => ({
+        week: week++,
+        phase,
+        local: index + 1,
+        status: phaseProgress(phase, index + 1, plan.capacities),
+      }))
+    )
+    .map((row) => `<div class="layout-row">
+      <span>W${row.week}</span>
+      <strong>${row.phase.name}</strong>
+      <span>${escapeHtml(system.short)}</span>
+      <span>${row.status}</span>
+      <mark>${plan.weeklyLayout.map((day) => day.items[0]).join(" / ")}</mark>
+    </div>`)
+    .join("");
+}
+
 function renderPlanner() {
   const plan = makePlanner();
   $("planLengthLabel").textContent = state.survey.meetDate
     ? `当前按比赛日期倒推 ${plan.totalWeeks} 周；超过 15 周时按实际比赛周数排。`
     : `未填写比赛日期：默认生成 ${DEFAULT_PLAN_WEEKS} 周。`;
+  if (plan.systemKey !== "jtsSstt") {
+    renderSystemPlanner(plan);
+    return;
+  }
   $("plannerSummary").innerHTML = `
     <article class="summary-card"><span>周期长度</span><strong>${plan.totalWeeks} 周</strong></article>
     <article class="summary-card"><span>推荐模型</span><strong>${modelLabel(modelForPhase("strength"))}</strong></article>
@@ -8417,6 +9009,7 @@ function renderPlanner() {
     .join("");
 
   $("phasePlan").innerHTML = plan.phases
+    .filter((phase) => ["hypertrophy", "strength", "peaking"].includes(phase.key))
     .map((phase) => `<div class="phase-row"><strong>${phase.name}</strong><span><mark>${phase.weeks} 周</mark> ${phaseWeekText(phase, plan.capacities).replace(`${phase.weeks} 周：`, "")}</span></div>`)
     .join("");
 
@@ -8548,9 +9141,18 @@ function renderAmrapHint(day) {
     : `<strong>AMRAP：</strong>在计划 RPE 和动作质量允许的范围内尽可能多做；不是动作变形后硬顶，也不要超过当天目标强度。`;
 }
 
+function splitTextForPlan(plan) {
+  const days = Array.from({ length: plan.days }, (_, index) => `D${index + 1}`);
+  if (plan.days === 3) return `${days[0]} - REST - ${days[1]} - REST - ${days[2]} - REST - REST`;
+  if (plan.days === 4) return `${days[0]} - REST - ${days[1]} - REST - ${days[2]} - ${days[3]} - REST`;
+  if (plan.days === 5) return `${days[0]} - ${days[1]} - REST - ${days[2]} - ${days[3]} - ${days[4]} - REST`;
+  return `${days[0]} - ${days[1]} - ${days[2]} - REST - ${days[3]} - ${days[4]} - ${days[5]}`;
+}
+
 function renderOpenerTitle() {
   const plan = makePlanner();
   $("openerPanel")?.classList.toggle("hidden", !wantsOpenerPanel());
+  if ($("openerKicker")) $("openerKicker").textContent = currentProgramSystem().short;
   $("openerWeekTitle").textContent = `第 ${plan.totalWeeks} 周开把`;
   $("openerWeekHelp").textContent = `用于第 ${plan.totalWeeks} 周比赛/测试的 D1/D2/D3 和测试日推荐重量`;
   renderTestPrToggle();
@@ -8643,7 +9245,7 @@ function renderExercises() {
       const estimate = estimatedLoadWithContext(item, index, day.items);
       const type = movementType(item);
       const editableNote = noteForItem(day.items, index, log);
-      const rowName = displayNameForRow(item, index, log);
+      const rowName = displayNameForRow(item, index, log, day.items);
       if (isBackdownRow(item)) {
         const generated = generatedBackdownRows(item, index, log, day.items);
         const controlRow = `
@@ -8681,7 +9283,7 @@ function renderExercises() {
           <td>
             ${
               type === "accessory"
-                ? accessorySelectHtml(item, index, log)
+                ? accessorySelectHtml(item, index, log, day.items)
                 : `<div class="exercise-name">${escapeHtml(rowName)}</div>`
             }
             <span class="kind ${type}">${escapeHtml(labelForKind(type))}</span>
@@ -8758,7 +9360,7 @@ function renderWorkout() {
 
   $("phaseLabel").textContent = planPhaseLabel(planPhase?.key);
   $("weekTitle").textContent = `${week.label} · ${planPhaseLabel(planPhase?.key)}`;
-  $("splitLabel").textContent = data.split;
+  $("splitLabel").textContent = splitTextForPlan(plan);
   $("dayTitle").textContent = day.day;
   $("dayMeta").textContent = "建议强度、可编辑备注和降重组记录";
 
@@ -8777,6 +9379,7 @@ function render() {
     return;
   }
   populateVariantOptions();
+  renderSystemChrome();
   renderProgramIntro();
   const plan = makePlanner();
   if (state.weekIndex >= plan.totalWeeks) {
@@ -8846,7 +9449,7 @@ function pdfPlanWeeks() {
         }
 
         rows.push([
-          displayNameForRow(item, itemIndex, log),
+          displayNameForRow(item, itemIndex, log, day.items),
           item.sets || "-",
           item.reps || "-",
           item.rpe || "-",
