@@ -7028,16 +7028,16 @@ const VARIANT_OPTIONS_BY_SYSTEM = {
 
 const PROGRAM_SYSTEMS = {
   jtsSstt: {
-    short: "JTS × SSTT",
+    short: "自定义周期",
     brandTitle: "力量周期",
     defaultDays: 4,
     usesJtsSurvey: true,
-    zhTitle: "JTS × SSTT 15 周混合",
-    enTitle: "JTS × SSTT 15-Week Hybrid",
+    zhTitle: "自定义力量周期训练体系",
+    enTitle: "Custom Strength Cycle System",
     zhText:
-      "当前可完整生成训练表。以 JTS 容量管理为主线，结合 SSTT 15 周范本的 RPE、百分比估重、变式、降重组和测试周结构。",
+      "当前可完整生成训练表。支持容量管理、RPE、百分比估重、变式、降重组、测试周和 PDF 导出。",
     enText:
-      "Fully available. It combines JTS-style volume management with the SSTT 15-week template: RPE, percentage estimates, variants, backdown sets, and test-week structure.",
+      "Fully available. Supports volume management, RPE, percentage estimates, variants, backdown sets, test-week structure, and PDF export.",
     status: "active",
   },
   sheiko: {
@@ -7069,7 +7069,7 @@ const PROGRAM_SYSTEMS = {
     usesJtsSurvey: true,
     zhTitle: "JTS 容量管理",
     enTitle: "JTS Volume Management",
-    zhText: "强调 MEV/MRV、阶段分配、频率和恢复能力匹配。当前已通过 JTS × SSTT 混合模板落地。",
+    zhText: "强调 MEV/MRV、阶段分配、频率和恢复能力匹配，适合希望按容量逻辑安排周期的人。",
     enText: "MEV/MRV, phase allocation, frequency, and recovery matching with a JTS-style base layout.",
     status: "active",
   },
@@ -7310,13 +7310,13 @@ function renderSystemChrome() {
   const usesJts = Boolean(system.usesJtsSurvey);
   document.body.dataset.system = state.survey.programSystem || "jtsSstt";
   const brandTitle = system.brandTitle || system.short;
-  const brandSub = state.survey.programSystem === "jtsSstt" ? "JTS 思路 · SSTT 15 周范本" : `${system.short} 基础周期模板`;
+  const brandSub = state.survey.programSystem === "jtsSstt" ? "计划生成 · 训练记录 · PDF 导出" : `${system.short} 基础周期模板`;
   $("sidebarBrandTitle").textContent = brandTitle;
   $("sidebarBrandSub").textContent = brandSub;
-  $("plannerEyebrow").textContent = `${system.short} 力量周期训练体系`;
+  $("plannerEyebrow").textContent = state.survey.programSystem === "jtsSstt" ? "自定义力量周期训练体系" : `${system.short} 力量周期训练体系`;
   $("plannerTitle").textContent = `${brandTitle} 计划生成器`;
   $("plannerSubtitle").textContent = usesJts
-    ? "先确定比赛日期、基础信息、MEV/MRV、阶段长度和三大项频率，再进入训练周表。"
+    ? "先填写基础信息、周期目标和训练天数，再生成训练周表。"
     : "先选择体系、比赛或测试日期、训练天数和基础水平，再生成对应风格的训练周表。";
   document.querySelectorAll(".jts-only").forEach((node) => node.classList.toggle("hidden", !usesJts));
   document.querySelectorAll(".jts-sstt-only").forEach((node) =>
@@ -7349,7 +7349,7 @@ function renderSystemChrome() {
         <div class="system-mini-grid">
           <article><span>问卷</span><strong>核心参数</strong><p>该体系只使用比赛/测试日期、训练经验、每周训练天数和三项 PR，不套用 JTS 睡眠、压力、MEV/MRV 问卷。</p></article>
           <article><span>变式</span><strong>按体系切换</strong><p>卧推、深蹲、硬拉变式会随体系切换，训练表按该体系的主项顺序生成。</p></article>
-          <article><span>模型</span><strong>${escapeHtml(system.short)}</strong><p>线性、交替、低中高模型只用于 JTS × SSTT；当前体系使用自身周结构。</p></article>
+          <article><span>模型</span><strong>${escapeHtml(system.short)}</strong><p>线性、交替、低中高模型只用于自定义周期；当前体系使用自身周结构。</p></article>
         </div>
       `;
     }
@@ -7364,10 +7364,10 @@ function renderProgramIntro() {
   const statusLabel = usesJts ? "MEV/MRV" : "体系模板";
   const statusNote = isEnglish()
     ? usesJts
-      ? "Uses the JTS questionnaire, MEV/MRV, frequency logic, deloads, peaking, and SSTT-style backdown/test-week structure."
+      ? "Uses the built-in volume questionnaire, frequency logic, deloads, peaking, and backdown/test-week structure."
       : "Uses this system's own weekly structure and simplified progression. JTS questionnaire fields are hidden for this system."
     : usesJts
-      ? "使用 JTS 问卷、MEV/MRV、频率逻辑、减载、冲刺和 SSTT 风格的降重/测试周结构。"
+      ? "使用内置容量问卷、频率逻辑、减载、冲刺和降重/测试周结构。"
       : "使用该体系自己的周结构和简化进展逻辑；JTS 的睡眠、压力、MEV/MRV 问卷不会套用到这个体系。";
   target.innerHTML = `
     <div class="program-card active">
@@ -8954,8 +8954,8 @@ function renderSystemPlanner(plan) {
     `<div class="phase-row"><strong>周模板</strong><span>${escapeHtml(system.short)} 下的 ${plan.days} 天安排如下。</span></div>` +
     layoutRows;
   const reasons = [
-    `${system.short} 不套用 JTS × SSTT 的线性/交替/低中高模型，使用自己的周结构。`,
-    "非 JTS × SSTT 体系不显示睡眠、压力、历史恢复等 MEV/MRV 问卷；这些字段只服务于 JTS 容量计算。",
+    `${system.short} 不套用自定义周期的线性/交替/低中高模型，使用自己的周结构。`,
+    "非自定义周期体系不显示睡眠、压力、历史恢复等容量问卷；这些字段只服务于自定义周期容量计算。",
     `当前变式动作池已按 ${system.short} 切换，卧推、深蹲、硬拉变式会影响训练表中的变式日。`,
     "辅助项下拉会根据最近的主项/变式判断上肢或下肢，不会在上肢日混入腿部辅助。",
     "所有主项重量仍按你的三项 PR、次数和 RPE 自动估算；辅助项默认不绑定三项 PR。",
@@ -9088,11 +9088,10 @@ function renderTabs() {
   $("dayTabs").innerHTML = week.days
     .map((day, index) => {
       const active = index === state.dayIndex ? "active" : "";
-      const doneCount = state.logs[logKey(state.weekIndex, index)]?.done?.filter(Boolean).length || 0;
       return `
         <button class="day-tab ${active}" type="button" data-day="${index}">
           <strong>${day.day}</strong><br />
-          <span>${doneCount}/${day.items.length} 项</span>
+          <span>${day.items.length} 项</span>
         </button>
       `;
     })
@@ -9108,7 +9107,6 @@ function renderTabs() {
 }
 
 function renderMetrics() {
-  $("completeMetric").textContent = `${completionForWeek(state.weekIndex)}%`;
   const rpeTarget = $("rpeReference");
   if (rpeTarget) {
     const items = [
@@ -9241,7 +9239,6 @@ function renderExercises() {
   const log = currentLog();
   $("exerciseRows").innerHTML = day.items
     .flatMap((item, index) => {
-      const checked = log.done[index] ? "checked" : "";
       const estimate = estimatedLoadWithContext(item, index, day.items);
       const type = movementType(item);
       const editableNote = noteForItem(day.items, index, log);
@@ -9250,7 +9247,6 @@ function renderExercises() {
         const generated = generatedBackdownRows(item, index, log, day.items);
         const controlRow = `
           <tr class="generated-row control-row">
-            <td></td>
             <td colspan="6">
               <strong>${escapeHtml(displayName(item))} ${isEnglish() ? "Backdown Sets" : "降重组"}</strong>
               <span>${isEnglish() ? "Enter the backdown sets already completed at the current load, for example 2 or 2x4. Remaining sets are generated at a lower load." : "填写已经按当前降重重量完成的组数，例如 2 或 2x4；下面会列出已完成组和再降重后的剩余组。"}</span>
@@ -9263,7 +9259,6 @@ function renderExercises() {
         `;
         const rows = generated.map((row, rowIndex) => `
           <tr class="generated-backdown">
-            <td></td>
             <td>
               <div class="exercise-name">${escapeHtml(displayName(item))} · ${escapeHtml(localizeBackdownStatus(row.status))} ${row.sets} ${isEnglish() ? "sets" : "组"}</div>
               <span class="kind auto">${escapeHtml(localizeKind("auto"))}</span>
@@ -9279,7 +9274,6 @@ function renderExercises() {
       }
       const rows = [`
         <tr>
-          <td><input class="checkbox" type="checkbox" data-item="${index}" ${checked} /></td>
           <td>
             ${
               type === "accessory"
@@ -9297,7 +9291,6 @@ function renderExercises() {
       `];
       const expandedRows = expandedSetRows(item).map((row, rowIndex) => `
         <tr class="generated-backdown">
-          <td></td>
           <td>
             <div class="exercise-name">${escapeHtml(displayName(item))} · ${escapeHtml(row.label)}</div>
             <span class="kind auto">${escapeHtml(localizeKind("auto"))}</span>
@@ -9314,15 +9307,6 @@ function renderExercises() {
     })
     .join("");
 
-  document.querySelectorAll("[data-item]").forEach((checkbox) => {
-    checkbox.addEventListener("change", () => {
-      const index = Number(checkbox.dataset.item);
-      currentLog().done[index] = checkbox.checked;
-      saveState();
-      renderMetrics();
-      renderTabs();
-    });
-  });
   document.querySelectorAll("[data-note]").forEach((note) => {
     note.addEventListener("input", () => {
       currentLog().itemNotes[note.dataset.note] = note.value;
