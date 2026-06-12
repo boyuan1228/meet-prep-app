@@ -6,22 +6,25 @@
     <title>力量周期计划生成器</title>
     <link rel="stylesheet" href="./styles.css" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260612-2"></script>
+    <script defer src="./app.js?v=20260612-3"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <img class="brand-logo" src="./assets/power-logo.png" alt="力量周期训练体系" />
+          <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="力量周期训练体系" />
           <div>
-            <p class="eyebrow">JTS × SSTT 力量周期训练体系</p>
+            <p class="eyebrow">自定义力量周期训练体系</p>
             <h1>力量周期计划生成器</h1>
           </div>
         </div>
+        <figure class="activation-hero">
+          <img src="./assets/welcome-power.jpg" alt="力量周期训练体系欢迎图" />
+        </figure>
         <div class="activation-copy activation-disclaimer">
-          <p><strong>注意事项</strong> 本工具会根据你填写的基础数据、MEV/MRV、频率和比赛日期生成训练建议，实际训练仍需要按当天状态微调。</p>
-          <p><strong>适合人群</strong> 适合已经掌握深蹲、卧推、硬拉基础动作，并希望按周期安排增肌、增力、冲刺和测试周的训练者。</p>
-          <p><strong>风险声明</strong> 本计划不替代医疗、康复或现场教练评估；如出现疼痛、动作变形、异常疲劳或恢复明显下降，应下调重量、减少组数或暂停训练。</p>
+          <p><strong>注意事项</strong> 建议重量和容量会随输入自动变化，实际训练按当天状态微调。</p>
+          <p><strong>适合人群</strong> 适合已掌握深蹲、卧推、硬拉基础动作，并希望按周期训练的人。</p>
+          <p><strong>风险声明</strong> 本工具不替代医疗、康复或现场教练；疼痛、动作变形或异常疲劳时请下调或暂停。</p>
         </div>
         <label>
           激活码
@@ -32,21 +35,33 @@
           激活并进入
         </button>
         <p id="activationMessage" class="activation-message" role="status"></p>
-        <div class="activation-notes">
-          <span>JTS 容量逻辑：MEV/MRV、频率、减载、冲刺</span>
-          <span>SSTT 15 周范本：RPE 与百分比估重、测试周安排</span>
-          <span>支持变式动作、降重组、训练记录和 PDF 导出</span>
-        </div>
+        <section class="activation-updates" aria-label="更新日志">
+          <div class="update-head">
+            <span>最新日志</span>
+            <a href="#historyLog">历史日志</a>
+          </div>
+          <strong>2026-06-12 · 手机端训练页优化</strong>
+          <ul>
+            <li>去掉完成百分比和每行动作勾选，训练行更紧凑。</li>
+            <li>修复 RPE 参考、阶段进度和 Week 滑动在手机端溢出的问题。</li>
+            <li>新增体系切换、辅助项分组筛选和欢迎页轻量图片。</li>
+          </ul>
+          <details id="historyLog">
+            <summary>查看历史日志</summary>
+            <p>2026-06-12：加入 Sheiko、Calgary、RTS、Westside、GZCL、Texas 基础模板。</p>
+            <p>2026-06-11：加入 PDF 导出、开把设置、RPE/e1RM 估重和降重组拆分。</p>
+          </details>
+        </section>
       </div>
     </section>
 
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <img class="brand-logo sidebar-logo" src="./assets/power-logo.png" alt="力量周期训练体系" />
+          <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="力量周期训练体系" />
           <div>
             <h1 id="sidebarBrandTitle">力量周期</h1>
-            <p id="sidebarBrandSub">JTS 思路 · SSTT 15 周范本</p>
+            <p id="sidebarBrandSub">计划生成 · 训练记录 · PDF 导出</p>
           </div>
         </div>
 
@@ -164,9 +179,9 @@
         <section id="plannerView" class="planner-view">
           <header class="topbar">
             <div>
-              <p class="eyebrow" id="plannerEyebrow">JTS × SSTT 力量周期训练体系</p>
+              <p class="eyebrow" id="plannerEyebrow">自定义力量周期训练体系</p>
               <h2 id="plannerTitle">力量周期计划生成器</h2>
-              <p id="plannerSubtitle">先确定比赛日期、基础信息、MEV/MRV、阶段长度和三大项频率，再进入训练周表。</p>
+              <p id="plannerSubtitle">先填写基础信息、周期目标和训练天数，再生成训练周表。</p>
             </div>
             <div class="top-actions">
               <button id="goWeekButton" class="secondary-button" type="button">
@@ -177,7 +192,7 @@
             </div>
           </header>
           <section class="hero-banner" aria-label="训练体系视觉横幅">
-            <img src="./assets/header-power.png" alt="力量周期训练体系横幅" />
+            <img src="./assets/welcome-power.jpg" alt="力量周期训练体系横幅" />
           </section>
           <section id="plannerMeetPrepStrip" class="meet-prep-strip" aria-label="周期状态"></section>
 
@@ -207,7 +222,7 @@
                   <label>
                     训练体系
                     <select id="programSystemInput">
-                      <option value="jtsSstt">JTS × SSTT 15 周混合</option>
+                      <option value="jtsSstt">自定义力量周期训练体系</option>
                       <option value="sheiko">Sheiko</option>
                       <option value="calgary">Calgary</option>
                       <option value="jts">JTS</option>
@@ -416,15 +431,11 @@
             </div>
           </header>
           <section class="hero-banner compact" aria-label="训练体系视觉横幅">
-            <img src="./assets/header-power.png" alt="力量周期训练体系横幅" />
+            <img src="./assets/welcome-power.jpg" alt="力量周期训练体系横幅" />
           </section>
           <section id="workoutMeetPrepStrip" class="meet-prep-strip compact" aria-label="周期状态"></section>
 
           <section class="summary-grid">
-            <div class="metric">
-              <span>已完成</span>
-              <strong id="completeMetric">0%</strong>
-            </div>
             <div class="metric rpe-reference" id="rpeReference"></div>
           </section>
 
@@ -448,7 +459,6 @@
                 <table>
                   <thead>
                     <tr>
-                      <th>完成</th>
                       <th>动作</th>
                       <th>组</th>
                       <th>次数</th>
