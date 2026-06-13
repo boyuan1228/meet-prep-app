@@ -7254,6 +7254,173 @@ function programText(system = currentProgramSystem()) {
   return isEnglish() ? system.enText : system.zhText;
 }
 
+function systemDisplayTitle(system = currentProgramSystem()) {
+  if (isEnglish()) return programTitle(system);
+  return system.brandTitle || system.zhTitle || system.short;
+}
+
+function systemDisplayShort(system = currentProgramSystem()) {
+  if (isEnglish() && (state.survey.programSystem || "jtsSstt") === "jtsSstt") return "JTS × SSTT 15-Week";
+  return system.short;
+}
+
+function weeksText(count) {
+  return isEnglish() ? `${count} ${count === 1 ? "week" : "weeks"}` : `${count} 周`;
+}
+
+function daysText(count) {
+  return isEnglish() ? `${count} ${count === 1 ? "day" : "days"}/week` : `${count} 天/周`;
+}
+
+function liftText(lift, compact = false) {
+  const en = compact
+    ? { squat: "Sq", bench: "Bench", deadlift: "Dead" }
+    : { squat: "Squat", bench: "Bench", deadlift: "Deadlift" };
+  const zh = compact
+    ? { squat: "蹲", bench: "推", deadlift: "拉" }
+    : { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
+  return (isEnglish() ? en : zh)[lift] || lift;
+}
+
+function phaseProgressText(status) {
+  const key = status.phase?.key;
+  if (status.progress === "比赛/测试") return isEnglish() ? "Meet / test" : "比赛/测试";
+  if (status.progress === "恢复/桥接") return isEnglish() ? "Recovery / bridge" : "恢复/桥接";
+  if (status.progress === "减载周") return isEnglish() ? "Deload week" : "减载周";
+  const overloadMatch = String(status.progress || "").match(/(\d+)\/(\d+)/);
+  if (overloadMatch) {
+    return isEnglish() ? `Overload ${overloadMatch[1]}/${overloadMatch[2]}` : status.progress;
+  }
+  return isEnglish() ? planPhaseLabel(key) : status.progress;
+}
+
+function systemShortText(system = currentProgramSystem()) {
+  return (state.survey.programSystem || "jtsSstt") === "jtsSstt" && isEnglish()
+    ? "JTS × SSTT 15-Week"
+    : system.short;
+}
+
+function localizePlanText(text) {
+  const raw = String(text || "");
+  if (!isEnglish()) return raw;
+  const exact = {
+    "过渡期": "Transition",
+    "增肌期": "Hypertrophy",
+    "增力期": "Strength",
+    "冲刺期": "Peaking",
+    "桥接期": "Bridge",
+    "测试周": "Test Week",
+    "技术容量期": "Skill Volume",
+    "增肌/容量期": "Hypertrophy / Volume",
+    "专项增力期": "Specific Strength",
+    "超负荷": "Overload",
+    "减载": "Deload",
+    "测试": "Test",
+    "重": "Heavy",
+    "轻": "Light",
+    "中": "Medium",
+    "高": "High",
+    "低": "Low",
+    "线性": "Linear",
+    "上肢主项": "Upper main work",
+    "卧推容量": "Bench volume",
+    "下肢主项": "Lower main work",
+    "硬拉主项": "Deadlift main work",
+    "上肢变式": "Upper variation",
+    "轻技术": "Light technique",
+    "硬拉变式": "Deadlift variation",
+    "卧推轻量": "Light bench",
+    "后链容量": "Posterior-chain volume",
+    "上肢容量": "Upper volume",
+    "下肢变式": "Lower variation",
+    "上肢轻技术": "Upper light technique",
+    "下肢后链": "Lower posterior chain",
+    "容量补足": "Volume fill",
+    "深蹲": "Squat",
+    "卧推": "Bench",
+    "硬拉": "Deadlift",
+    "深蹲技术量": "Squat skill volume",
+    "卧推技术量": "Bench skill volume",
+    "硬拉技术量": "Deadlift skill volume",
+    "硬拉技术": "Deadlift technique",
+    "卧推强度": "Bench intensity",
+    "深蹲强度": "Squat intensity",
+    "硬拉强度": "Deadlift intensity",
+    "深蹲变式": "Squat variation",
+    "卧推变式": "Bench variation",
+    "背部容量": "Back volume",
+    "深蹲容量": "Squat volume",
+    "硬拉容量": "Deadlift volume",
+    "主项 RPE 顶组": "Main-lift RPE top set",
+    "硬拉 RPE 顶组": "Deadlift RPE top set",
+    "变式 e1RM 校准": "Variation e1RM calibration",
+    "深蹲 RPE 顶组": "Squat RPE top set",
+    "卧推 RPE 顶组": "Bench RPE top set",
+    "变式容量": "Variation volume",
+    "弱项辅助": "Weak-point accessories",
+    "深蹲 RPE": "Squat RPE",
+    "卧推 RPE": "Bench RPE",
+    "硬拉 RPE": "Deadlift RPE",
+    "变式校准": "Variation calibration",
+    "最大努力下肢": "Max-effort lower",
+    "最大努力上肢": "Max-effort upper",
+    "动态努力下肢": "Dynamic-effort lower",
+    "动态努力上肢": "Dynamic-effort upper",
+    "恢复/GPP": "Recovery / GPP",
+    "GPP": "GPP",
+    "T1 深蹲": "T1 squat",
+    "T1 卧推": "T1 bench",
+    "T1 硬拉": "T1 deadlift",
+    "T2 深蹲": "T2 squat",
+    "T2 卧推": "T2 bench",
+    "T2 硬拉": "T2 deadlift",
+    "T2/T3 容量": "T2/T3 volume",
+    "T2 深蹲/卧推": "T2 squat/bench",
+    "T3 容量": "T3 volume",
+    "容量日": "Volume day",
+    "恢复日": "Recovery day",
+    "强度日": "Intensity day",
+    "容量日上肢": "Upper volume day",
+    "容量日下肢": "Lower volume day",
+    "恢复日下肢": "Lower recovery day",
+    "恢复日上肢": "Upper recovery day",
+    "强度日下肢": "Lower intensity day",
+    "强度日上肢": "Upper intensity day",
+    "建立可恢复训练量和稳定动作技术。": "Build recoverable training volume and stable movement skill.",
+    "提高专项强度，保留足够练习频率。": "Raise specific intensity while keeping enough practice frequency.",
+    "从当前训练过渡到计划起点，保留技术练习，降低疲劳。": "Transition into the plan while keeping technique practice and lowering fatigue.",
+    "用较高容量建立肌肉量与技术容量。": "Build muscle mass and technical work capacity with higher volume.",
+    "提高专项强度，容量保持在 MEV 到 MRV 之间推进。": "Raise specific intensity while volume progresses between MEV and MRV.",
+    "降低总量，提高专项强度和单次表现。": "Reduce total volume while raising specific intensity and single-rep performance.",
+    "比赛后或进入下一周期前恢复、评估并重新设定训练最大值。": "Recover, review, and reset training maxes before the next cycle.",
+    "含 0.5 次项目时，用轻主项/高迁移辅助填充。": "When a lift shows 0.5 frequency, fill it with a light main-lift slot or a high-transfer accessory.",
+    "按完整主项或主项变式安排。": "Assigned as full main-lift or main-variation sessions.",
+  };
+  if (exact[raw]) return exact[raw];
+  return raw
+    .replace(/深蹲/g, "Squat")
+    .replace(/卧推/g, "Bench")
+    .replace(/硬拉/g, "Deadlift")
+    .replace(/变式/g, "variation")
+    .replace(/容量/g, "volume")
+    .replace(/强度/g, "intensity")
+    .replace(/技术/g, "technique")
+    .replace(/恢复/g, "recovery")
+    .replace(/测试/g, "test")
+    .replace(/轻/g, "light")
+    .replace(/重/g, "heavy")
+    .replace(/上肢/g, "upper")
+    .replace(/下肢/g, "lower")
+    .replace(/后链/g, "posterior chain")
+    .replace(/补量/g, "volume fill")
+    .replace(/。/g, ".");
+}
+
+function phaseDisplayName(phase) {
+  if (!phase) return isEnglish() ? "Plan" : "计划";
+  return isEnglish() ? localizePlanText(phase.name || planPhaseLabel(phase.key)) : phase.name || planPhaseLabel(phase.key);
+}
+
 function displayMass(kg, digits = 1) {
   const numeric = Number(kg);
   if (!numeric) return "";
@@ -7329,6 +7496,7 @@ function renderLanguage() {
     button.title = isEnglish() ? "Switch to Chinese" : "切换语言";
     button.setAttribute("aria-label", button.title);
   });
+  populateBirthSelectors();
   renderToolLanguage();
   if (document.documentElement) document.documentElement.lang = isEnglish() ? "en" : "zh-CN";
 }
@@ -7344,6 +7512,16 @@ function setButtonLanguage(selector, zh, en) {
 function setTextLanguage(id, zh, en) {
   const node = $(id);
   if (node) node.textContent = isEnglish() ? en : zh;
+}
+
+function setIconButtonTextLanguage(id, zh, en) {
+  const button = $(id);
+  if (!button) return;
+  const label = isEnglish() ? en : zh;
+  const icon = button.querySelector("svg, i");
+  button.textContent = "";
+  if (icon) button.appendChild(icon);
+  button.append(document.createTextNode(` ${label}`));
 }
 
 function setInputLabelLanguage(inputId, zh, en) {
@@ -7368,7 +7546,8 @@ function setSelectOptionsLanguage(id, labels) {
 
 function renderToolLanguage() {
   setButtonLanguage("#goWeekButton", "查看训练表", "Open training table");
-  setButtonLanguage("[data-home-button]", "主页", "Home");
+  setButtonLanguage("[data-home-button]", "三项技术笔记", "Technique notes");
+  setButtonLanguage("#techniqueBackButton", "返回计划生成器", "Back to plan builder");
   setButtonLanguage("[data-diet-open]", "饮食与 BMR", "Nutrition and BMR");
   setButtonLanguage("[data-analytics-open]", "训练图表", "Training charts");
   setButtonLanguage("[data-warmup-open]", "热身动作", "Warm-up drills");
@@ -7380,6 +7559,24 @@ function renderToolLanguage() {
   setTextLanguage("dietModalTitle", "垂直饮食法", "Vertical Diet");
   setTextLanguage("bmrModalTitle", "BMR 计算器", "BMR Calculator");
   setTextLanguage("bmrCalculateButton", "计算 BMR", "Calculate BMR");
+  setTextLanguage("rpeModalTitle", "RPE 计算器", "RPE Calculator");
+  setTextLanguage("rpeE1rmButton", "计算 1RM", "Calculate 1RM");
+  setTextLanguage("rpeLoadButton", "计算建议重量", "Calculate Suggested Load");
+  const rpeSectionTitles = document.querySelectorAll("#rpeModal .calc-section h4");
+  if (rpeSectionTitles[0]) rpeSectionTitles[0].textContent = isEnglish() ? "Estimated 1RM" : "预估 1RM";
+  if (rpeSectionTitles[1]) rpeSectionTitles[1].textContent = isEnglish() ? "Suggested Load" : "建议重量";
+  setTextLanguage("dayLogTitle", "当天日志", "Daily Log");
+  setTextLanguage("dayLogSubtitle", "保存到本机浏览器", "Saved in this browser");
+  setIconButtonTextLanguage("saveLogButton", "保存日志", "Save Log");
+  setTextLanguage("logAdjustmentHint", "如果某组失败或 RPE 明显高于计划，原表建议下调 5-10%。", "If a set fails or RPE is clearly above target, reduce the following work by 5-10%.");
+  setInputLabelLanguage("dayBodyweightInput", "当天体重", "Bodyweight Today");
+  setInputLabelLanguage("dayNotesInput", "训练反馈", "Training Notes");
+  setInputLabelLanguage("rpeLoadInput", "完成重量", "Completed Load");
+  setInputLabelLanguage("rpeRepsInput", "完成次数", "Completed Reps");
+  setInputLabelLanguage("rpeValueInput", "完成 RPE", "Completed RPE");
+  setInputLabelLanguage("targetE1rmInput", "预估 1RM", "Estimated 1RM");
+  setInputLabelLanguage("targetRepsInput", "目标次数", "Target Reps");
+  setInputLabelLanguage("targetRpeInput", "目标 RPE", "Target RPE");
   setInputLabelLanguage("bmrAgeInput", "年龄", "Age");
   setInputLabelLanguage("bmrSexInput", "性别", "Sex");
   setInputLabelLanguage("bmrHeightInput", "身高 cm", "Height cm");
@@ -7395,6 +7592,16 @@ function renderToolLanguage() {
     1.55: { zh: "每周运动 4-5 次", en: "Exercise 4-5 days/week" },
     1.725: { zh: "每周高强度 6-7 次", en: "Hard exercise 6-7 days/week" },
     1.9: { zh: "体力工作或非常高活动量", en: "Physical job or very high activity" },
+  });
+  setSelectOptionsLanguage("programSystemInput", {
+    jtsSstt: { zh: "JTS × SSTT 十五周", en: "JTS × SSTT 15-Week" },
+    sheiko: { zh: "Sheiko", en: "Sheiko" },
+    calgary: { zh: "Calgary", en: "Calgary" },
+    jts: { zh: "JTS", en: "JTS" },
+    rts: { zh: "RTS", en: "RTS" },
+    westside: { zh: "Westside", en: "Westside" },
+    gzcl: { zh: "GZCL", en: "GZCL" },
+    texas: { zh: "Texas Method", en: "Texas Method" },
   });
   const bmrResult = $("bmrResult");
   if (bmrResult && !bmrResult.dataset.calculated) {
@@ -7619,6 +7826,12 @@ const STATIC_I18N = new Map(
 );
 
 [
+  ["v1.13 · 英文模式和技术笔记页", "v1.13 · English Mode and Technique Notes"],
+  ["2026-06-13 12:35 更新", "Updated 2026-06-13 12:35"],
+  ["英文模式补齐动态生成区域：阶段、频率、周布局、开把、日志和 RPE 工具。", "English mode now covers generated phase, frequency, weekly layout, openers, logs, and RPE tool text."],
+  ["右上角主页图标改为进入三项技术笔记页，内容覆盖深蹲、硬拉和卧推。", "The top-right home icon now opens a three-lift technique notes page covering squat, deadlift, and bench."],
+  ["前言小课堂改为通用说明，MEV/MRV 只保留在 JTS 相关输出中。", "The primer is now general guidance; MEV/MRV stays only in JTS-related output."],
+  ["英文模式补齐动态生成区域，主页图标改为三项技术笔记页，前言小课堂改为通用说明。", "English mode now covers dynamic generated text, the home icon opens technique notes, and the primer is now general guidance."],
   ["v1.12 · 顶部工具按钮功能配色", "v1.12 · Functional Colors for Top Tools"],
   ["顶部工具按钮改为功能配色：主页、语言、饮食、图表、热身各自有区分。", "Top tool buttons now use functional colors for Home, Language, Nutrition, Charts, and Warm-up."],
   ["训练表页的导出和清空按钮也加入独立颜色，减少一排白按钮的廉价感。", "The training page export and clear buttons also get distinct colors to avoid a row of plain white buttons."],
@@ -7655,45 +7868,41 @@ function renderSystemChrome() {
   const system = currentProgramSystem();
   const usesJts = Boolean(system.usesJtsSurvey);
   document.body.dataset.system = state.survey.programSystem || "jtsSstt";
-  const brandTitle = system.brandTitle || system.short;
-  const brandSub =
-    state.survey.programSystem === "jtsSstt" ? "计划生成 · 训练记录 · PDF 导出" : `${system.short} 基础周期模板`;
-  $("sidebarBrandTitle").textContent = brandTitle;
-  $("sidebarBrandSub").textContent = brandSub;
-  $("plannerEyebrow").textContent =
-    state.survey.programSystem === "jtsSstt" ? "JTS × SSTT 十五周训练体系" : `${system.short} 力量周期训练体系`;
-  $("plannerTitle").textContent = `${brandTitle} 计划生成器`;
-  $("plannerSubtitle").textContent = usesJts
-    ? "先填写基础信息、周期目标和训练天数，再生成训练周表。"
-    : "先选择体系、比赛或测试日期、训练天数和基础水平，再生成对应风格的训练周表。";
+  const brandTitle = systemDisplayTitle(system);
+  const displayShort = systemShortText(system);
+  $("sidebarBrandTitle").textContent = displayShort;
   $("sidebarBrandSub").textContent = isEnglish()
     ? "Plan builder · Training log · PDF export"
     : "计划生成 · 训练记录 · PDF 导出";
   $("plannerEyebrow").textContent = isEnglish()
-    ? `${system.short} training system`
+    ? `${displayShort} training system`
     : `${system.short} 训练体系`;
   $("plannerTitle").textContent = isEnglish() ? `${brandTitle} Plan Builder` : `${brandTitle} 计划生成器`;
   $("plannerSubtitle").textContent = isEnglish()
-    ? "Fill in baseline data, cycle target, and weekly training days, then generate the weekly plan."
-    : "先填写基础信息、周期目标和训练天数，再生成训练周表。";
+    ? usesJts
+      ? "Fill in baseline data, cycle target, and weekly training days, then generate the weekly plan."
+      : "Choose a system, test date, training days, and baseline maxes, then generate that system's weekly structure."
+    : usesJts
+      ? "先填写基础信息、周期目标和训练天数，再生成训练周表。"
+      : "先选择体系、比赛或测试日期、训练天数和基础水平，再生成对应风格的训练周表。";
   const sidebarLesson = $("sidebarLesson");
   if (sidebarLesson) {
     sidebarLesson.innerHTML = isEnglish()
       ? `<span class="lesson-kicker">Primer</span>
         <strong>Read this before generating</strong>
-        <p>This tool turns your date, weekly training days, maxes, and recovery inputs into a periodized plan. It is not a fixed copied template.</p>
+        <p>This tool turns your maxes, dates, weekly training days, exercise selections, and logs into a structured training cycle. Different systems use different rules, so the questionnaire only appears when that system needs it.</p>
         <ul>
-          <li>MEV/MRV sets the weekly volume range.</li>
-          <li>RPE loads are suggestions; adjust by warm-ups and bar speed.</li>
-          <li>Logs make bodyweight and volume trend charts useful.</li>
+          <li>RPE and percentage loads are suggestions, not commands.</li>
+          <li>Keep the main lift goal clear before adding accessory work.</li>
+          <li>Use logs to judge trends in bodyweight, fatigue, and weekly volume.</li>
         </ul>`
       : `<span class="lesson-kicker">前言小课堂</span>
         <strong>生成前先看这三点</strong>
-        <p>这个工具会把你的日期、每周训练天数、三项数据和恢复情况转成周期结构，不是固定照抄模板。</p>
+        <p>这个工具会把你的最大重量、日期、每周训练天数、动作选择和训练日志转成周期结构。不同训练体系使用不同规则，所以只有需要问卷的体系才会显示对应问卷。</p>
         <ul>
-          <li>MEV/MRV 决定每周主项容量范围。</li>
-          <li>RPE 估重只是建议，热身慢或状态差就下调。</li>
-          <li>训练日志会让体重、周容量和累计容量趋势更有参考价值。</li>
+          <li>RPE 和百分比估重是建议，不是必须硬顶的命令。</li>
+          <li>先明确主项目标，再决定辅助项怎么补弱点。</li>
+          <li>训练日志用来看体重、疲劳和周容量趋势，而不是只记录完成没完成。</li>
         </ul>`;
   }
   document.querySelectorAll(".jts-only").forEach((node) => node.classList.toggle("hidden", !usesJts));
@@ -7723,7 +7932,15 @@ function renderSystemChrome() {
   if (systemQuestionnaire) {
     systemQuestionnaire.classList.toggle("hidden", usesJts);
     if (!usesJts) {
-      systemQuestionnaire.innerHTML = `
+      systemQuestionnaire.innerHTML = isEnglish()
+        ? `
+        <div class="system-mini-grid">
+          <article><span>Questionnaire</span><strong>Core inputs</strong><p>This system uses test date, experience, weekly training days, and SBD maxes. It does not use the JTS sleep, stress, or MEV/MRV survey.</p></article>
+          <article><span>Variations</span><strong>System-specific</strong><p>Bench, squat, and deadlift variations switch with the selected system, and the training table follows that system's lift order.</p></article>
+          <article><span>Model</span><strong>${escapeHtml(displayShort)}</strong><p>Linear, alternating, and low-medium-high models only apply to the custom JTS-style cycle. This system uses its own weekly structure.</p></article>
+        </div>
+      `
+        : `
         <div class="system-mini-grid">
           <article><span>问卷</span><strong>核心参数</strong><p>该体系只使用比赛/测试日期、训练经验、每周训练天数和三项 PR，不套用 JTS 睡眠、压力、MEV/MRV 问卷。</p></article>
           <article><span>变式</span><strong>按体系切换</strong><p>卧推、深蹲、硬拉变式会随体系切换，训练表按该体系的主项顺序生成。</p></article>
@@ -7739,7 +7956,7 @@ function renderProgramIntro() {
   if (!target) return;
   const system = currentProgramSystem();
   const usesJts = Boolean(system.usesJtsSurvey);
-  const statusLabel = usesJts ? "MEV/MRV" : "体系模板";
+  const statusLabel = isEnglish() ? (usesJts ? "MEV/MRV" : "System Template") : usesJts ? "MEV/MRV" : "体系模板";
   const statusNote = isEnglish()
     ? usesJts
       ? "Uses the built-in volume questionnaire, frequency logic, deloads, peaking, and backdown/test-week structure."
@@ -7750,7 +7967,7 @@ function renderProgramIntro() {
   target.innerHTML = `
     <div class="program-card active">
       <div>
-        <span>${escapeHtml(system.short)}</span>
+        <span>${escapeHtml(systemShortText(system))}</span>
         <strong>${escapeHtml(programTitle(system))}</strong>
         <p>${escapeHtml(programText(system))}</p>
       </div>
@@ -8895,7 +9112,9 @@ function mesoPattern(gap) {
 
 function phaseWeekText(phase, capacities) {
   if (!["hypertrophy", "strength", "peaking"].includes(phase.key)) {
-    return `${phase.weeks} 周：${phase.note}`;
+    return isEnglish()
+      ? `${weeksText(phase.weeks)}: ${localizePlanText(phase.note)}`
+      : `${phase.weeks} 周：${phase.note}`;
   }
   const pattern = mesoPattern(averageGap(capacities, phase.key));
   const blocks = [];
@@ -8905,17 +9124,29 @@ function phaseWeekText(phase, capacities) {
     remaining -= overload;
     const deload = remaining > 0 ? Math.min(pattern.deload, remaining) : 0;
     remaining -= deload;
-    blocks.push(`${overload} 周超负荷${deload ? ` + ${deload} 周减载` : ""}`);
+    blocks.push(
+      isEnglish()
+        ? `${weeksText(overload)} overload${deload ? ` + ${weeksText(deload)} deload` : ""}`
+        : `${overload} 周超负荷${deload ? ` + ${deload} 周减载` : ""}`
+    );
   }
-  return `${phase.weeks} 周：${blocks.join("，")}。${phase.note}`;
+  return isEnglish()
+    ? `${weeksText(phase.weeks)}: ${blocks.join(", ")}. ${localizePlanText(phase.note)}`
+    : `${phase.weeks} 周：${blocks.join("，")}。${phase.note}`;
 }
 
 function modelLabel(model) {
-  return {
+  const zh = {
     linear: "线性模型",
     alternating: "交替模型",
     lowMediumHigh: "低中高模型",
-  }[model];
+  };
+  const en = {
+    linear: "Linear",
+    alternating: "Alternating",
+    lowMediumHigh: "Low-Medium-High",
+  };
+  return (isEnglish() ? en : zh)[model];
 }
 
 function autoModel() {
@@ -8989,9 +9220,9 @@ function makeFrequencies(capacities) {
 }
 
 function dayIntensity(model, dayIndex) {
-  if (model === "lowMediumHigh") return ["高", "低", "中", "高", "低", "中"][dayIndex] || "中";
-  if (model === "alternating") return dayIndex % 2 === 0 ? "重" : "轻";
-  return "线性";
+  if (model === "lowMediumHigh") return (isEnglish() ? ["High", "Low", "Medium", "High", "Low", "Medium"] : ["高", "低", "中", "高", "低", "中"])[dayIndex] || (isEnglish() ? "Medium" : "中");
+  if (model === "alternating") return dayIndex % 2 === 0 ? (isEnglish() ? "Heavy" : "重") : (isEnglish() ? "Light" : "轻");
+  return isEnglish() ? "Linear" : "线性";
 }
 
 function makeWeeklyLayout(days, frequencies, model) {
@@ -9096,16 +9327,16 @@ function phaseForWeek(weekNumber, phases) {
 }
 
 function phaseProgress(phase, localWeek, capacities) {
-  if (!["hypertrophy", "strength", "peaking"].includes(phase.key)) return "恢复/桥接";
+  if (!["hypertrophy", "strength", "peaking"].includes(phase.key)) return isEnglish() ? "Recovery / bridge" : "恢复/桥接";
   const pattern = mesoPattern(averageGap(capacities, phase.key));
   const cycleLength = pattern.overload + pattern.deload;
   const pos = ((localWeek - 1) % cycleLength) + 1;
-  return pos > pattern.overload ? "减载周" : `超负荷 ${pos}/${pattern.overload}`;
+  return pos > pattern.overload ? (isEnglish() ? "Deload week" : "减载周") : isEnglish() ? `Overload ${pos}/${pattern.overload}` : `超负荷 ${pos}/${pattern.overload}`;
 }
 
 function weekStatusFor(index, plan) {
   if (index === plan.totalWeeks - 1) {
-    return { phase: { key: "test", name: "测试周" }, progress: "比赛/测试", isDeload: false };
+    return { phase: { key: "test", name: "测试周" }, progress: isEnglish() ? "Meet / test" : "比赛/测试", isDeload: false };
   }
   const phase = phaseForWeek(index + 1, plan.phases);
   let localWeek = index + 1;
@@ -9118,7 +9349,7 @@ function weekStatusFor(index, plan) {
     cursor += item.weeks;
   }
   const progress = phaseProgress(phase, localWeek, plan.capacities);
-  return { phase, localWeek, progress, isDeload: progress.includes("减载") };
+  return { phase, localWeek, progress, isDeload: progress.includes("减载") || progress.toLowerCase().includes("deload") };
 }
 
 function recommendedWeeklySets(lift, phaseKey, localWeek, phaseWeeks, capacities) {
@@ -9165,11 +9396,16 @@ function populateBirthSelectors() {
   const yearInput = $("birthYearInput");
   const monthInput = $("birthMonthInput");
   if (!yearInput || !monthInput) return;
-  yearInput.innerHTML = `<option value="">选择年份</option>` + Array.from({ length: 27 }, (_, index) => 1980 + index)
+  const currentYear = state.survey.birthYear || yearInput.value || "";
+  const currentMonth = state.survey.birthMonth || monthInput.value || "";
+  const monthNames = isEnglish()
+    ? ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    : Array.from({ length: 12 }, (_, index) => `${index + 1} 月`);
+  yearInput.innerHTML = `<option value="">${isEnglish() ? "Select year" : "选择年份"}</option>` + Array.from({ length: 27 }, (_, index) => 1980 + index)
     .map((year) => `<option value="${year}">${year}</option>`)
     .join("");
-  monthInput.innerHTML = `<option value="">选择月份</option>` + Array.from({ length: 12 }, (_, index) => index + 1)
-    .map((month) => `<option value="${month}">${month} 月</option>`)
+  monthInput.innerHTML = `<option value="">${isEnglish() ? "Select month" : "选择月份"}</option>` + Array.from({ length: 12 }, (_, index) => index + 1)
+    .map((month) => `<option value="${month}">${monthNames[month - 1]}</option>`)
     .join("");
 
   if (!state.survey.birthYear && state.survey.birthDate) {
@@ -9177,6 +9413,8 @@ function populateBirthSelectors() {
     state.survey.birthYear = year || "";
     state.survey.birthMonth = month ? String(Number(month)) : "";
   }
+  yearInput.value = currentYear || state.survey.birthYear || "";
+  monthInput.value = currentMonth || state.survey.birthMonth || "";
 }
 
 function bindProfile() {
@@ -9230,7 +9468,7 @@ function renderWeeks() {
   const navPill = plan.systemKey === "jtsSstt" ? "MEV/MRV" : currentProgramSystem().short;
   $("weekNav").innerHTML =
     `<button class="week-button ${plannerActive}" type="button" data-planner="true">
-      <span>计划生成器</span><span class="phase-pill">${escapeHtml(navPill)}</span>
+      <span>${isEnglish() ? "Plan Builder" : "计划生成器"}</span><span class="phase-pill">${escapeHtml(navPill)}</span>
     </button>` +
     planWeeks(plan)
       .map((week, index) => {
@@ -9238,11 +9476,12 @@ function renderWeeks() {
         const status = weekStatusFor(index, plan);
         const phaseLabel = planPhaseLabel(status.phase?.key);
         const phaseClass = status.isDeload ? "deload" : planPhaseClass(status.phase?.key);
+        const progress = phaseProgressText(status);
         return `
           <button class="week-button ${active}" type="button" data-week="${index}">
             <span class="week-main">${week.label}</span>
-            <span class="week-sub">${phaseLabel} · ${status.progress}</span>
-            <span class="phase-pill ${phaseClass}">${status.isDeload ? "减载" : phaseLabel}</span>
+            <span class="week-sub">${phaseLabel} · ${progress}</span>
+            <span class="phase-pill ${phaseClass}">${status.isDeload ? (isEnglish() ? "Deload" : "减载") : phaseLabel}</span>
           </button>
         `;
       })
@@ -9261,8 +9500,12 @@ function renderWeeks() {
 }
 
 function meetDateText(plan) {
-  if (!state.survey.meetDate) return `未填写比赛日期，先按默认 ${DEFAULT_PLAN_WEEKS} 周周期`;
-  return `比赛周为第 ${plan.totalWeeks} 周`;
+  if (!state.survey.meetDate) {
+    return isEnglish()
+      ? `No meet date set; using the default ${DEFAULT_PLAN_WEEKS}-week cycle`
+      : `未填写比赛日期，先按默认 ${DEFAULT_PLAN_WEEKS} 周周期`;
+  }
+  return isEnglish() ? `Meet week is Week ${plan.totalWeeks}` : `比赛周为第 ${plan.totalWeeks} 周`;
 }
 
 function openerValue(lift) {
@@ -9282,7 +9525,11 @@ function renderTestPrToggle() {
   button.classList.toggle("active", active);
   button.setAttribute("aria-pressed", active ? "true" : "false");
   button.disabled = autoByDate;
-  button.textContent = autoByDate ? "已按比赛日期显示开把" : active ? "隐藏测试 PR" : "需要测试 PR";
+  button.textContent = autoByDate
+    ? isEnglish() ? "Openers shown from meet date" : "已按比赛日期显示开把"
+    : active
+      ? isEnglish() ? "Hide PR test" : "隐藏测试 PR"
+      : isEnglish() ? "Need PR test" : "需要测试 PR";
 }
 
 function phaseRailHtml(plan, activeWeek) {
@@ -9301,9 +9548,9 @@ function phaseRailHtml(plan, activeWeek) {
 function phaseProgressSummary(status) {
   const key = status.phase?.key;
   if (["hypertrophy", "strength", "peaking"].includes(key)) {
-    return `${planPhaseLabel(key)} · ${status.progress}`;
+    return `${planPhaseLabel(key)} · ${phaseProgressText(status)}`;
   }
-  return "按当前周训练表执行";
+  return isEnglish() ? "Follow the current week's training table" : "按当前周训练表执行";
 }
 
 function renderMeetPrepStrips() {
@@ -9312,8 +9559,18 @@ function renderMeetPrepStrips() {
   const plannerWeek = 1;
   const workoutWeek = Math.min(state.weekIndex + 1, plan.totalWeeks);
   const blocks = [
-    ["plannerMeetPrepStrip", plannerWeek, "从问卷生成周期结构", `共 ${plan.totalWeeks} 周`],
-    ["workoutMeetPrepStrip", workoutWeek, `当前 ${currentWeek().label}`, `还剩 ${Math.max(0, plan.totalWeeks - workoutWeek)} 周`],
+    [
+      "plannerMeetPrepStrip",
+      plannerWeek,
+      isEnglish() ? "Cycle structure is generated from your inputs" : "从问卷生成周期结构",
+      isEnglish() ? `Total ${weeksText(plan.totalWeeks)}` : `共 ${plan.totalWeeks} 周`,
+    ],
+    [
+      "workoutMeetPrepStrip",
+      workoutWeek,
+      isEnglish() ? `Current ${currentWeek().label}` : `当前 ${currentWeek().label}`,
+      isEnglish() ? `${weeksText(Math.max(0, plan.totalWeeks - workoutWeek))} remaining` : `还剩 ${Math.max(0, plan.totalWeeks - workoutWeek)} 周`,
+    ],
   ];
 
   blocks.forEach(([id, activeWeek, subline, headline]) => {
@@ -9322,22 +9579,22 @@ function renderMeetPrepStrips() {
     const status = weekStatusFor(activeWeek - 1, plan);
     const openerBlock = wantsOpenerPanel()
       ? `<div class="meet-prep-block">
-        <span>第 ${plan.totalWeeks} 周开把</span>
+        <span>${isEnglish() ? `Week ${plan.totalWeeks} openers` : `第 ${plan.totalWeeks} 周开把`}</span>
         <div class="opener-summary">
-          <div><b>蹲</b><strong>${openerValue("squat")}</strong></div>
-          <div><b>推</b><strong>${openerValue("bench")}</strong></div>
-          <div><b>拉</b><strong>${openerValue("deadlift")}</strong></div>
+          <div><b>${liftText("squat", true)}</b><strong>${openerValue("squat")}</strong></div>
+          <div><b>${liftText("bench", true)}</b><strong>${openerValue("bench")}</strong></div>
+          <div><b>${liftText("deadlift", true)}</b><strong>${openerValue("deadlift")}</strong></div>
         </div>
       </div>`
       : "";
     target.innerHTML = `
       <div class="meet-prep-block">
-        <span>${escapeHtml(system.short)}</span>
+        <span>${escapeHtml(systemShortText(system))}</span>
         <strong>${headline}</strong>
         <small>${meetDateText(plan)} · ${subline}</small>
       </div>
       <div class="meet-prep-block">
-        <span>阶段进度</span>
+        <span>${isEnglish() ? "Phase Progress" : "阶段进度"}</span>
         <div class="phase-rail" data-current-phase="${escapeHtml(phaseProgressSummary(status))}">${phaseRailHtml(plan, activeWeek)}</div>
         <small>${phaseProgressSummary(status)}</small>
       </div>
@@ -9349,40 +9606,48 @@ function renderMeetPrepStrips() {
 
 function renderSystemPlanner(plan) {
   const system = currentProgramSystem();
+  const systemName = systemShortText(system);
   $("plannerSummary").innerHTML = `
-    <article class="summary-card"><span>训练体系</span><strong>${escapeHtml(system.short)}</strong></article>
-    <article class="summary-card"><span>周期长度</span><strong>${plan.totalWeeks} 周</strong></article>
-    <article class="summary-card"><span>每周训练</span><strong>${plan.days} 天</strong><small>推荐 ${plan.recommendedDays} 天</small></article>
-    <article class="summary-card"><span>三项频率</span><strong>蹲${plan.frequencies.squat} / 推${plan.frequencies.bench} / 拉${plan.frequencies.deadlift}</strong></article>
+    <article class="summary-card"><span>${isEnglish() ? "Training System" : "训练体系"}</span><strong>${escapeHtml(systemName)}</strong></article>
+    <article class="summary-card"><span>${isEnglish() ? "Cycle Length" : "周期长度"}</span><strong>${weeksText(plan.totalWeeks)}</strong></article>
+    <article class="summary-card"><span>${isEnglish() ? "Weekly Training" : "每周训练"}</span><strong>${daysText(plan.days)}</strong><small>${isEnglish() ? "Recommended" : "推荐"} ${daysText(plan.recommendedDays)}</small></article>
+    <article class="summary-card"><span>${isEnglish() ? "SBD Frequency" : "三项频率"}</span><strong>${liftText("squat", true)} ${plan.frequencies.squat} / ${liftText("bench", true)} ${plan.frequencies.bench} / ${liftText("deadlift", true)} ${plan.frequencies.deadlift}</strong></article>
   `;
   $("capacityCards").innerHTML = `
-    <article class="capacity-card"><h4>${escapeHtml(system.short)}</h4><div><span>容量逻辑</span><strong>体系内置</strong></div><div><span>问卷</span><strong>核心参数</strong></div></article>
-    <article class="capacity-card"><h4>强度逻辑</h4><div><span>主项</span><strong>按 RPE 估重</strong></div><div><span>辅助</span><strong>按当天类型筛选</strong></div></article>
-    <article class="capacity-card"><h4>测试周</h4><div><span>最后一周</span><strong>保留</strong></div><div><span>开把</span><strong>${wantsOpenerPanel() ? "启用" : "可选"}</strong></div></article>
+    <article class="capacity-card"><h4>${escapeHtml(systemName)}</h4><div><span>${isEnglish() ? "Volume Logic" : "容量逻辑"}</span><strong>${isEnglish() ? "System built-in" : "体系内置"}</strong></div><div><span>${isEnglish() ? "Questionnaire" : "问卷"}</span><strong>${isEnglish() ? "Core inputs" : "核心参数"}</strong></div></article>
+    <article class="capacity-card"><h4>${isEnglish() ? "Intensity Logic" : "强度逻辑"}</h4><div><span>${isEnglish() ? "Main lifts" : "主项"}</span><strong>${isEnglish() ? "RPE based" : "按 RPE 估重"}</strong></div><div><span>${isEnglish() ? "Accessories" : "辅助"}</span><strong>${isEnglish() ? "Day-type filtered" : "按当天类型筛选"}</strong></div></article>
+    <article class="capacity-card"><h4>${isEnglish() ? "Test Week" : "测试周"}</h4><div><span>${isEnglish() ? "Last week" : "最后一周"}</span><strong>${isEnglish() ? "Kept" : "保留"}</strong></div><div><span>${isEnglish() ? "Openers" : "开把"}</span><strong>${wantsOpenerPanel() ? (isEnglish() ? "Enabled" : "启用") : (isEnglish() ? "Optional" : "可选")}</strong></div></article>
   `;
   $("phasePlan").innerHTML = plan.phases
     .filter((phase) => ["hypertrophy", "strength", "peaking"].includes(phase.key))
-    .map((phase) => `<div class="phase-row"><strong>${phase.name}</strong><span><mark>${phase.weeks} 周</mark> ${phase.note}</span></div>`)
+    .map((phase) => `<div class="phase-row"><strong>${phaseDisplayName(phase)}</strong><span><mark>${weeksText(phase.weeks)}</mark> ${localizePlanText(phase.note)}</span></div>`)
     .join("");
-  const liftNames = { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
   const frequencyRows = Object.entries(plan.frequencies)
-    .map(([lift, freq]) => `<div class="phase-row"><strong>${liftNames[lift]}</strong><span>每周约 <mark>${freq} 次</mark>，按 ${escapeHtml(system.short)} 周结构分配。</span></div>`)
+    .map(([lift, freq]) => `<div class="phase-row"><strong>${liftText(lift)}</strong><span>${isEnglish() ? "About" : "每周约"} <mark>${freq} ${isEnglish() ? "times/week" : "次"}</mark>${isEnglish() ? `, distributed by the ${escapeHtml(systemName)} weekly structure.` : `，按 ${escapeHtml(system.short)} 周结构分配。`}</span></div>`)
     .join("");
   const layoutRows = plan.weeklyLayout
-    .map((day) => `<div class="phase-row"><strong>${day.day}</strong><span>${day.items.join(" + ")}。${day.note}</span></div>`)
+    .map((day) => `<div class="phase-row"><strong>${day.day}</strong><span>${day.items.map(localizePlanText).join(" + ")}${isEnglish() ? ". " : "。"}${localizePlanText(day.note)}</span></div>`)
     .join("");
   $("frequencyPlan").innerHTML =
-    `<div class="phase-row"><strong>每周天数</strong><span>当前 <mark>${plan.days} 天/周</mark>，该体系推荐 ${plan.recommendedDays} 天/周。切换 3-6 天会重新生成每日内容。</span></div>` +
+    `<div class="phase-row"><strong>${isEnglish() ? "Weekly Days" : "每周天数"}</strong><span>${isEnglish() ? "Current" : "当前"} <mark>${daysText(plan.days)}</mark>${isEnglish() ? `; this system recommends ${daysText(plan.recommendedDays)}. Switching 3-6 days regenerates daily content.` : `，该体系推荐 ${plan.recommendedDays} 天/周。切换 3-6 天会重新生成每日内容。`}</span></div>` +
     frequencyRows +
-    `<div class="phase-row"><strong>周模板</strong><span>${escapeHtml(system.short)} 下的 ${plan.days} 天安排如下。</span></div>` +
+    `<div class="phase-row"><strong>${isEnglish() ? "Weekly Template" : "周模板"}</strong><span>${isEnglish() ? `${escapeHtml(systemName)} ${plan.days}-day layout:` : `${escapeHtml(system.short)} 下的 ${plan.days} 天安排如下。`}</span></div>` +
     layoutRows;
-  const reasons = [
-    `${system.short} 不套用自定义周期的线性/交替/低中高模型，使用自己的周结构。`,
-    "非自定义周期体系不显示睡眠、压力、历史恢复等容量问卷；这些字段只服务于自定义周期容量计算。",
-    `当前变式动作池已按 ${system.short} 切换，卧推、深蹲、硬拉变式会影响训练表中的变式日。`,
-    "辅助项下拉会根据最近的主项/变式判断上肢或下肢，不会在上肢日混入腿部辅助。",
-    "所有主项重量仍按你的三项 PR、次数和 RPE 自动估算；辅助项默认不绑定三项 PR。",
-  ];
+  const reasons = isEnglish()
+    ? [
+        `${systemName} does not use the custom linear/alternating/low-medium-high model. It uses its own weekly structure.`,
+        "Non-JTS custom systems do not show sleep, stress, or historical recovery volume questions; those inputs only support JTS-style volume calculation.",
+        `Variation pools now switch by ${systemName}, so bench, squat, and deadlift variation days follow the selected system.`,
+        "Accessory dropdowns are filtered by the nearest main lift or variation so upper days do not mix in lower-body accessories.",
+        "Main-lift loads are still estimated from your SBD maxes, reps, and RPE. Accessories do not default to SBD maxes.",
+      ]
+    : [
+        `${system.short} 不套用自定义周期的线性/交替/低中高模型，使用自己的周结构。`,
+        "非自定义周期体系不显示睡眠、压力、历史恢复等容量问卷；这些字段只服务于自定义周期容量计算。",
+        `当前变式动作池已按 ${system.short} 切换，卧推、深蹲、硬拉变式会影响训练表中的变式日。`,
+        "辅助项下拉会根据最近的主项/变式判断上肢或下肢，不会在上肢日混入腿部辅助。",
+        "所有主项重量仍按你的三项 PR、次数和 RPE 自动估算；辅助项默认不绑定三项 PR。",
+      ];
   $("reasonList").innerHTML = reasons.map((reason) => `<li>${reason}</li>`).join("");
 
   let week = 1;
@@ -9397,10 +9662,10 @@ function renderSystemPlanner(plan) {
     )
     .map((row) => `<div class="layout-row">
       <span>W${row.week}</span>
-      <strong>${row.phase.name}</strong>
-      <span>${escapeHtml(system.short)}</span>
-      <span>${row.status}</span>
-      <mark>${plan.weeklyLayout.map((day) => day.items[0]).join(" / ")}</mark>
+      <strong>${phaseDisplayName(row.phase)}</strong>
+      <span>${escapeHtml(systemName)}</span>
+      <span>${localizePlanText(row.status)}</span>
+      <mark>${plan.weeklyLayout.map((day) => localizePlanText(day.items[0])).join(" / ")}</mark>
     </div>`)
     .join("");
 }
@@ -9408,72 +9673,99 @@ function renderSystemPlanner(plan) {
 function renderPlanner() {
   const plan = makePlanner();
   $("planLengthLabel").textContent = state.survey.meetDate
-    ? `当前按比赛日期倒推 ${plan.totalWeeks} 周；超过 15 周时按实际比赛周数排。`
-    : `未填写比赛日期：默认生成 ${DEFAULT_PLAN_WEEKS} 周。`;
+    ? isEnglish()
+      ? `Current cycle is calculated backward from the meet date: ${weeksText(plan.totalWeeks)}. If it is longer than 15 weeks, the full meet timeline is used.`
+      : `当前按比赛日期倒推 ${plan.totalWeeks} 周；超过 15 周时按实际比赛周数排。`
+    : isEnglish()
+      ? `No meet date set: generating the default ${weeksText(DEFAULT_PLAN_WEEKS)}.`
+      : `未填写比赛日期：默认生成 ${DEFAULT_PLAN_WEEKS} 周。`;
   if (plan.systemKey !== "jtsSstt") {
     renderSystemPlanner(plan);
     return;
   }
   $("plannerSummary").innerHTML = `
-    <article class="summary-card"><span>周期长度</span><strong>${plan.totalWeeks} 周</strong></article>
-    <article class="summary-card"><span>推荐模型</span><strong>${modelLabel(modelForPhase("strength"))}</strong></article>
-    <article class="summary-card"><span>每周训练</span><strong>${plan.days} 天</strong><small>推荐 ${plan.recommendedDays} 天</small></article>
-    <article class="summary-card"><span>三项频率</span><strong>蹲${plan.frequencies.squat} / 推${plan.frequencies.bench} / 拉${plan.frequencies.deadlift}</strong></article>
+    <article class="summary-card"><span>${isEnglish() ? "Cycle Length" : "周期长度"}</span><strong>${weeksText(plan.totalWeeks)}</strong></article>
+    <article class="summary-card"><span>${isEnglish() ? "Recommended Model" : "推荐模型"}</span><strong>${modelLabel(modelForPhase("strength"))}</strong></article>
+    <article class="summary-card"><span>${isEnglish() ? "Weekly Training" : "每周训练"}</span><strong>${daysText(plan.days)}</strong><small>${isEnglish() ? "Recommended" : "推荐"} ${daysText(plan.recommendedDays)}</small></article>
+    <article class="summary-card"><span>${isEnglish() ? "SBD Frequency" : "三项频率"}</span><strong>${liftText("squat", true)} ${plan.frequencies.squat} / ${liftText("bench", true)} ${plan.frequencies.bench} / ${liftText("deadlift", true)} ${plan.frequencies.deadlift}</strong></article>
   `;
 
-  const phaseLabels = { hypertrophy: "增肌期", strength: "增力期", peaking: "冲刺期" };
+  const phaseLabels = isEnglish()
+    ? { hypertrophy: "Hypertrophy", strength: "Strength", peaking: "Peaking" }
+    : { hypertrophy: "增肌期", strength: "增力期", peaking: "冲刺期" };
   $("capacityCards").innerHTML = Object.entries(plan.capacities)
     .map(([lift, capacity]) => {
       const rows = Object.entries(capacity.phases)
-        .map(([phase, values]) => `<div><span>${phaseLabels[phase]}</span><strong class="dynamic-value">${values.mev}-${values.mrv} 组/周</strong></div>`)
+        .map(([phase, values]) => `<div><span>${phaseLabels[phase]}</span><strong class="dynamic-value">${values.mev}-${values.mrv} ${isEnglish() ? "sets/week" : "组/周"}</strong></div>`)
         .join("");
-      return `<article class="capacity-card"><h4>${capacity.name}</h4>${rows}</article>`;
+      return `<article class="capacity-card"><h4>${liftText(lift)}</h4>${rows}</article>`;
     })
     .join("");
 
   $("phasePlan").innerHTML = plan.phases
     .filter((phase) => ["hypertrophy", "strength", "peaking"].includes(phase.key))
-    .map((phase) => `<div class="phase-row"><strong>${phase.name}</strong><span><mark>${phase.weeks} 周</mark> ${phaseWeekText(phase, plan.capacities).replace(`${phase.weeks} 周：`, "")}</span></div>`)
+    .map((phase) => {
+      const text = phaseWeekText(phase, plan.capacities);
+      const prefix = isEnglish() ? `${weeksText(phase.weeks)}: ` : `${phase.weeks} 周：`;
+      return `<div class="phase-row"><strong>${phaseDisplayName(phase)}</strong><span><mark>${weeksText(phase.weeks)}</mark> ${text.replace(prefix, "")}</span></div>`;
+    })
     .join("");
 
-  const liftNames = { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
   const frequencyRows = Object.entries(plan.frequencies)
     .map(([lift, freq]) => {
       const note = String(freq).includes(".5")
-        ? "0.5 次可做成一次强度较轻的主项/主项变式，或用迁移性高的辅助项填充。"
-        : "按完整主项或主项变式训练日安排。";
-      return `<div class="phase-row"><strong>${liftNames[lift]}</strong><span>每周 <mark>${freq} 次</mark>。${note}</span></div>`;
+        ? isEnglish()
+          ? "A 0.5 slot can be a lighter main lift, a main variation, or a high-transfer accessory."
+          : "0.5 次可做成一次强度较轻的主项/主项变式，或用迁移性高的辅助项填充。"
+        : isEnglish()
+          ? "Assigned as full main-lift or main-variation sessions."
+          : "按完整主项或主项变式训练日安排。";
+      return `<div class="phase-row"><strong>${liftText(lift)}</strong><span>${isEnglish() ? "Weekly" : "每周"} <mark>${freq} ${isEnglish() ? "times" : "次"}</mark>${isEnglish() ? ". " : "。"}${note}</span></div>`;
     })
     .join("");
   const layoutRows = plan.weeklyLayout
     .map(
-      (day) => `<div class="phase-row"><strong>${day.day} ${day.intensity}</strong><span>${day.items.join(" + ")}。${day.note}</span></div>`
+      (day) => `<div class="phase-row"><strong>${day.day} ${localizePlanText(day.intensity)}</strong><span>${day.items.map(localizePlanText).join(" + ")}${isEnglish() ? ". " : "。"}${localizePlanText(day.note)}</span></div>`
     )
     .join("");
   $("frequencyPlan").innerHTML =
-    `<div class="phase-row"><strong>每周天数</strong><span>当前 <mark>${plan.days} 天/周</mark>，系统推荐 ${plan.recommendedDays} 天/周。${plan.days < plan.recommendedDays ? "你选择的天数低于推荐，单日组数会更密，注意主项质量和恢复。" : "会按当前天数重新分配主项频率和周模板。"}</span></div>` +
+    `<div class="phase-row"><strong>${isEnglish() ? "Weekly Days" : "每周天数"}</strong><span>${isEnglish() ? "Current" : "当前"} <mark>${daysText(plan.days)}</mark>${isEnglish() ? `; system recommendation is ${daysText(plan.recommendedDays)}. ` : `，系统推荐 ${plan.recommendedDays} 天/周。`}${plan.days < plan.recommendedDays ? (isEnglish() ? "Your selected day count is below the recommendation, so daily work is denser. Watch main-lift quality and recovery." : "你选择的天数低于推荐，单日组数会更密，注意主项质量和恢复。") : (isEnglish() ? "Main-lift frequency and weekly layout regenerate from the selected day count." : "会按当前天数重新分配主项频率和周模板。")}</span></div>` +
     frequencyRows +
-    `<div class="phase-row"><strong>周模板</strong><span>${modelLabel(modelForPhase("strength"))} 下的 ${plan.days} 天安排如下。</span></div>` +
+    `<div class="phase-row"><strong>${isEnglish() ? "Weekly Template" : "周模板"}</strong><span>${isEnglish() ? `${modelLabel(modelForPhase("strength"))} ${plan.days}-day layout:` : `${modelLabel(modelForPhase("strength"))} 下的 ${plan.days} 天安排如下。`}</span></div>` +
     layoutRows;
 
   const { beginnerLightFemale, advancedHeavyMale } = athleteProfileScore();
-  const ruleLines = ["squat", "bench", "deadlift"].flatMap((lift) =>
+  const liftNames = { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
+  const ruleLines = isEnglish()
+    ? []
+    : ["squat", "bench", "deadlift"].flatMap((lift) =>
     adjustmentRules(lift)
       .filter((rule) => rule.mev || rule.mrv)
       .slice(0, 4)
       .map((rule) => `${liftNames[lift]} ${rule.source}: MEV ${rule.mev >= 0 ? "+" : ""}${rule.mev}, MRV ${rule.mrv >= 0 ? "+" : ""}${rule.mrv}。${rule.text}`)
   );
-  const reasons = [
-    `模板建议：${modelLabel(autoModel())}。线性模型适合初级和部分恢复强的中级；交替模型适合中级和进阶女性；低中高模型更适合进阶，尤其大体重。`,
-    `每周训练天数由三项 MRV、三项频率总和与恢复条件共同决定；系统推荐 ${plan.recommendedDays} 天/周，当前按 ${plan.days} 天/周生成。`,
-    `当前年龄按出生年月计算为 ${ageFromBirthDate()} 岁；体重分档为 ${bodyweightClass()}；身高分档为 ${heightClass()}。`,
-    `增肌期按 3 周到 4 个月约束，高 beginner/light/female 倾向会拉长；当前倾向分 ${beginnerLightFemale.toFixed(1)}。`,
-    `增力期按 3 周到 4 个月约束，高 advanced/heavy/male 倾向会拉长；当前倾向分 ${advancedHeavyMale.toFixed(1)}。`,
-    "冲刺期按 2 周到 2 个月约束，并保留足够周数降低疲劳、提高专项强度。",
-    "MEV/MRV 差距越大，单个小周期允许更长超负荷段；差距小则更频繁减载。",
-    "睡眠、饮食、压力、历史训练量和恢复能力会直接调整 MRV；高级水平会提高 MEV，因为维持进步通常需要更多专项刺激。",
-    ...ruleLines,
-  ];
+  const reasons = isEnglish()
+    ? [
+        `Template recommendation: ${modelLabel(autoModel())}. Linear suits beginners and some well-recovering intermediates; alternating suits intermediates and advanced women; low-medium-high suits advanced lifters, especially heavier lifters.`,
+        `Weekly training days are driven by SBD MRV, total lift frequency, and recovery inputs. The system recommends ${daysText(plan.recommendedDays)}; current plan uses ${daysText(plan.days)}.`,
+        `Current age is calculated from birth year/month as ${ageFromBirthDate()}. Bodyweight class and height class are used for the JTS-style capacity estimate.`,
+        `Hypertrophy is constrained between 3 weeks and 4 months; beginner/light/female tendency extends it. Current tendency score: ${beginnerLightFemale.toFixed(1)}.`,
+        `Strength is constrained between 3 weeks and 4 months; advanced/heavy/male tendency extends it. Current tendency score: ${advancedHeavyMale.toFixed(1)}.`,
+        "Peaking is constrained between 2 weeks and 2 months, with enough room to lower fatigue and raise specific intensity.",
+        "A larger MEV/MRV gap allows a longer overload block. A smaller gap calls for more frequent deloads.",
+        "Sleep, nutrition, stress, historical volume, and recovery directly adjust MRV. Higher strength level raises MEV because progress usually needs more specific stimulus.",
+      ]
+    : [
+        `模板建议：${modelLabel(autoModel())}。线性模型适合初级和部分恢复强的中级；交替模型适合中级和进阶女性；低中高模型更适合进阶，尤其大体重。`,
+        `每周训练天数由三项 MRV、三项频率总和与恢复条件共同决定；系统推荐 ${plan.recommendedDays} 天/周，当前按 ${plan.days} 天/周生成。`,
+        `当前年龄按出生年月计算为 ${ageFromBirthDate()} 岁；体重分档为 ${bodyweightClass()}；身高分档为 ${heightClass()}。`,
+        `增肌期按 3 周到 4 个月约束，高 beginner/light/female 倾向会拉长；当前倾向分 ${beginnerLightFemale.toFixed(1)}。`,
+        `增力期按 3 周到 4 个月约束，高 advanced/heavy/male 倾向会拉长；当前倾向分 ${advancedHeavyMale.toFixed(1)}。`,
+        "冲刺期按 2 周到 2 个月约束，并保留足够周数降低疲劳、提高专项强度。",
+        "MEV/MRV 差距越大，单个小周期允许更长超负荷段；差距小则更频繁减载。",
+        "睡眠、饮食、压力、历史训练量和恢复能力会直接调整 MRV；高级水平会提高 MEV，因为维持进步通常需要更多专项刺激。",
+        ...ruleLines,
+      ];
   $("reasonList").innerHTML = reasons.map((reason) => `<li>${reason}</li>`).join("");
 
   let week = 1;
@@ -9497,10 +9789,10 @@ function renderPlanner() {
       const deadlift = recommendedWeeklySets("deadlift", row.phase.key, row.local, row.phase.weeks, plan.capacities);
       return `<div class="layout-row">
         <span>W${row.week}</span>
-        <strong>${row.phase.name}</strong>
+        <strong>${phaseDisplayName(row.phase)}</strong>
         <span>${modelLabel(model)}</span>
-        <span>${row.status}</span>
-        <mark>蹲 ${squat} / 推 ${bench} / 拉 ${deadlift}</mark>
+        <span>${localizePlanText(row.status)}</span>
+        <mark>${liftText("squat", true)} ${squat} / ${liftText("bench", true)} ${bench} / ${liftText("deadlift", true)} ${deadlift}</mark>
       </div>`;
     })
     .join("");
@@ -9514,7 +9806,7 @@ function renderTabs() {
       return `
         <button class="day-tab ${active}" type="button" data-day="${index}">
           <strong>${day.day}</strong><br />
-          <span>${day.items.length} 项</span>
+          <span>${day.items.length} ${isEnglish() ? "items" : "项"}</span>
         </button>
       `;
     })
@@ -9573,9 +9865,11 @@ function splitTextForPlan(plan) {
 function renderOpenerTitle() {
   const plan = makePlanner();
   $("openerPanel")?.classList.toggle("hidden", !wantsOpenerPanel());
-  if ($("openerKicker")) $("openerKicker").textContent = currentProgramSystem().short;
-  $("openerWeekTitle").textContent = `第 ${plan.totalWeeks} 周开把`;
-  $("openerWeekHelp").textContent = `用于第 ${plan.totalWeeks} 周比赛/测试的 D1/D2/D3 和测试日推荐重量`;
+  if ($("openerKicker")) $("openerKicker").textContent = systemShortText(currentProgramSystem());
+  $("openerWeekTitle").textContent = isEnglish() ? `Week ${plan.totalWeeks} Openers` : `第 ${plan.totalWeeks} 周开把`;
+  $("openerWeekHelp").textContent = isEnglish()
+    ? `Used for Week ${plan.totalWeeks} meet/test D1/D2/D3 and test-day recommended loads`
+    : `用于第 ${plan.totalWeeks} 周比赛/测试的 D1/D2/D3 和测试日推荐重量`;
   renderTestPrToggle();
 }
 
@@ -9769,13 +10063,330 @@ function renderWorkout() {
   $("weekTitle").textContent = `${week.label} · ${planPhaseLabel(planPhase?.key)}`;
   $("splitLabel").textContent = splitTextForPlan(plan);
   $("dayTitle").textContent = day.day;
-  $("dayMeta").textContent = "建议强度、可编辑备注和降重组记录";
+  $("dayMeta").textContent = isEnglish()
+    ? "Target intensity, editable notes, and backdown-set records"
+    : "建议强度、可编辑备注和降重组记录";
 
   renderTabs();
   renderMetrics();
   renderAmrapHint(day);
   renderExercises();
   renderLog();
+}
+
+function techniqueSection(title, subtitle, groups) {
+  return `<article class="technique-card">
+    <div class="technique-card-head">
+      <span>${escapeHtml(subtitle)}</span>
+      <h3>${escapeHtml(title)}</h3>
+    </div>
+    <div class="technique-grid">
+      ${groups
+        .map(
+          (group) => `<section>
+            <h4>${escapeHtml(group.title)}</h4>
+            <ul>${group.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+          </section>`
+        )
+        .join("")}
+    </div>
+  </article>`;
+}
+
+function techniqueNotesData() {
+  if (isEnglish()) {
+    return {
+      eyebrow: "Technique Notes",
+      title: "Powerlifting Technique Notes",
+      subtitle: "Squat / Deadlift / Bench setup, bracing, bar path, and common mistakes.",
+      intro: [
+        "Build support before chasing load. The goal is repeatable positions under fatigue.",
+        "Use these notes as a coaching checklist, not as a medical or rehab prescription.",
+      ],
+      sections: [
+        {
+          title: "Squat",
+          subtitle: "Squat",
+          groups: [
+            {
+              title: "Setup",
+              items: [
+                "Use hard-soled shoes or lifting shoes. Rack height should let you unrack without tiptoeing or half-squatting too deep.",
+                "High bar usually sits slightly above the rear-deltoid shelf; low bar sits lower on the rear delts below the scapular spine.",
+                "Before unracking, stack rib cage, abdomen, and pelvis. Keep tripod foot contact: big-toe base, little-toe base, and heel.",
+              ],
+            },
+            {
+              title: "Unrack",
+              items: [
+                "Walk under the bar so barbell, support point, and mid-foot are aligned.",
+                "Brace, spread the knees, press the floor, and stand the bar up with the whole body, not only the low back.",
+                "Use a three-step walkout: main foot back, second foot back to stance, small toe/center-of-pressure adjustment. Then stop moving.",
+              ],
+            },
+            {
+              title: "Brace and descent",
+              items: [
+                "Tuck the chin slightly, keep the neck in line with the torso, and keep the shoulder girdle depressed.",
+                "Return the pelvis toward neutral without over-tucking. Breathe into the front, sides, and back of the trunk for 360-degree pressure.",
+                "Unlock hips and knees together. The chest, abdomen, and pelvis should descend as one unit.",
+              ],
+            },
+            {
+              title: "Ascent",
+              items: [
+                "Near depth, keep knees tracking out and the tripod foot locked in.",
+                "Start with the cues: brace, spread the hips, drive knees, press the floor, chest and hips together.",
+                "Avoid hips shooting up while the chest lags behind. Keep the bar close to a vertical path.",
+              ],
+            },
+          ],
+        },
+        {
+          title: "Deadlift",
+          subtitle: "Deadlift",
+          groups: [
+            {
+              title: "Setup",
+              items: [
+                "Use flat, hard-soled shoes. Avoid soft running shoes for heavy pulls.",
+                "A shoulder-width or slightly narrower stance is a good starting point for technical rebuilding.",
+                "Set the bar over mid-foot to the metatarsal area. Do not start with the bar far from the shins.",
+              ],
+            },
+            {
+              title: "Support",
+              items: [
+                "Reset each rep when technique is the priority: stand up, hinge back down, rebuild brace, then pull.",
+                "Keep the chin tucked and neck in line. Arms are hooks; lock the elbows and do not curl the bar.",
+                "Brace with pelvis and trunk together. Avoid collapsing or overextending the low back as you hinge.",
+              ],
+            },
+            {
+              title: "Grip and slack",
+              items: [
+                "Grip the bar, pull the slack out gently, rotate the triceps toward the armpits, open the chest without flaring ribs, and press the floor.",
+                "Hinge first, then let the knees participate. Do not turn the start into a squat.",
+                "Let knees track with toes, but avoid driving the shins hard forward before the pull starts.",
+              ],
+            },
+            {
+              title: "Pull",
+              items: [
+                "Think: bar close, armpits tight, feet through the floor, hips toward the bar, body and bar leave the floor together.",
+                "Knees, hips, and back tension should complete the lift together.",
+                "Avoid the bar drifting away, hips rising first, yanking with the low back, and touch-and-go reps that change every start position.",
+              ],
+            },
+          ],
+        },
+        {
+          title: "Bench Press",
+          subtitle: "Bench",
+          groups: [
+            {
+              title: "Grip and wrist",
+              items: [
+                "Place the bar near the heel of the palm, not in the fingers. Keep wrist, elbow, and bar stacked.",
+                "Wrap the thumb around the bar for heavy benching. Keep the wrist from collapsing backward.",
+                "Rotate the hand slightly so the bar sits securely between the thenar and hypothenar side of the palm.",
+              ],
+            },
+            {
+              title: "Arch and upper back",
+              items: [
+                "Set the feet, pull the shoulder blades toward the hips, depress them, and open the thoracic spine.",
+                "The arch is not only low-back extension. It links upper back, rib cage, brace, and leg drive.",
+                "Create a stable platform by keeping the chest high and upper back pressed into the bench.",
+              ],
+            },
+            {
+              title: "Descent",
+              items: [
+                "Keep full-body tension through the eccentric. Do not relax at the chest.",
+                "The bar usually touches the lower chest or lower sternum area, depending on grip width and arch.",
+                "From front and side, the forearm should be close to vertical at the bottom.",
+              ],
+            },
+            {
+              title: "Press",
+              items: [
+                "Use cues: feet down, chest to bar, elbows drive the bar, upper back stays tight, press to lockout.",
+                "Leg drive pushes the body toward the upper back, not the hips off the bench.",
+                "Common misses: wrist collapse, dumping tension on the chest, hips lifting, shoulders rolling forward, and inconsistent touch point.",
+              ],
+            },
+          ],
+        },
+        {
+          title: "Shared Rules",
+          subtitle: "All lifts",
+          groups: [
+            {
+              title: "One-sentence checklist",
+              items: [
+                "Align first, breathe second; support first, force second; stability first, load second.",
+                "If pain, technique breakdown, or abnormal fatigue appears, reduce load, reduce sets, or stop the session.",
+              ],
+            },
+          ],
+        },
+      ],
+    };
+  }
+  return {
+    eyebrow: "技术笔记",
+    title: "力量举三项技术笔记",
+    subtitle: "深蹲 / 硬拉 / 卧推的支撑、出杠、发力和常见错误。",
+    intro: [
+      "先建立支撑，再追重量。目标是在疲劳下仍然能重复稳定动作。",
+      "这些内容是技术检查清单，不替代医疗、康复或现场教练评估。",
+    ],
+    sections: [
+      {
+        title: "深蹲",
+        subtitle: "Squat",
+        groups: [
+          {
+            title: "准备阶段",
+            items: [
+              "深蹲优先选择硬底鞋或举重鞋。架高略低于肩部，出杠时不需要踮脚，也不需要半蹲太多。",
+              "高杠通常放在斜方肌上方；低杠通常比高杠低一些，放在肩胛冈下方、后三角承托区附近。",
+              "出杠前完成胸腔、腹腔、盆腔对位，并保持足底三点支撑：大脚趾根、小脚趾根、脚跟。",
+            ],
+          },
+          {
+            title: "出杠流程",
+            items: [
+              "人走进杠铃下方，让杠铃重心、身体支撑位和足中尽量在一条线上。",
+              "吸气、撑腹压，膝盖外展，脚底压住地面，用整体支撑把杠铃顶起，不要只用腰顶。",
+              "三步撤技术：主力脚后撤，另一只脚后撤并找到站距，最后微调脚尖和重心。完成后不要反复乱挪脚。",
+            ],
+          },
+          {
+            title: "支撑和下蹲",
+            items: [
+              "收住下巴，头颈和躯干保持一致；肩带下沉，上背收紧，给杠铃创造稳定承托面。",
+              "骨盆回到相对中立位，核心和骨盆保持一致刚性，避免肋骨外翻和腰椎代偿。",
+              "先建立 360 度腹压，再同时解锁髋和膝；胸腔、腹腔、骨盆作为整体下降。",
+            ],
+          },
+          {
+            title: "起身过程",
+            items: [
+              "接近平行时主动外展膝盖，足底三点不要松。",
+              "底部启动口令：封住核心、撑髋、展膝、脚底压稳、胸髋一起。",
+              "避免屁股先起、胸口后追。杠铃尽量保持接近垂直路径。",
+            ],
+          },
+        ],
+      },
+      {
+        title: "硬拉",
+        subtitle: "Deadlift",
+        groups: [
+          {
+            title: "准备阶段",
+            items: [
+              "硬拉使用平底、硬底鞋，不建议穿软底跑鞋。",
+              "技术重建阶段可以从与肩同宽或略窄的站距开始，脚尖自然外开。",
+              "杠铃位于足中附近，从侧面看大约在足中到跖趾关节之间，不要离小腿太远。",
+            ],
+          },
+          {
+            title: "支撑建立",
+            items: [
+              "技术优先时每次都建议重新站起来、重新俯身、重新建立支撑，再拉下一次。",
+              "收住下巴，颈椎和躯干保持一条线。手臂只是钩子，肘关节锁住，不要用二头肌拉。",
+              "骨盆回到相对中立位，核心和骨盆锁成一个整体，避免一俯身就塌腰或过度挺腰。",
+            ],
+          },
+          {
+            title: "抓杠和拉紧",
+            items: [
+              "抓住杠铃后依次执行：提紧杠铃、三头向腋窝方向拧、胸腔打开但不肋骨外翻、脚底压住地面。",
+              "俯身时先髋部后折，再让膝盖适度参与，不要变成先蹲下再用腰拉。",
+              "膝盖顺着脚尖自然外展，小腿可以略微向侧前方走，但不要正前方猛顶。",
+            ],
+          },
+          {
+            title: "起拉过程",
+            items: [
+              "口令：杠贴身、腋下夹紧、脚压地、髋往杠走、身体和杠一起离地。",
+              "起拉时把髋部力量投射到足底，膝、髋、背部张力同步完成。",
+              "避免杠铃离身体太远、屁股先抬、起拉前没拉紧杠铃、用腰猛拽、连续弹地借力。",
+            ],
+          },
+        ],
+      },
+      {
+        title: "卧推",
+        subtitle: "Bench Press",
+        groups: [
+          {
+            title: "握杠与手腕",
+            items: [
+              "杠铃压在掌根附近，不要放在手指根部；手腕、肘和杠铃尽量形成稳定受力线。",
+              "大拇指包住杠铃，大重量卧推不建议空握。",
+              "手掌略微内旋，让杠铃卡在大鱼际和小鱼际之间的纹路附近，手腕不要塌。",
+            ],
+          },
+          {
+            title: "起桥与上背",
+            items: [
+              "脚踩稳，肩胛向屁股方向收住、沉住，胸椎打开，创建上背支撑。",
+              "起桥不是单纯顶腰，而是让胸椎、肩胛、腹压和腿驱动连成整体。",
+              "肩胛稳定，胸口抬高，上背压住凳子，形成稳定反作用力平台。",
+            ],
+          },
+          {
+            title: "下放过程",
+            items: [
+              "离心过程保持全身张力，底部不能松，不要下放到底部后断桥。",
+              "杠铃通常落在胸下部到胸骨下端附近，具体根据卧距和起桥高度调整。",
+              "底部从正面和侧面看小臂尽量接近垂直地面，手腕在肘上方。",
+            ],
+          },
+          {
+            title: "推起过程",
+            items: [
+              "口令：脚踩地、胸顶杠、肘推杠、背别松、推向锁定。",
+              "腿驱动是把身体向上背方向推，不是把屁股顶离凳子。",
+              "常见错误：手腕后折、底部泄力、屁股离凳、肩膀前顶、触胸点不一致。",
+            ],
+          },
+        ],
+      },
+      {
+        title: "三项共同核心",
+        subtitle: "All lifts",
+        groups: [
+          {
+            title: "一句话总结",
+            items: [
+              "先对位，再吸气；先支撑，再发力；先稳定，再追重量。",
+              "出现疼痛、动作明显变形、异常疲劳或恢复明显下降时，优先下调重量、减少组数或暂停训练。",
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}
+
+function renderTechniqueNotes() {
+  const target = $("techniqueNotes");
+  if (!target) return;
+  const data = techniqueNotesData();
+  setTextLanguage("techniqueEyebrow", "技术笔记", "Technique Notes");
+  $("techniqueTitle").textContent = data.title;
+  $("techniqueSubtitle").textContent = data.subtitle;
+  target.innerHTML = `
+    <section class="technique-intro">
+      ${data.intro.map((item) => `<p>${escapeHtml(item)}</p>`).join("")}
+    </section>
+    ${data.sections.map((section) => techniqueSection(section.title, section.subtitle, section.groups)).join("")}
+  `;
 }
 
 function render() {
@@ -9796,11 +10407,13 @@ function render() {
   }
   $("plannerView").classList.toggle("hidden", state.view !== "planner");
   $("workoutView").classList.toggle("hidden", state.view !== "workout");
+  $("techniqueView")?.classList.toggle("hidden", state.view !== "technique");
   renderWeeks();
   renderPlanner();
   renderOpenerTitle();
   renderMeetPrepStrips();
   if (state.view === "workout") renderWorkout();
+  if (state.view === "technique") renderTechniqueNotes();
   translateStaticTextNodes();
   if (window.lucide) window.lucide.createIcons();
   showStartupChangelogOnce();
@@ -10357,8 +10970,9 @@ function bindActions() {
     });
   });
   document.querySelectorAll("[data-home-button]").forEach((button) => {
-    button.addEventListener("click", () => setView("planner"));
+    button.addEventListener("click", () => setView("technique"));
   });
+  $("techniqueBackButton")?.addEventListener("click", () => setView("planner"));
   document.querySelectorAll("[data-warmup-open]").forEach((button) => {
     button.addEventListener("click", () => toggleModal("warmupModal", true));
   });
@@ -10394,7 +11008,7 @@ function bindActions() {
     render();
   });
   $("goWeekButton").addEventListener("click", () => setView("workout"));
-  $("showPlannerButton")?.addEventListener("click", () => setView("planner"));
+  $("showPlannerButton")?.addEventListener("click", () => setView("technique"));
   $("markDayButton")?.addEventListener("click", markDayComplete);
   $("saveLogButton").addEventListener("click", saveDayLog);
   $("exportButton").addEventListener("click", exportPlanPdf);
@@ -10424,6 +11038,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadLicense();
   if (window.location.hash === "#workout") state.view = "workout";
   if (window.location.hash === "#planner") state.view = "planner";
+  if (window.location.hash === "#technique") state.view = "technique";
   populateBirthSelectors();
   populateVariantOptions();
   bindProfile();

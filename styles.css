@@ -1703,6 +1703,102 @@ mark,
   line-height: 1.45;
 }
 
+.technique-view {
+  display: grid;
+  gap: 16px;
+}
+
+.technique-view.hidden {
+  display: none;
+}
+
+.technique-notes {
+  display: grid;
+  gap: 14px;
+}
+
+.technique-intro {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.technique-intro p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.technique-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.technique-card-head {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #fff, #f8fafc);
+}
+
+.technique-card-head span {
+  display: block;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.technique-card-head h3 {
+  margin: 4px 0 0;
+  font-size: 24px;
+}
+
+.technique-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.technique-grid section {
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+}
+
+.technique-grid section:nth-child(1),
+.technique-grid section:nth-child(2) {
+  border-top: 0;
+}
+
+.technique-grid section:nth-child(odd) {
+  border-right: 1px solid var(--line);
+}
+
+.technique-grid h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.technique-grid ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.technique-grid li + li {
+  margin-top: 6px;
+}
+
 .projection-panel {
   margin-top: 12px;
   padding: 12px;
@@ -2426,6 +2522,30 @@ td {
   .changelog-list article {
     grid-template-columns: 1fr;
     gap: 4px;
+  }
+
+  .technique-card-head {
+    padding: 14px;
+  }
+
+  .technique-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .technique-grid section,
+  .technique-grid section:nth-child(1),
+  .technique-grid section:nth-child(2),
+  .technique-grid section:nth-child(odd) {
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .technique-grid section:first-child {
+    border-top: 0;
+  }
+
+  .technique-grid ul {
+    font-size: 13px;
   }
 
   .tool-button {

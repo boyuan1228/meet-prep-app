@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>让卖计划的人没饭吃</title>
-    <link rel="stylesheet" href="./styles.css?v=20260613-6" />
+    <link rel="stylesheet" href="./styles.css?v=20260613-7" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260613-6"></script>
+    <script defer src="./app.js?v=20260613-7"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.12">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.13">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -53,15 +53,16 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v1.12 · 顶部工具按钮功能配色</strong>
-          <small class="update-time">2026-06-13 10:48 更新</small>
+          <strong>v1.13 · 英文模式和技术笔记页</strong>
+          <small class="update-time">2026-06-13 12:35 更新</small>
           <ul>
-            <li>顶部工具按钮改为功能配色：主页、语言、饮食、图表、热身各自有区分。</li>
-            <li>训练表页的导出和清空按钮也加入独立颜色，减少一排白按钮的廉价感。</li>
-            <li>CSS 加入版本号，避免手机浏览器继续读取旧样式缓存。</li>
+            <li>英文模式补齐动态生成区域：阶段、频率、周布局、开把、日志和 RPE 工具。</li>
+            <li>右上角主页图标改为进入三项技术笔记页，内容覆盖深蹲、硬拉和卧推。</li>
+            <li>前言小课堂改为通用说明，MEV/MRV 只保留在 JTS 相关输出中。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v1.12</strong> 2026-06-13 10:48：顶部工具按钮改为功能配色；训练表页导出和清空按钮加入独立颜色；CSS 加版本号避免旧缓存。</p>
             <p><strong>v1.11</strong> 2026-06-13 10:38：英文模式补齐主要静态表单、弹窗、QA、热身和饮食文案；语言键英文状态显示 ZH，中文状态显示 EN。</p>
             <p><strong>v1.10</strong> 2026-06-13 10:20：顶部工具区改为图标按钮，主页入口移到语言键左侧，BMR 计算器合并进饮食弹窗，中文重量统一显示 kg。</p>
             <p><strong>v1.9</strong> 2026-06-13 08:57：加入前言小课堂，删除生成器顶部周期卡，训练可视图改为折线趋势图，并修正比赛周倒推。</p>
@@ -95,7 +96,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.12">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.13">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -525,8 +526,8 @@
               <div class="metric rpe-reference log-rpe-reference" id="rpeReference"></div>
               <div class="section-head compact">
                 <div>
-                  <h3>当天日志</h3>
-                  <p>保存到本机浏览器</p>
+                  <h3 id="dayLogTitle">当天日志</h3>
+                  <p id="dayLogSubtitle">保存到本机浏览器</p>
                 </div>
               </div>
               <label>
@@ -541,11 +542,27 @@
                 <i data-lucide="save"></i>
                 保存日志
               </button>
-              <div class="hint">
+              <div class="hint" id="logAdjustmentHint">
                 如果某组失败或 RPE 明显高于计划，原表建议下调 5-10%。
               </div>
             </aside>
           </section>
+        </section>
+        <section id="techniqueView" class="technique-view hidden">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow" id="techniqueEyebrow">技术笔记</p>
+              <h2 id="techniqueTitle">力量举三项技术笔记</h2>
+              <p id="techniqueSubtitle">深蹲 / 硬拉 / 卧推的支撑、出杠、发力和常见错误。</p>
+            </div>
+            <div class="top-actions">
+              <button class="tool-button" id="techniqueBackButton" type="button" title="返回计划生成器" aria-label="返回计划生成器">
+                <i data-lucide="arrow-left"></i>
+              </button>
+              <button class="language-toggle" data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
+            </div>
+          </header>
+          <section class="technique-notes" id="techniqueNotes"></section>
         </section>
       </main>
     </div>
@@ -763,6 +780,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v1.13</strong><span>2026-06-13 12:35</span><p>英文模式补齐动态生成区域，主页图标改为三项技术笔记页，前言小课堂改为通用说明。</p></article>
           <article><strong>v1.12</strong><span>2026-06-13 10:48</span><p>顶部工具按钮改为功能配色，训练表页导出和清空按钮也加入独立颜色，并给 CSS 加版本号避免旧缓存。</p></article>
           <article><strong>v1.11</strong><span>2026-06-13 10:38</span><p>英文模式补齐主要静态表单、弹窗、QA、热身和饮食文案；语言键英文状态显示 ZH，中文状态显示 EN。</p></article>
           <article><strong>v1.10</strong><span>2026-06-13 10:20</span><p>顶部工具区改为图标按钮，主页入口移到语言键左侧，BMR 计算器合并进饮食弹窗，中文重量统一显示 kg。</p></article>
