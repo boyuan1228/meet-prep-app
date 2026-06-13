@@ -7345,6 +7345,26 @@ function renderSystemChrome() {
   $("plannerSubtitle").textContent = usesJts
     ? "先填写基础信息、周期目标和训练天数，再生成训练周表。"
     : "先选择体系、比赛或测试日期、训练天数和基础水平，再生成对应风格的训练周表。";
+  const sidebarLesson = $("sidebarLesson");
+  if (sidebarLesson) {
+    sidebarLesson.innerHTML = isEnglish()
+      ? `<span class="lesson-kicker">Primer</span>
+        <strong>Read this before generating</strong>
+        <p>This tool turns your date, weekly training days, maxes, and recovery inputs into a periodized plan. It is not a fixed copied template.</p>
+        <ul>
+          <li>MEV/MRV sets the weekly volume range.</li>
+          <li>RPE loads are suggestions; adjust by warm-ups and bar speed.</li>
+          <li>Logs make bodyweight and volume trend charts useful.</li>
+        </ul>`
+      : `<span class="lesson-kicker">前言小课堂</span>
+        <strong>生成前先看这三点</strong>
+        <p>这个工具会把你的日期、每周训练天数、三项数据和恢复情况转成周期结构，不是固定照抄模板。</p>
+        <ul>
+          <li>MEV/MRV 决定每周主项容量范围。</li>
+          <li>RPE 估重只是建议，热身慢或状态差就下调。</li>
+          <li>训练日志会让体重、周容量和累计容量趋势更有参考价值。</li>
+        </ul>`;
+  }
   document.querySelectorAll(".jts-only").forEach((node) => node.classList.toggle("hidden", !usesJts));
   document.querySelectorAll(".jts-sstt-only").forEach((node) =>
     node.classList.toggle("hidden", state.survey.programSystem !== "jtsSstt")
@@ -8327,11 +8347,15 @@ function heightClass() {
 
 function weeksUntilMeet() {
   if (!state.survey.meetDate) return DEFAULT_PLAN_WEEKS;
-  const meet = new Date(`${state.survey.meetDate}T12:00:00`);
+  const [year, month, day] = state.survey.meetDate.split("-").map(Number);
+  const meet = new Date(year, month - 1, day);
   if (Number.isNaN(meet.getTime())) return DEFAULT_PLAN_WEEKS;
-  const ms = meet.getTime() - today.getTime();
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const ms = meet.getTime() - start.getTime();
   if (ms <= 0) return 6;
-  return Math.max(6, Math.round(ms / (7 * 24 * 60 * 60 * 1000)));
+  const daysUntilMeet = Math.ceil(ms / (24 * 60 * 60 * 1000));
+  return Math.max(6, Math.floor(daysUntilMeet / 7) + 1);
 }
 
 function levelScore(lift) {
@@ -9829,6 +9853,74 @@ function liftLegendHtml() {
   </div>`;
 }
 
+function smoothChartPath(points) {
+  if (!points.length) return "";
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+  return points
+    .map((point, index) => {
+      if (index === 0) return `M ${point.x} ${point.y}`;
+      const previous = points[index - 1];
+      const handle = (point.x - previous.x) / 2;
+      return `C ${previous.x + handle} ${previous.y}, ${point.x - handle} ${point.y}, ${point.x} ${point.y}`;
+    })
+    .join(" ");
+}
+
+function multiLiftLineChartHtml(title, rows) {
+  const width = 620;
+  const height = 190;
+  const padLeft = 34;
+  const padRight = 18;
+  const padTop = 18;
+  const padBottom = 28;
+  const lifts = ["squat", "bench", "deadlift"];
+  const labels = isEnglish()
+    ? { squat: "Squat", bench: "Bench", deadlift: "Deadlift" }
+    : { squat: "深蹲", bench: "卧推", deadlift: "硬拉" };
+  const max = Math.max(1, ...rows.flatMap((row) => lifts.map((lift) => row[lift] || 0)));
+  const plotWidth = width - padLeft - padRight;
+  const plotHeight = height - padTop - padBottom;
+  const xFor = (index) => (rows.length > 1 ? padLeft + (index / (rows.length - 1)) * plotWidth : padLeft + plotWidth / 2);
+  const yFor = (value) => height - padBottom - (value / max) * plotHeight;
+  const grid = [0.25, 0.5, 0.75, 1]
+    .map((ratio) => {
+      const y = yFor(max * ratio);
+      return `<line class="grid-line" x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}"></line>`;
+    })
+    .join("");
+  const series = lifts
+    .map((lift) => {
+      const points = rows.map((row, index) => ({ x: xFor(index), y: yFor(row[lift] || 0), row }));
+      const path = smoothChartPath(points);
+      const dots = points
+        .filter((_, index) => index === 0 || index === points.length - 1 || index % 4 === 0)
+        .map(
+          (point) =>
+            `<circle class="${lift}" cx="${point.x}" cy="${point.y}" r="3"><title>W${point.row.week} ${labels[lift]} ${point.row[lift] || 0}</title></circle>`
+        )
+        .join("");
+      return `<path class="${lift}" d="${path}"></path>${dots}`;
+    })
+    .join("");
+  const weekLabels = rows
+    .filter((_, index) => index === 0 || index === rows.length - 1 || index % 4 === 0)
+    .map((row, index, filtered) => {
+      const originalIndex = rows.findIndex((item) => item.week === row.week);
+      return `<text x="${xFor(originalIndex)}" y="${height - 7}" text-anchor="middle">W${row.week}</text>`;
+    })
+    .join("");
+  return `<section class="chart-card">
+    <div class="chart-head"><h4>${escapeHtml(title)}</h4>${liftLegendHtml()}</div>
+    <svg class="line-chart multi-line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(title)}">
+      ${grid}
+      <line x1="${padLeft}" y1="${height - padBottom}" x2="${width - padRight}" y2="${height - padBottom}"></line>
+      <line x1="${padLeft}" y1="${padTop}" x2="${padLeft}" y2="${height - padBottom}"></line>
+      ${series}
+      ${weekLabels}
+    </svg>
+  </section>`;
+}
+
 function volumeBarsHtml(title, rows) {
   const max = Math.max(1, ...rows.flatMap((row) => [row.squat, row.bench, row.deadlift]));
   const labels = isEnglish()
@@ -9908,9 +10000,12 @@ function renderAnalyticsCharts() {
   const cumulative = cumulativeVolumeData(weekly);
   const bodyweight = weeklyBodyweightData();
   target.innerHTML = [
-    volumeBarsHtml("Weekly Volume For Each Main Lift", weekly),
+    multiLiftLineChartHtml(isEnglish() ? "Weekly Volume For Each Main Lift" : "三大项每周组数趋势", weekly),
     bodyweightChartHtml(bodyweight),
-    volumeBarsHtml("Weekly Cumulative Volume For Each Main Lift", cumulative),
+    multiLiftLineChartHtml(
+      isEnglish() ? "Weekly Cumulative Volume For Each Main Lift" : "三大项累计组数趋势",
+      cumulative
+    ),
   ].join("");
 }
 

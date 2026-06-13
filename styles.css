@@ -382,6 +382,41 @@ button:hover {
   padding: 16px;
 }
 
+.sidebar-lesson {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 4px solid var(--accent-2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-lesson .lesson-kicker {
+  color: #f3b199;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.sidebar-lesson strong {
+  color: #fff;
+  font-size: 15px;
+}
+
+.sidebar-lesson p,
+.sidebar-lesson ul {
+  margin: 0;
+  color: #b9c7d5;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sidebar-lesson ul {
+  padding-left: 16px;
+}
+
 .profile-toggle {
   display: none;
   align-items: center;
@@ -1164,7 +1199,7 @@ mark,
 
 .log-rpe-reference {
   margin-bottom: 12px;
-  padding: 10px;
+  padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface-2);
@@ -1179,8 +1214,8 @@ mark,
 .rpe-reference .rpe-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 7px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .rpe-reference .rpe-chip {
@@ -1189,7 +1224,7 @@ mark,
   align-items: center;
   gap: 8px;
   border-radius: 7px;
-  padding: 6px 8px;
+  padding: 8px 10px;
   background: #fff;
   font-size: 12px;
   line-height: 1.15;
@@ -1421,7 +1456,7 @@ mark,
   border-radius: 8px;
   background: var(--surface-2);
   padding: 12px;
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .chart-head {
@@ -1513,7 +1548,7 @@ mark,
 
 .line-chart {
   width: 100%;
-  min-width: 520px;
+  min-width: 0;
   height: auto;
   background: #fff;
   border-radius: 8px;
@@ -1524,7 +1559,12 @@ mark,
   stroke-width: 1;
 }
 
-.line-chart polyline {
+.line-chart .grid-line {
+  stroke: #edf2f6;
+}
+
+.line-chart polyline,
+.line-chart path {
   fill: none;
   stroke: var(--accent);
   stroke-width: 3;
@@ -1532,8 +1572,32 @@ mark,
   stroke-linecap: round;
 }
 
+.line-chart path.squat {
+  stroke: #0e7c7b;
+}
+
+.line-chart path.bench {
+  stroke: #d84f2a;
+}
+
+.line-chart path.deadlift {
+  stroke: #526271;
+}
+
 .line-chart circle {
   fill: var(--accent-2);
+}
+
+.line-chart circle.squat {
+  fill: #0e7c7b;
+}
+
+.line-chart circle.bench {
+  fill: #d84f2a;
+}
+
+.line-chart circle.deadlift {
+  fill: #526271;
 }
 
 .line-chart text {
@@ -2123,7 +2187,7 @@ td {
   }
 
   .rpe-reference .rpe-chip {
-    padding: 6px 8px;
+    padding: 8px 10px;
     white-space: nowrap;
   }
 
