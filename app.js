@@ -7404,6 +7404,245 @@ function renderToolLanguage() {
   }
 }
 
+const STATIC_TEXT_ORIGINALS = new WeakMap();
+const STATIC_I18N = new Map(
+  Object.entries({
+    "让卖计划的人没饭吃": "No More Overpriced Templates",
+    "注意事项": "Notes",
+    "建议值随输入变化，训练时按当天状态微调。": "Suggested values change with your inputs. Adjust by your actual readiness on the day.",
+    "适合人群": "Who This Is For",
+    "已掌握三大项基础，并希望按周期安排训练的人。": "Lifters who already know the three competition lifts and want a periodized plan.",
+    "风险声明": "Risk Notice",
+    "不替代医疗、康复或现场教练；疼痛或异常疲劳时请下调或暂停。": "This does not replace medical care, rehab, or in-person coaching. Reduce load or pause if pain or unusual fatigue appears.",
+    "生成器特色": "Generator Highlights",
+    "多体系模板": "Multiple Systems",
+    "MEV/MRV 建议": "MEV/MRV Suggestions",
+    "RPE 估重": "RPE Load Estimates",
+    "降重组拆分": "Backdown Splits",
+    "BMR 计算器": "BMR Calculator",
+    "热身动作库": "Warm-up Library",
+    "训练图表": "Training Charts",
+    "PDF 导出": "PDF Export",
+    "激活码": "Access Code",
+    "激活并进入": "Unlock",
+    "更新内容": "Latest Update",
+    "历史日志": "History",
+    "查看历史日志": "View History",
+    "常见问题 QA": "FAQ",
+    "降重组为什么显示 0？": "Why do backdown sets show 0?",
+    "不是错误。0 代表这里由疲劳下降系统生成；你填入已完成组数后，系统会自动列出剩余降重组。": "It is not an error. 0 means the fatigue-drop system will generate the work. Enter completed sets and the remaining backdowns appear automatically.",
+    "组间休息多久？": "How long should I rest?",
+    "主项和主项变式通常休息 3-5 分钟，特别重的日子可到 6 分钟；辅助项通常 1-2 分钟。": "Main lifts and close variants usually rest 3-5 minutes. Very heavy days can use up to 6 minutes. Accessories usually rest 1-2 minutes.",
+    "变式动作怎么估重？": "How do I estimate variants?",
+    "大多数变式可先按主项低 10-15% 估算，再根据推荐 RPE 和热身手感微调。": "Most variants can start around 10-15% below the main lift, then adjust by target RPE and warm-up feel.",
+    "RPE 做高了怎么办？": "What if I overshoot RPE?",
+    "后续工作组下调约 5-7.5 kg，或重复同重量但减少组数，优先完成目标次数和动作质量。": "Drop later work by about 5-7.5 kg, or repeat the load with fewer sets. Prioritize reps and technique.",
+    "本周工作组太难怎么办？": "What if this week is too hard?",
+    "直接降重约 5%，把目标次数、组数和动作质量放在第一位。": "Drop load by about 5% and prioritize the prescribed reps, sets, and movement quality.",
+    "辅助项每周都要加重量吗？": "Do accessories need weekly load jumps?",
+    "不一定。辅助项可以先加次数；如果上周太难，重复同重量即可。": "Not always. Progress accessories with reps first. If last week was too hard, repeat the load.",
+    "力量周期": "Strength Cycle",
+    "计划生成 · 训练记录 · PDF 导出": "Plan Builder · Training Log · PDF Export",
+    "个人数据": "Profile",
+    "姓名": "Name",
+    "深蹲": "Squat",
+    "卧推": "Bench",
+    "硬拉": "Deadlift",
+    "第 15 周开把": "Week 15 Openers",
+    "用于比赛周的 D1/D2/D3 和比赛日推荐重量": "Used for D1/D2/D3 and meet-day recommendations.",
+    "蹲": "Sq",
+    "推": "Bench",
+    "拉": "Dead",
+    "卧推变式": "Bench Variant",
+    "深蹲变式": "Squat Variant",
+    "硬拉变式": "Deadlift Variant",
+    "动作": "Exercise",
+    "变式训练最大值": "Variant Training Max",
+    "自定义力量周期训练体系": "Custom Strength Cycle System",
+    "力量周期计划生成器": "Strength Cycle Plan Builder",
+    "先填写基础信息、周期目标和训练天数，再生成训练周表。": "Fill in baseline data, cycle target, and training days, then generate the weekly plan.",
+    "开始前问卷": "Pre-Plan Questionnaire",
+    "这些输入用于自动给出容量、阶段比例和频率建议。": "These inputs drive volume, phase ratio, and frequency suggestions.",
+    "需要测试 PR": "Need PR Test",
+    "模板介入": "Template Model",
+    "默认自动推荐；需要时再手动指定。": "Auto-recommended by default. Override only when needed.",
+    "模型说明": "Model Notes",
+    "线性模型：1 组顶组 + 降重组，逐周推进 RPE/重量。交替模型：重轻交替。低中高模型：高/中/低日分配，更适合进阶和大体重。": "Linear: top set plus backdowns with weekly RPE/load progression. Alternating: heavy/light rotation. Low-medium-high: high/medium/low day distribution, better for advanced and heavier lifters.",
+    "训练体系": "Training System",
+    "模型": "Model",
+    "自动推荐": "Auto",
+    "线性模型": "Linear",
+    "交替模型": "Alternating",
+    "低中高模型": "Low-Medium-High",
+    "拟定比赛日期": "Planned Meet Date",
+    "性别": "Sex",
+    "女性": "Female",
+    "男性": "Male",
+    "其他/不指定": "Other / Prefer Not To Say",
+    "出生年份": "Birth Year",
+    "出生月份": "Birth Month",
+    "每周训练天数": "Training Days Per Week",
+    "每周 3 天": "3 days/week",
+    "每周 4 天": "4 days/week",
+    "每周 5 天": "5 days/week",
+    "每周 6 天": "6 days/week",
+    "身高 cm": "Height cm",
+    "体重": "Bodyweight",
+    "训练经验": "Training Experience",
+    "初学者：严格力量训练不足 4 年": "Beginner: under 4 years of strict strength training",
+    "中级：严格力量训练 4-8 年": "Intermediate: 4-8 years of strict strength training",
+    "高级：严格力量训练 8-12 年": "Advanced: 8-12 years of strict strength training",
+    "非常高级：严格力量训练超过 12 年": "Very advanced: over 12 years of strict strength training",
+    "深蹲水平": "Squat Level",
+    "卧推水平": "Bench Level",
+    "硬拉水平": "Deadlift Level",
+    "入门：≤ 体重 1.25 倍": "Entry: <= 1.25x bodyweight",
+    "中级：约体重 1.25-1.75 倍": "Intermediate: about 1.25-1.75x bodyweight",
+    "高级：约体重 1.75-2.25 倍": "Advanced: about 1.75-2.25x bodyweight",
+    "精英：≥ 体重 2.25 倍": "Elite: >= 2.25x bodyweight",
+    "入门：≤ 体重 0.8 倍": "Entry: <= 0.8x bodyweight",
+    "中级：约体重 0.8-1.2 倍": "Intermediate: about 0.8-1.2x bodyweight",
+    "高级：约体重 1.2-1.6 倍": "Advanced: about 1.2-1.6x bodyweight",
+    "精英：≥ 体重 1.6 倍": "Elite: >= 1.6x bodyweight",
+    "入门：≤ 体重 1.5 倍": "Entry: <= 1.5x bodyweight",
+    "中级：约体重 1.5-2 倍": "Intermediate: about 1.5-2x bodyweight",
+    "高级：约体重 2-2.5 倍": "Advanced: about 2-2.5x bodyweight",
+    "精英：≥ 体重 2.5 倍": "Elite: >= 2.5x bodyweight",
+    "饮食": "Nutrition",
+    "较差：热量不足或有意赤字": "Poor: not enough calories or intentional deficit",
+    "一般：热量平衡但未管理宏量和时机": "Average: calories balanced, macros/timing unmanaged",
+    "良好：热量平衡且管理宏量和时机": "Good: calories balanced with macro/timing control",
+    "睡眠": "Sleep",
+    "差：平均 5 小时或更少": "Poor: 5 hours or less on average",
+    "达标：平均 5-7 小时": "Adequate: 5-7 hours on average",
+    "好：平均 7 小时或更多": "Good: 7 hours or more on average",
+    "压力": "Stress",
+    "较低：工作体力要求低，力量训练是主要运动": "Low: low physical job demands; strength training is the main sport",
+    "平均：每周 1-2 次其他体力活动或压力波动": "Average: 1-2 other physical activities weekly or mixed stress",
+    "较高：体力劳动/其他项目/高压力生活方式": "High: physical labor, other sports, or high-stress lifestyle",
+    "历史训练量": "Historical Training Volume",
+    "1：每周 1 次，最少辅助": "1: once weekly, minimal accessories",
+    "2：每周 1-2 次，适度辅助": "2: 1-2 times weekly, moderate accessories",
+    "3：每周 2 次，大量辅助": "3: twice weekly, high accessories",
+    "4：每周 2-3 次，适度到大量辅助": "4: 2-3 times weekly, moderate to high accessories",
+    "5：每周 3 次以上，适度到大量辅助": "5: 3+ times weekly, moderate to high accessories",
+    "历史恢复能力": "Historical Recovery",
+    "一：酸痛 3 天，难以增加训练量": "1: sore for 3 days, hard to add volume",
+    "二：酸痛 2 天": "2: sore for 2 days",
+    "三：酸痛 1-2 天，对平均训练量有反应": "3: sore 1-2 days, responds to average volume",
+    "四：很少超过 1 天酸痛，可增加训练量": "4: rarely sore over 1 day, can add volume",
+    "五：很少酸痛，对高训练量有反应": "5: rarely sore, responds to high volume",
+    "自动建议": "Auto Suggestions",
+    "根据比赛日期倒推周期。": "Cycle is calculated backward from the meet date.",
+    "容量范围": "Volume Range",
+    "阶段与频率": "Phases and Frequency",
+    "阶段安排": "Phase Layout",
+    "训练频率": "Training Frequency",
+    "原因与逐周 Layout": "Reasoning and Weekly Layout",
+    "修改建议与原因": "Adjustment Suggestions",
+    "计划 Layout": "Plan Layout",
+    "所有重量和容量都是建议值。当天疼痛、动作变形或 RPE 明显偏高时，应优先下调重量或减少组数。": "All loads and volumes are suggestions. If pain, technique breakdown, or high RPE appears, reduce load or sets first.",
+    "疑问与建议": "Questions and Suggestions",
+    "训练安排、动作替换、导出问题或模板建议，可以联系微信：": "For plan setup, exercise swaps, export issues, or template suggestions, contact WeChat:",
+    "动作和建议强度": "Exercises and Target Intensity",
+    "组": "Sets",
+    "次数": "Reps",
+    "估重": "Load",
+    "备注": "Notes",
+    "当天日志": "Daily Log",
+    "保存到本机浏览器": "Saved in this browser",
+    "当天体重": "Bodyweight Today",
+    "训练反馈": "Training Notes",
+    "保存日志": "Save Log",
+    "如果某组失败或 RPE 明显高于计划，原表建议下调 5-10%。": "If a set fails or RPE is clearly above target, reduce the following work by 5-10%.",
+    "完成重量": "Completed Load",
+    "完成次数": "Completed Reps",
+    "完成 RPE": "Completed RPE",
+    "计算 1RM": "Calculate 1RM",
+    "按 RPE 表估算当天 e1RM。": "Estimate daily e1RM from the RPE table.",
+    "建议重量": "Suggested Load",
+    "目标次数": "Target Reps",
+    "目标 RPE": "Target RPE",
+    "计算建议重量": "Calculate Load",
+    "输入 e1RM、次数和 RPE 后给出建议重量。": "Enter e1RM, reps, and RPE to get a suggested load.",
+    "垂直饮食法": "Vertical Diet",
+    "垂直饮食法的核心是先用少量高营养密度食物打底，再用容易消化的主食把热量“垂直”加上去。它适合训练量高、需要稳定体重和恢复的人。": "The Vertical Diet starts with nutrient-dense foods, then adds easy-to-digest carbs to raise calories. It suits high-volume lifters who need stable bodyweight and recovery.",
+    "1. 先定热量": "1. Set Calories First",
+    "用 BMR 计算器估算维持热量。增肌期从维持 +200 到 +400 千卡开始；减脂期从维持 -200 到 -500 千卡开始。": "Use the BMR calculator to estimate maintenance. For gaining, start at maintenance +200 to +400 kcal. For cutting, start at maintenance -200 to -500 kcal.",
+    "2. 蛋白质固定": "2. Fix Protein",
+    "每天约 1.6-2.2 g/kg 体重。优先牛肉、鸡蛋、鱼、鸡胸、乳制品；肠胃不适就减少乳制品。": "Use about 1.6-2.2 g/kg bodyweight daily. Prioritize beef, eggs, fish, chicken breast, and dairy; reduce dairy if digestion suffers.",
+    "3. 碳水向上加": "3. Raise Carbs",
+    "训练日前后用白米饭、土豆、米粉等易消化碳水补足热量。体重 7 天均值不上升，再每天加 25-50 g 碳水。": "Use easy carbs like white rice, potatoes, or rice noodles around training. If 7-day average bodyweight is not rising, add 25-50 g carbs per day.",
+    "4. 微量营养打底": "4. Cover Micronutrients",
+    "每天保留蔬菜、水果和电解质来源，比如菠菜、胡萝卜、橙子、盐、酸奶或高汤。不要只吃米饭和肉。": "Keep vegetables, fruit, and electrolytes daily: spinach, carrots, oranges, salt, yogurt, or broth. Do not rely only on rice and meat.",
+    "5. 执行模板": "5. Execution Template",
+    "训练前 1.5-3 小时吃蛋白 + 碳水；训练后吃蛋白 + 碳水；睡前避免太油太撑，优先保证睡眠。": "Eat protein plus carbs 1.5-3 hours before training; eat protein plus carbs after. Avoid heavy fatty meals before bed and protect sleep.",
+    "6. 每周调整": "6. Weekly Adjustments",
+    "看体重 7 天均值、训练表现和消化状态。胃胀、睡差、训练沉重时，先减少脂肪和难消化食物，再调总热量。": "Review 7-day average bodyweight, performance, and digestion. If bloated, sleeping poorly, or training feels heavy, reduce fat and hard-to-digest foods before changing total calories.",
+    "有肾脏疾病、消化系统疾病、糖尿病或特殊饮食限制时，先咨询医生或营养师。这个方法是训练饮食框架，不是医疗建议。": "If you have kidney disease, digestive disease, diabetes, or special dietary restrictions, consult a physician or dietitian first. This is a training nutrition framework, not medical advice.",
+    "年龄": "Age",
+    "活动水平": "Activity Level",
+    "久坐/很少运动": "Sedentary / little exercise",
+    "每周运动 1-3 次": "Exercise 1-3 days/week",
+    "每周运动 4-5 次": "Exercise 4-5 days/week",
+    "每周高强度 6-7 次": "Hard exercise 6-7 days/week",
+    "体力工作或非常高活动量": "Physical job or very high activity",
+    "计算 BMR": "Calculate BMR",
+    "输入数据后计算基础代谢和维持热量。": "Enter values to calculate BMR and estimated maintenance calories.",
+    "训练前热身动作": "Pre-Training Warm-up",
+    "每次训练前选 8-12 分钟完成。下肢日多做髋、踝和核心；上肢日多做胸椎、肩胛和肩袖。": "Spend 8-12 minutes before training. Lower days emphasize hips, ankles, and trunk; upper days emphasize T-spine, scapulae, and rotator cuff.",
+    "全身准备": "General Prep",
+    "反向雪天使 10-15 次": "Reverse snow angels 10-15 reps",
+    "胸椎旋转 8-10 次/侧": "T-spine rotations 8-10/side",
+    "弹力带侧向走 10-15 步/侧": "Banded side shuffle 10-15 steps/side",
+    "高抬腿 15 米": "High knees 15 m",
+    "虫爬 15 米": "Inchworms 15 m",
+    "猫牛式 8-10 次": "Cat-camels 8-10 reps",
+    "沙发拉伸 60 秒/侧": "Couch stretch 60 sec/side",
+    "世界最伟大拉伸 5 次/侧": "World's greatest stretch 5/side",
+    "髋膝核心": "Hips, Knees, Trunk",
+    "髋飞机 10 次/侧": "Hip airplanes 10/side",
+    "哥萨克深蹲 10 次/侧": "Cossack squats 10/side",
+    "单腿臀桥 10-12 次/侧": "Single-leg glute bridge 10-12/side",
+    "Y-T-W 肩胛激活 8-12 次": "Y-T-W scap activation 8-12 reps",
+    "单腿分腿蹲 8-10 次/侧": "Single-leg split squat 8-10/side",
+    "鸟狗 8-10 次/侧": "Bird dogs 8-10 reps/side",
+    "死虫 8-10 次/侧": "Dead bugs 8-10 reps/side",
+    "前脚抬高膝前移 10 次/侧": "Front-foot-elevated knee drive 10/side",
+    "踝关节灵活性": "Ankle Mobility",
+    "踝背屈 PAILs/RAILs 2-3 轮": "Dorsiflexion PAILs/RAILs 2-3 rounds",
+    "弹力带踝背屈松动 12-15 次/侧": "Banded dorsiflexion mobilization 12-15/side",
+    "胫骨侧向滑动 10-12 次/侧": "Lateral tibial glide 10-12/side",
+    "训练可视图": "Training Charts",
+    "更新日志": "Update Log",
+  })
+);
+
+function translateStaticTextNodes() {
+  if (!document.body) return;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+      return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    },
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach((node) => {
+    if (!STATIC_TEXT_ORIGINALS.has(node)) STATIC_TEXT_ORIGINALS.set(node, node.nodeValue);
+    const original = STATIC_TEXT_ORIGINALS.get(node);
+    if (!isEnglish()) {
+      node.nodeValue = original;
+      return;
+    }
+    const key = original.replace(/\s+/g, " ").trim();
+    const translated = STATIC_I18N.get(key);
+    if (!translated) return;
+    node.nodeValue = original.replace(key, translated);
+  });
+}
+
 function renderSystemChrome() {
   const system = currentProgramSystem();
   const usesJts = Boolean(system.usesJtsSurvey);
@@ -9535,6 +9774,7 @@ function render() {
   renderActivationGate();
   renderLanguage();
   if (!hasActiveLicense()) {
+    translateStaticTextNodes();
     if (window.lucide) window.lucide.createIcons();
     return;
   }
@@ -9553,6 +9793,7 @@ function render() {
   renderOpenerTitle();
   renderMeetPrepStrips();
   if (state.view === "workout") renderWorkout();
+  translateStaticTextNodes();
   if (window.lucide) window.lucide.createIcons();
   showStartupChangelogOnce();
 }
