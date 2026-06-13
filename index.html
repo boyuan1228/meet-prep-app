@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>让卖计划的人没饭吃</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260613-6" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260613-5"></script>
+    <script defer src="./app.js?v=20260613-6"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.11">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.12">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -53,15 +53,16 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v1.11 · 英文模式静态文案补全</strong>
-          <small class="update-time">2026-06-13 10:38 更新</small>
+          <strong>v1.12 · 顶部工具按钮功能配色</strong>
+          <small class="update-time">2026-06-13 10:48 更新</small>
           <ul>
-            <li>英文模式补齐主要静态表单、弹窗、QA、热身和饮食文案。</li>
-            <li>语言键英文状态显示 ZH，中文状态显示 EN，避免英文界面出现“中文”。</li>
-            <li>顶部按钮保持纯图标，说明放在鼠标悬停和无障碍标签里。</li>
+            <li>顶部工具按钮改为功能配色：主页、语言、饮食、图表、热身各自有区分。</li>
+            <li>训练表页的导出和清空按钮也加入独立颜色，减少一排白按钮的廉价感。</li>
+            <li>CSS 加入版本号，避免手机浏览器继续读取旧样式缓存。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v1.11</strong> 2026-06-13 10:38：英文模式补齐主要静态表单、弹窗、QA、热身和饮食文案；语言键英文状态显示 ZH，中文状态显示 EN。</p>
             <p><strong>v1.10</strong> 2026-06-13 10:20：顶部工具区改为图标按钮，主页入口移到语言键左侧，BMR 计算器合并进饮食弹窗，中文重量统一显示 kg。</p>
             <p><strong>v1.9</strong> 2026-06-13 08:57：加入前言小课堂，删除生成器顶部周期卡，训练可视图改为折线趋势图，并修正比赛周倒推。</p>
             <p><strong>v1.8</strong> 2026-06-13 00:28：手机端阶段进度收拢为当前阶段摘要，并修复周期状态卡横向溢出。</p>
@@ -94,7 +95,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.11">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.12">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -762,6 +763,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v1.12</strong><span>2026-06-13 10:48</span><p>顶部工具按钮改为功能配色，训练表页导出和清空按钮也加入独立颜色，并给 CSS 加版本号避免旧缓存。</p></article>
           <article><strong>v1.11</strong><span>2026-06-13 10:38</span><p>英文模式补齐主要静态表单、弹窗、QA、热身和饮食文案；语言键英文状态显示 ZH，中文状态显示 EN。</p></article>
           <article><strong>v1.10</strong><span>2026-06-13 10:20</span><p>顶部工具区改为图标按钮，主页入口移到语言键左侧，BMR 计算器合并进饮食弹窗，中文重量统一显示 kg。</p></article>
           <article><strong>v1.9</strong><span>2026-06-13 08:57</span><p>加入前言小课堂，删除生成器顶部周期卡，训练可视图改为折线趋势图，并修正比赛周倒推。</p></article>

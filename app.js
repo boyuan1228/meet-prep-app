@@ -7618,6 +7618,14 @@ const STATIC_I18N = new Map(
   })
 );
 
+[
+  ["v1.12 · 顶部工具按钮功能配色", "v1.12 · Functional Colors for Top Tools"],
+  ["顶部工具按钮改为功能配色：主页、语言、饮食、图表、热身各自有区分。", "Top tool buttons now use functional colors for Home, Language, Nutrition, Charts, and Warm-up."],
+  ["训练表页的导出和清空按钮也加入独立颜色，减少一排白按钮的廉价感。", "The training page export and clear buttons also get distinct colors to avoid a row of plain white buttons."],
+  ["CSS 加入版本号，避免手机浏览器继续读取旧样式缓存。", "The CSS file now has a cache-busting version so mobile browsers stop using stale styles."],
+  ["顶部工具按钮改为功能配色，训练表页导出和清空按钮也加入独立颜色，并给 CSS 加版本号避免旧缓存。", "Top tools now use functional colors; export and clear also get distinct colors; CSS is cache-busted to avoid stale styling."],
+].forEach(([zh, en]) => STATIC_I18N.set(zh, en));
+
 function translateStaticTextNodes() {
   if (!document.body) return;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
