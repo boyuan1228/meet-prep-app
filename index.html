@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ForgePlan 自定义训练计划库</title>
-    <link rel="stylesheet" href="./styles.css?v=20260616-v2" />
+    <link rel="stylesheet" href="./styles.css?v=20260616-v21" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260616-v2"></script>
+    <script defer src="./app.js?v=20260616-v21"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.0">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.1">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -30,12 +30,19 @@
           </div>
           <div class="feature-list">
             <span>多体系模板</span>
+            <span>体系分流</span>
+            <span>肌肥大周期</span>
+            <span>渐进超负荷</span>
+            <span>弱项反馈</span>
+            <span>三项变式库</span>
+            <span>样本模式</span>
             <span>MEV/MRV 建议</span>
             <span>RPE 估重</span>
             <span>降重组拆分</span>
             <span>BMR 计算器</span>
             <span>热身动作库</span>
             <span>训练图表</span>
+            <span>刷新清空</span>
             <span>PDF 导出</span>
           </div>
         </section>
@@ -53,15 +60,17 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v2.0 · 样本模式与临时数据</strong>
+          <strong>v2.1 · 体系分流与变式笔记</strong>
           <small class="update-time">2026-06-16 更新</small>
           <ul>
-            <li>v2 继续使用样本模式：输入激活码后直接进入计划生成器，不出现登录或注册。</li>
-            <li>训练数据只保留在当前页面内，刷新后自动清空，适合演示和试用。</li>
-            <li>登录注册、学员档案和云端保存功能先保留给 v3 版本。</li>
+            <li>健美式肌肥大和专属力训体系分开；肌肥大不再询问比赛日期或测试 PR。</li>
+            <li>肌肥大周期加入基础容量期、渐进超负荷期和减量评估期。</li>
+            <li>力量举三项技术笔记新增深蹲、卧推、硬拉变式选择与使用说明。</li>
+            <li>v2 继续使用样本模式：输入激活码后直接进入，刷新后自动清空临时训练数据。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v2.0</strong> 2026-06-16：保留 v2 样本模式：输入激活码后直接进入计划生成器；训练数据只在当前页面内临时保存，刷新后自动清空；登录注册和云端学员档案留到 v3。</p>
             <p><strong>v1.13</strong> 2026-06-13 12:35：英文模式补齐动态生成区域：阶段、频率、周布局、开把、日志和 RPE 工具；右上角主页图标改为进入三项技术笔记页；前言小课堂改为通用说明。</p>
             <p><strong>v1.12</strong> 2026-06-13 10:48：顶部工具按钮改为功能配色；训练表页导出和清空按钮加入独立颜色；CSS 加版本号避免旧缓存。</p>
             <p><strong>v1.11</strong> 2026-06-13 10:38：英文模式补齐主要静态表单、弹窗、QA、热身和饮食文案；语言键英文状态显示 ZH，中文状态显示 EN。</p>
@@ -97,7 +106,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.0">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.1">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -271,6 +280,7 @@
                   <label>
                     训练体系
                     <select id="programSystemInput">
+                      <option value="bodybuilding">肌肥大健美周期</option>
                       <option value="jtsSstt">JTS × SSTT 十五周</option>
                       <option value="sheiko">Sheiko</option>
                       <option value="calgary">Calgary</option>
@@ -781,6 +791,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v2.1</strong><span>2026-06-16</span><p>健美式肌肥大和专属力训体系分开；肌肥大不再询问比赛日期或测试 PR，并使用 12 周基础容量、渐进超负荷、减量评估样本周期；技术笔记新增三项变式选择与使用说明；生成器特色补充体系分流、样本模式、弱项反馈和三项变式库。</p></article>
           <article><strong>v2.0</strong><span>2026-06-16</span><p>保留 v2 样本模式：输入激活码后直接进入计划生成器；训练数据只在当前页面内临时保存，刷新后自动清空；登录注册和云端学员档案留到 v3。</p></article>
           <article><strong>v1.13</strong><span>2026-06-13 12:35</span><p>英文模式补齐动态生成区域，主页图标改为三项技术笔记页，前言小课堂改为通用说明。</p></article>
           <article><strong>v1.12</strong><span>2026-06-13 10:48</span><p>顶部工具按钮改为功能配色，训练表页导出和清空按钮也加入独立颜色，并给 CSS 加版本号避免旧缓存。</p></article>

@@ -212,6 +212,10 @@ button:hover {
   font-weight: 850;
 }
 
+.activation-updates > strong {
+  display: block;
+}
+
 .update-time {
   display: block;
   margin-top: 3px;
@@ -235,6 +239,10 @@ button:hover {
   line-height: 1.35;
 }
 
+.activation-updates li {
+  margin: 3px 0;
+}
+
 .activation-updates details {
   margin-top: 6px;
   color: var(--muted);
@@ -246,6 +254,12 @@ button:hover {
   cursor: pointer;
   color: var(--accent);
   font-weight: 800;
+}
+
+.activation-updates details p {
+  margin: 6px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
 }
 
 .activation-faq {
@@ -1676,9 +1690,9 @@ mark,
 
 .changelog-list article {
   display: grid;
-  grid-template-columns: 58px 128px minmax(0, 1fr);
-  gap: 10px;
-  align-items: start;
+  grid-template-columns: minmax(54px, 68px) minmax(112px, 138px) minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: baseline;
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -1688,12 +1702,16 @@ mark,
 .changelog-list strong {
   color: var(--accent);
   font-size: 15px;
+  line-height: 1.45;
+  white-space: nowrap;
 }
 
 .changelog-list span {
   color: var(--muted);
   font-size: 12px;
   font-weight: 800;
+  line-height: 1.45;
+  white-space: nowrap;
 }
 
 .changelog-list p {
@@ -2520,8 +2538,12 @@ td {
   }
 
   .changelog-list article {
-    grid-template-columns: 1fr;
-    gap: 4px;
+    grid-template-columns: minmax(52px, auto) 1fr;
+    gap: 4px 10px;
+  }
+
+  .changelog-list p {
+    grid-column: 1 / -1;
   }
 
   .technique-card-head {
