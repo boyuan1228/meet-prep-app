@@ -7577,6 +7577,7 @@ function renderToolLanguage() {
   setButtonLanguage("[data-body-profile-open]", "建立档案", "Body profile");
   setButtonLanguage("[data-analytics-open]", "训练图表", "Training charts");
   setButtonLanguage("[data-warmup-open]", "热身动作", "Warm-up drills");
+  setButtonLanguage("[data-technique-button]", "技术笔记", "Technique notes");
   setButtonLanguage("#exportButton", "导出 PDF", "Export PDF");
   setButtonLanguage("#resetButton", "删除日志", "Delete logs");
   setButtonLanguage("#backupButton", "备份/恢复数据", "Backup or restore data");
@@ -7857,6 +7858,12 @@ const STATIC_I18N = new Map(
 );
 
 [
+  ["v2.4 · 修复右上主页按钮", "v2.4 · Top Home Button Fix"],
+  ["2026-06-16 23:02 更新", "Updated 2026-06-16 23:02"],
+  ["修复计划生成器右上角房子按钮点了没反应的问题。", "Fixed the planner top-right home icon not responding."],
+  ["计划生成器页的房子按钮现在进入技术笔记页；训练表页的房子按钮返回计划生成器。", "The planner home icon now opens Technique Notes; the workout-table home icon returns to the planner."],
+  ["继续保留 v2.3 的围度档案和人体模型。", "Keeps the v2.3 body profile records and body model."],
+  ["修复计划生成器右上角房子按钮无反馈：计划生成器页的房子按钮进入技术笔记页，训练表页的房子按钮返回计划生成器。", "Fixes the planner top-right home icon: on the planner it opens Technique Notes, and on the workout table it returns to the planner."],
   ["体系分流", "System Split"],
   ["肌肥大周期", "Hypertrophy Cycle"],
   ["渐进超负荷", "Progressive Overload"],
@@ -11800,6 +11807,9 @@ function bindActions() {
   });
   document.querySelectorAll("[data-home-button]").forEach((button) => {
     button.addEventListener("click", () => setView("planner"));
+  });
+  document.querySelectorAll("[data-technique-button]").forEach((button) => {
+    button.addEventListener("click", () => setView("technique"));
   });
   document.querySelectorAll("[data-workout-button]").forEach((button) => {
     button.addEventListener("click", () => setView("workout"));

@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ForgePlan 自定义训练计划库</title>
-    <link rel="stylesheet" href="./styles.css?v=20260616-v23-2236" />
+    <link rel="stylesheet" href="./styles.css?v=20260616-v24-2302" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260616-v23-2236"></script>
+    <script defer src="./app.js?v=20260616-v24-2302"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.3">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.4">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -60,16 +60,17 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v2.3 · 围度档案与人体模型</strong>
-          <small class="update-time">2026-06-16 22:36 更新</small>
+          <strong>v2.4 · 修复右上主页按钮</strong>
+          <small class="update-time">2026-06-16 23:02 更新</small>
           <ul>
-            <li>新增“建立档案”按钮：按日期记录体重、腰围、臂围、腹围和臀围。</li>
-            <li>新增人体围度模型：4 个围度以 cm 显示，底部体重以 kg 显示。</li>
-            <li>顶部工具顺序调整为主页、训练表、翻译、建立档案、饮食、图表、热身。</li>
+            <li>修复计划生成器右上角房子按钮点了没反应的问题。</li>
+            <li>计划生成器页的房子按钮现在进入技术笔记页；训练表页的房子按钮返回计划生成器。</li>
+            <li>继续保留 v2.3 的围度档案和人体模型。</li>
             <li>v2 继续使用样本模式：输入激活码后直接进入，刷新后自动清空临时训练数据。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v2.3</strong> 2026-06-16 22:36：新增建立档案按钮，支持按日期记录体重、腰围、臂围、腹围和臀围；弹窗加入人体围度模型，4 个围度以 cm 展示，底部体重以 kg 展示；顶部工具顺序调整为主页、训练表、翻译、建立档案、饮食、图表、热身。</p>
             <p><strong>v2.2</strong> 2026-06-16 21:59：肌肥大移除比赛、测试、开把、三项 PR、剩余周倒计时和休息日排布遗留项；侧边栏改为知识库 / 力量参数，肌肥大显示快速知识检索，力量举体系才显示三项 PR 和变式；科普内容补充来源小字，UI 收紧为更简洁的科技训练工具风格。</p>
             <p><strong>v2.1</strong> 2026-06-16：健美式肌肥大和专属力训体系分开；肌肥大使用 12 周基础容量、渐进超负荷、减量评估样本周期；技术笔记新增三项变式选择与使用说明；生成器特色补充体系分流、样本模式、弱项反馈和三项变式库。</p>
             <p><strong>v2.0</strong> 2026-06-16：保留 v2 样本模式：输入激活码后直接进入计划生成器；训练数据只在当前页面内临时保存，刷新后自动清空；登录注册和云端学员档案留到 v3。</p>
@@ -108,7 +109,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.3">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.4">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -239,7 +240,7 @@
               <p id="plannerSubtitle">先填写基础信息、周期目标和训练天数，再生成训练周表。</p>
             </div>
             <div class="top-actions">
-              <button class="tool-button" data-home-button type="button" title="主页" aria-label="主页">
+              <button class="tool-button" data-technique-button type="button" title="技术笔记" aria-label="技术笔记">
                 <i data-lucide="home"></i>
               </button>
               <button id="goWeekButton" class="tool-button primary-tool" type="button" title="查看训练表" aria-label="查看训练表">
@@ -820,6 +821,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v2.4</strong><span>2026-06-16 23:02</span><p>修复计划生成器右上角房子按钮无反馈：计划生成器页的房子按钮进入技术笔记页，训练表页的房子按钮返回计划生成器。</p></article>
           <article><strong>v2.3</strong><span>2026-06-16 22:36</span><p>新增建立档案按钮，支持按日期记录体重、腰围、臂围、腹围和臀围；弹窗加入人体围度模型，4 个围度以 cm 展示，底部体重以 kg 展示；顶部工具顺序调整为主页、训练表、翻译、建立档案、饮食、图表、热身。</p></article>
           <article><strong>v2.2</strong><span>2026-06-16 21:59</span><p>肌肥大移除比赛、测试、开把、三项 PR、剩余周倒计时和休息日排布遗留项；侧边栏改为知识库 / 力量参数，肌肥大显示快速知识检索，力量举体系才显示三项 PR 和变式；科普内容补充来源小字，UI 收紧为更简洁的科技训练工具风格。</p></article>
           <article><strong>v2.1</strong><span>2026-06-16</span><p>健美式肌肥大和专属力训体系分开；肌肥大使用 12 周基础容量、渐进超负荷、减量评估样本周期；技术笔记新增三项变式选择与使用说明；生成器特色补充体系分流、样本模式、弱项反馈和三项变式库。</p></article>
