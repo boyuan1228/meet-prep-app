@@ -7614,7 +7614,7 @@ function renderToolLanguage() {
 const STATIC_TEXT_ORIGINALS = new WeakMap();
 const STATIC_I18N = new Map(
   Object.entries({
-    "让卖计划的人没饭吃": "No More Overpriced Templates",
+    "ForgePlan 自定义训练计划库": "ForgePlan Custom Training Library",
     "注意事项": "Notes",
     "建议值随输入变化，训练时按当天状态微调。": "Suggested values change with your inputs. Adjust by your actual readiness on the day.",
     "适合人群": "Who This Is For",
@@ -7826,6 +7826,12 @@ const STATIC_I18N = new Map(
 );
 
 [
+  ["v2.0 · 样本模式与临时数据", "v2.0 · Sample Mode and Temporary Data"],
+  ["2026-06-16 更新", "Updated 2026-06-16"],
+  ["v2 继续使用样本模式：输入激活码后直接进入计划生成器，不出现登录或注册。", "v2 stays in sample mode: enter the activation code to open the planner directly, with no login or registration."],
+  ["训练数据只保留在当前页面内，刷新后自动清空，适合演示和试用。", "Training data stays only in the current page session and clears automatically after refresh, ideal for demos and trials."],
+  ["登录注册、学员档案和云端保存功能先保留给 v3 版本。", "Login, student profiles, and cloud saving are reserved for v3."],
+  ["保留 v2 样本模式：输入激活码后直接进入计划生成器；训练数据只在当前页面内临时保存，刷新后自动清空；登录注册和云端学员档案留到 v3。", "v2 keeps sample mode: enter the activation code to open the planner directly; training data is temporary and clears after refresh; login and cloud student profiles are reserved for v3."],
   ["v1.13 · 英文模式和技术笔记页", "v1.13 · English Mode and Technique Notes"],
   ["2026-06-13 12:35 更新", "Updated 2026-06-13 12:35"],
   ["英文模式补齐动态生成区域：阶段、频率、周布局、开把、日志和 RPE 工具。", "English mode now covers generated phase, frequency, weekly layout, openers, logs, and RPE tool text."],
@@ -7984,37 +7990,41 @@ function toggleLanguage() {
   render();
 }
 
-function loadState() {
+function clearPersistedSampleData() {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    Object.assign(state.profile, saved.profile || {});
-    Object.assign(state.survey, saved.survey || {});
-    Object.assign(state.settings, saved.settings || {});
-    state.logs = saved.logs || {};
-    state.weekIndex = saved.weekIndex || 0;
-    state.dayIndex = saved.dayIndex || 0;
-    state.view = saved.view || "planner";
-  } catch {
     localStorage.removeItem(STORAGE_KEY);
-  }
+    localStorage.removeItem(LICENSE_STORAGE_KEY);
+  } catch {}
+}
+
+function loadState() {
+  clearPersistedSampleData();
+  state.weekIndex = 0;
+  state.dayIndex = 0;
+  state.view = "planner";
+  state.logs = {};
 }
 
 function loadLicense() {
   try {
-    const saved = JSON.parse(localStorage.getItem(LICENSE_STORAGE_KEY) || "{}");
-    licenseState.active = Boolean(saved.active);
-    licenseState.codeHash = saved.codeHash || "";
-    licenseState.activatedAt = saved.activatedAt || "";
-  } catch {
     localStorage.removeItem(LICENSE_STORAGE_KEY);
-  }
+  } catch {}
+  licenseState.active = false;
+  licenseState.codeHash = "";
+  licenseState.activatedAt = "";
 }
 
 function saveLicense(codeHash) {
   licenseState.active = true;
   licenseState.codeHash = codeHash;
   licenseState.activatedAt = new Date().toISOString();
-  localStorage.setItem(LICENSE_STORAGE_KEY, JSON.stringify(licenseState));
+}
+
+function clearPersistedState() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+  }
 }
 
 function hasActiveLicense() {
@@ -8107,18 +8117,7 @@ async function activateFromInput() {
 }
 
 function saveState() {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      profile: state.profile,
-      survey: state.survey,
-      settings: state.settings,
-      logs: state.logs,
-      weekIndex: state.weekIndex,
-      dayIndex: state.dayIndex,
-      view: state.view,
-    })
-  );
+  clearPersistedState();
 }
 
 function currentWeek() {
