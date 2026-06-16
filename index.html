@@ -4,16 +4,62 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>让卖计划的人没饭吃</title>
-    <link rel="stylesheet" href="./styles.css?v=20260613-7" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260613-7"></script>
+    <script type="module" crossorigin src="./assets/index-BVVgJEAu.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-hRg2AvNU.css">
   </head>
   <body>
+    <section id="authGate" class="auth-gate hidden" aria-label="登录">
+      <div class="auth-card">
+        <div class="auth-brand">
+          <img class="brand-logo" src="./assets/power-logo-small-B1WpbUTE.jpg" alt="Meet Prep" />
+          <div>
+            <span id="authEyebrow">学员数据登录</span>
+            <h1 id="authTitle">登录后使用训练计划</h1>
+            <p id="authSubtitle">你的学员档案和计划会保存到 Supabase，并按账号隔离。</p>
+          </div>
+        </div>
+        <div class="auth-tabs" role="tablist" aria-label="登录或注册">
+          <button id="authLoginTab" class="active" type="button">登录</button>
+          <button id="authRegisterTab" type="button">注册</button>
+        </div>
+        <form id="loginForm" class="auth-form">
+          <label>
+            邮箱
+            <input id="authLoginEmail" type="email" autocomplete="email" placeholder="you@example.com" />
+          </label>
+          <label>
+            密码
+            <input id="authLoginPassword" type="password" autocomplete="current-password" placeholder="至少 6 位" />
+          </label>
+          <button id="authLoginButton" type="submit">登录</button>
+        </form>
+        <form id="registerForm" class="auth-form hidden">
+          <label>
+            姓名
+            <input id="authRegisterName" type="text" autocomplete="name" placeholder="你的名字" />
+          </label>
+          <label>
+            邮箱
+            <input id="authRegisterEmail" type="email" autocomplete="email" placeholder="you@example.com" />
+          </label>
+          <label>
+            密码
+            <input id="authRegisterPassword" type="password" autocomplete="new-password" placeholder="至少 6 位" />
+          </label>
+          <button id="authRegisterButton" type="submit">注册并进入</button>
+        </form>
+        <p id="authMessage" class="auth-message" role="status"></p>
+        <div class="auth-hint">
+          本地开发请先在 <code>.env.local</code> 填入 Supabase URL 和 publishable/anon key。前端不会使用 service role key。
+        </div>
+      </div>
+    </section>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
           <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.13">
-            <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
+            <img class="brand-logo" src="./assets/power-logo-small-B1WpbUTE.jpg" alt="查看更新日志" />
           </button>
           <div>
             <h1>让卖计划的人没饭吃</h1>
@@ -97,7 +143,7 @@
       <aside class="sidebar">
         <div class="brand">
           <button class="logo-button" data-changelog-open type="button" title="当前版本 v1.13">
-            <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
+            <img class="brand-logo sidebar-logo" src="./assets/power-logo-small-B1WpbUTE.jpg" alt="查看更新日志" />
           </button>
           <div>
             <h1 id="sidebarBrandTitle">力量周期</h1>
@@ -214,6 +260,11 @@
 
         <section id="sidebarLesson" class="sidebar-lesson" aria-label="前言小课堂"></section>
 
+        <button class="profile-toggle student-entry-button" data-students-button type="button">
+          <i data-lucide="users-round"></i>
+          学员
+        </button>
+
         <nav class="week-nav" id="weekNav" aria-label="页面与周选择"></nav>
       </aside>
 
@@ -232,6 +283,9 @@
               <button class="tool-button" data-home-button type="button" title="主页" aria-label="主页">
                 <i data-lucide="home"></i>
               </button>
+              <button class="tool-button" data-students-button type="button" title="学员" aria-label="学员">
+                <i data-lucide="users-round"></i>
+              </button>
               <button class="language-toggle" data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
               <button class="tool-button" data-diet-open type="button" title="饮食与 BMR" aria-label="饮食与 BMR">
                 <i data-lucide="utensils"></i>
@@ -241,6 +295,9 @@
               </button>
               <button class="tool-button" data-warmup-open type="button" title="热身动作" aria-label="热身动作">
                 <i data-lucide="flame"></i>
+              </button>
+              <button class="tool-button" data-auth-logout type="button" title="退出登录" aria-label="退出登录">
+                <i data-lucide="log-out"></i>
               </button>
             </div>
           </header>
@@ -270,6 +327,7 @@
                   <label>
                     训练体系
                     <select id="programSystemInput">
+                      <option value="bodybuilding">肌肥大健美周期</option>
                       <option value="jtsSstt">JTS × SSTT 十五周</option>
                       <option value="sheiko">Sheiko</option>
                       <option value="calgary">Calgary</option>
@@ -469,6 +527,9 @@
               <button class="tool-button" id="showPlannerButton" data-home-button type="button" title="主页" aria-label="主页">
                 <i data-lucide="home"></i>
               </button>
+              <button class="tool-button" data-students-button type="button" title="学员" aria-label="学员">
+                <i data-lucide="users-round"></i>
+              </button>
               <button class="language-toggle" data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
               <button class="tool-button" data-diet-open type="button" title="饮食与 BMR" aria-label="饮食与 BMR">
                 <i data-lucide="utensils"></i>
@@ -488,6 +549,9 @@
               <input id="restoreInput" type="file" accept="application/json,.json" hidden />
               <button class="icon-button" id="resetButton" type="button" title="清空本地记录">
                 <i data-lucide="trash-2"></i>
+              </button>
+              <button class="tool-button" data-auth-logout type="button" title="退出登录" aria-label="退出登录">
+                <i data-lucide="log-out"></i>
               </button>
             </div>
           </header>
@@ -560,9 +624,34 @@
                 <i data-lucide="arrow-left"></i>
               </button>
               <button class="language-toggle" data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
+              <button class="tool-button" data-students-button type="button" title="学员" aria-label="学员">
+                <i data-lucide="users-round"></i>
+              </button>
+              <button class="tool-button" data-auth-logout type="button" title="退出登录" aria-label="退出登录">
+                <i data-lucide="log-out"></i>
+              </button>
             </div>
           </header>
           <section class="technique-notes" id="techniqueNotes"></section>
+        </section>
+        <section id="studentsView" class="students-view hidden">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow" id="studentsEyebrow">学员管理</p>
+              <h2 id="studentsTitle">学员档案与计划</h2>
+              <p id="studentsSubtitle">登录账号下的学员、备注和计划只对当前用户可见。</p>
+            </div>
+            <div class="top-actions">
+              <button class="tool-button" id="studentsBackButton" type="button" title="返回计划生成器" aria-label="返回计划生成器">
+                <i data-lucide="arrow-left"></i>
+              </button>
+              <button class="language-toggle" data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
+              <button class="tool-button" data-auth-logout type="button" title="退出登录" aria-label="退出登录">
+                <i data-lucide="log-out"></i>
+              </button>
+            </div>
+          </header>
+          <section id="studentsApp" class="students-app" aria-live="polite"></section>
         </section>
       </main>
     </div>
