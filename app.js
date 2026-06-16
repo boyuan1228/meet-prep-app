@@ -6897,6 +6897,7 @@ const state = {
     bodybuildingWeakPriority: "medium",
   },
   logs: {},
+  bodyProfiles: [],
   settings: {
     language: "zh",
   },
@@ -7569,9 +7570,11 @@ function setSelectOptionsLanguage(id, labels) {
 
 function renderToolLanguage() {
   setButtonLanguage("#goWeekButton", "查看训练表", "Open training table");
-  setButtonLanguage("[data-home-button]", "三项技术笔记", "Technique notes");
+  setButtonLanguage("[data-workout-button]", "查看训练表", "Open training table");
+  setButtonLanguage("[data-home-button]", "主页", "Home");
   setButtonLanguage("#techniqueBackButton", "返回计划生成器", "Back to plan builder");
   setButtonLanguage("[data-diet-open]", "饮食与 BMR", "Nutrition and BMR");
+  setButtonLanguage("[data-body-profile-open]", "建立档案", "Body profile");
   setButtonLanguage("[data-analytics-open]", "训练图表", "Training charts");
   setButtonLanguage("[data-warmup-open]", "热身动作", "Warm-up drills");
   setButtonLanguage("#exportButton", "导出 PDF", "Export PDF");
@@ -7580,6 +7583,7 @@ function renderToolLanguage() {
   setButtonLanguage("#floatingRpeButton", "RPE 计算器", "RPE calculator");
   setButtonLanguage("[data-modal-close]", "关闭", "Close");
   setTextLanguage("dietModalTitle", "垂直饮食法", "Vertical Diet");
+  setTextLanguage("bodyProfileModalTitle", "建立档案", "Body Profile");
   setTextLanguage("bmrModalTitle", "BMR 计算器", "BMR Calculator");
   setTextLanguage("bmrCalculateButton", "计算 BMR", "Calculate BMR");
   setTextLanguage("rpeModalTitle", "RPE 计算器", "RPE Calculator");
@@ -8279,6 +8283,7 @@ function loadState() {
   state.dayIndex = 0;
   state.view = "planner";
   state.logs = {};
+  state.bodyProfiles = [];
 }
 
 function loadLicense() {
@@ -11266,6 +11271,7 @@ function backupData() {
     profile: state.profile,
     survey: state.survey,
     logs: state.logs,
+    bodyProfiles: state.bodyProfiles,
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -11286,6 +11292,7 @@ function restoreData(file) {
       Object.assign(state.profile, payload.profile);
       Object.assign(state.survey, payload.survey);
       state.logs = payload.logs || {};
+      state.bodyProfiles = payload.bodyProfiles || [];
       state.weekIndex = 0;
       state.dayIndex = 0;
       saveState();
@@ -11310,6 +11317,159 @@ function toggleModal(id, open) {
   if (!modal) return;
   modal.classList.toggle("hidden", !open);
   if (open && window.lucide) window.lucide.createIcons();
+}
+
+function todayDateValue() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60000;
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+}
+
+function latestBodyProfile() {
+  return [...(state.bodyProfiles || [])].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))[0] || {};
+}
+
+function bodyProfileValue(record, key) {
+  const value = record?.[key];
+  return value ? `${escapeHtml(value)}${key === "weight" ? " kg" : " cm"}` : key === "weight" ? "-- kg" : "-- cm";
+}
+
+function bodyProfileNumber(id) {
+  const value = Number($(id)?.value || 0);
+  return value > 0 ? String(value) : "";
+}
+
+function updateBodyModelPreview() {
+  const record = {
+    waist: $("bodyWaistInput")?.value || "",
+    arm: $("bodyArmInput")?.value || "",
+    abdomen: $("bodyAbdomenInput")?.value || "",
+    hip: $("bodyHipInput")?.value || "",
+    weight: $("bodyWeightInput")?.value || "",
+  };
+  const map = {
+    bodyPreviewWaist: "waist",
+    bodyPreviewArm: "arm",
+    bodyPreviewAbdomen: "abdomen",
+    bodyPreviewHip: "hip",
+    bodyPreviewWeight: "weight",
+  };
+  Object.entries(map).forEach(([id, key]) => {
+    const target = $(id);
+    if (target) target.textContent = bodyProfileValue(record, key);
+  });
+}
+
+function bodyProfileRecordCard(record) {
+  const detail = [
+    `${isEnglish() ? "Waist" : "腰围"} ${bodyProfileValue(record, "waist")}`,
+    `${isEnglish() ? "Arm" : "臂围"} ${bodyProfileValue(record, "arm")}`,
+    `${isEnglish() ? "Abdomen" : "腹围"} ${bodyProfileValue(record, "abdomen")}`,
+    `${isEnglish() ? "Hip" : "臀围"} ${bodyProfileValue(record, "hip")}`,
+    `${isEnglish() ? "Weight" : "体重"} ${bodyProfileValue(record, "weight")}`,
+  ].join(" · ");
+  return `<article class="body-record-card">
+    <strong>${escapeHtml(record.date || "-")}</strong>
+    <span>${detail}</span>
+  </article>`;
+}
+
+function renderBodyProfileModal() {
+  const root = $("bodyProfileContent");
+  if (!root) return;
+  const latest = latestBodyProfile();
+  const date = latest.date || todayDateValue();
+  const records = [...(state.bodyProfiles || [])].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+  root.innerHTML = `
+    <section class="body-model-panel" aria-label="${isEnglish() ? "Body measurement model" : "人体围度模型"}">
+      <div class="body-model">
+        <div class="body-silhouette" aria-hidden="true"></div>
+        <div class="body-line arm"><span>${isEnglish() ? "Arm" : "臂围"} <b id="bodyPreviewArm">${bodyProfileValue(latest, "arm")}</b></span><small>${isEnglish() ? "cm" : "单位 cm"}</small></div>
+        <div class="body-line waist"><span>${isEnglish() ? "Waist" : "腰围"} <b id="bodyPreviewWaist">${bodyProfileValue(latest, "waist")}</b></span><small>${isEnglish() ? "cm" : "单位 cm"}</small></div>
+        <div class="body-line abdomen"><span>${isEnglish() ? "Abdomen" : "腹围"} <b id="bodyPreviewAbdomen">${bodyProfileValue(latest, "abdomen")}</b></span><small>${isEnglish() ? "cm" : "单位 cm"}</small></div>
+        <div class="body-line hip"><span>${isEnglish() ? "Hip" : "臀围"} <b id="bodyPreviewHip">${bodyProfileValue(latest, "hip")}</b></span><small>${isEnglish() ? "cm" : "单位 cm"}</small></div>
+      </div>
+      <div class="body-weight-readout">
+        <span>${isEnglish() ? "Body weight" : "体重"}</span>
+        <strong id="bodyPreviewWeight">${bodyProfileValue(latest, "weight")}</strong>
+      </div>
+    </section>
+    <section class="body-profile-form" aria-label="${isEnglish() ? "Body profile form" : "围度档案表单"}">
+      <div class="calc-grid">
+        <label>
+          ${isEnglish() ? "Record Date" : "记录日期"}
+          <input id="bodyProfileDateInput" type="date" value="${escapeHtml(date)}" />
+        </label>
+        <label>
+          ${isEnglish() ? "Body Weight kg" : "体重 kg"}
+          <input id="bodyWeightInput" type="number" min="0" step="0.1" value="${escapeHtml(latest.weight || state.survey.bodyweight || "")}" placeholder="kg" />
+        </label>
+        <label>
+          ${isEnglish() ? "Waist cm" : "腰围 cm"}
+          <input id="bodyWaistInput" type="number" min="0" step="0.1" value="${escapeHtml(latest.waist || "")}" placeholder="cm" />
+        </label>
+        <label>
+          ${isEnglish() ? "Arm cm" : "臂围 cm"}
+          <input id="bodyArmInput" type="number" min="0" step="0.1" value="${escapeHtml(latest.arm || "")}" placeholder="cm" />
+        </label>
+        <label>
+          ${isEnglish() ? "Abdomen cm" : "腹围 cm"}
+          <input id="bodyAbdomenInput" type="number" min="0" step="0.1" value="${escapeHtml(latest.abdomen || "")}" placeholder="cm" />
+        </label>
+        <label>
+          ${isEnglish() ? "Hip cm" : "臀围 cm"}
+          <input id="bodyHipInput" type="number" min="0" step="0.1" value="${escapeHtml(latest.hip || "")}" placeholder="cm" />
+        </label>
+      </div>
+      <div class="body-profile-actions">
+        <button id="saveBodyProfileButton" type="button"><i data-lucide="save"></i>${isEnglish() ? "Save Profile" : "保存档案"}</button>
+        <button id="clearBodyProfilesButton" class="secondary" type="button"><i data-lucide="trash-2"></i>${isEnglish() ? "Clear Records" : "清空记录"}</button>
+      </div>
+      <small class="source-note">${isEnglish() ? "Session sample: records stay in the current page session and clear after refresh." : "v2 样本模式：档案只保留在当前页面会话中，刷新后清空。"}</small>
+    </section>
+    <section class="body-records" aria-label="${isEnglish() ? "Body profile records" : "档案记录"}">
+      <h4>${isEnglish() ? "Date Records" : "日期记录"}</h4>
+      <div class="body-record-list">
+        ${records.length ? records.map(bodyProfileRecordCard).join("") : `<p class="body-record-empty">${isEnglish() ? "No body profile records yet." : "还没有围度档案记录。"}</p>`}
+      </div>
+    </section>
+  `;
+  ["bodyWeightInput", "bodyWaistInput", "bodyArmInput", "bodyAbdomenInput", "bodyHipInput"].forEach((id) => {
+    $(id)?.addEventListener("input", updateBodyModelPreview);
+  });
+  $("saveBodyProfileButton")?.addEventListener("click", saveBodyProfileRecord);
+  $("clearBodyProfilesButton")?.addEventListener("click", clearBodyProfileRecords);
+  updateBodyModelPreview();
+  if (window.lucide) window.lucide.createIcons();
+}
+
+function saveBodyProfileRecord() {
+  const date = $("bodyProfileDateInput")?.value || todayDateValue();
+  const record = {
+    date,
+    weight: bodyProfileNumber("bodyWeightInput"),
+    waist: bodyProfileNumber("bodyWaistInput"),
+    arm: bodyProfileNumber("bodyArmInput"),
+    abdomen: bodyProfileNumber("bodyAbdomenInput"),
+    hip: bodyProfileNumber("bodyHipInput"),
+    createdAt: new Date().toISOString(),
+  };
+  if (!record.weight && !record.waist && !record.arm && !record.abdomen && !record.hip) {
+    alert(isEnglish() ? "Enter at least one measurement." : "至少填写一个围度或体重。");
+    return;
+  }
+  const others = (state.bodyProfiles || []).filter((item) => item.date !== date);
+  state.bodyProfiles = [record, ...others].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+  if (record.weight) state.survey.bodyweight = record.weight;
+  saveState();
+  renderBodyProfileModal();
+}
+
+function clearBodyProfileRecords() {
+  if (!confirm(isEnglish() ? "Clear all body profile records in this sample session?" : "清空当前样本会话里的所有围度档案记录？")) return;
+  state.bodyProfiles = [];
+  saveState();
+  renderBodyProfileModal();
 }
 
 function massInputToKg(value) {
@@ -11632,8 +11792,17 @@ function bindActions() {
       toggleModal("dietModal", true);
     });
   });
+  document.querySelectorAll("[data-body-profile-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      renderBodyProfileModal();
+      toggleModal("bodyProfileModal", true);
+    });
+  });
   document.querySelectorAll("[data-home-button]").forEach((button) => {
-    button.addEventListener("click", () => setView("technique"));
+    button.addEventListener("click", () => setView("planner"));
+  });
+  document.querySelectorAll("[data-workout-button]").forEach((button) => {
+    button.addEventListener("click", () => setView("workout"));
   });
   $("techniqueBackButton")?.addEventListener("click", () => setView("planner"));
   document.querySelectorAll("[data-warmup-open]").forEach((button) => {
@@ -11672,7 +11841,7 @@ function bindActions() {
     render();
   });
   $("goWeekButton").addEventListener("click", () => setView("workout"));
-  $("showPlannerButton")?.addEventListener("click", () => setView("technique"));
+  $("showPlannerButton")?.addEventListener("click", () => setView("planner"));
   $("markDayButton")?.addEventListener("click", markDayComplete);
   $("saveLogButton").addEventListener("click", saveDayLog);
   $("exportButton").addEventListener("click", exportPlanPdf);

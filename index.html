@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ForgePlan 自定义训练计划库</title>
-    <link rel="stylesheet" href="./styles.css?v=20260616-v22-2159" />
+    <link rel="stylesheet" href="./styles.css?v=20260616-v23-2236" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260616-v22-2159"></script>
+    <script defer src="./app.js?v=20260616-v23-2236"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.2">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.3">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -60,16 +60,17 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v2.2 · 肌肥大界面净化</strong>
-          <small class="update-time">2026-06-16 21:59 更新</small>
+          <strong>v2.3 · 围度档案与人体模型</strong>
+          <small class="update-time">2026-06-16 22:36 更新</small>
           <ul>
-            <li>肌肥大移除比赛、测试、开把、三项 PR 和剩余周倒计时等力量举遗留项。</li>
-            <li>侧边栏改为知识库 / 力量参数：肌肥大显示知识检索，力量举体系才显示三项 PR 和变式。</li>
-            <li>科普内容增加小字来源标注，整体界面改成更清爽的科技工具风格。</li>
+            <li>新增“建立档案”按钮：按日期记录体重、腰围、臂围、腹围和臀围。</li>
+            <li>新增人体围度模型：4 个围度以 cm 显示，底部体重以 kg 显示。</li>
+            <li>顶部工具顺序调整为主页、训练表、翻译、建立档案、饮食、图表、热身。</li>
             <li>v2 继续使用样本模式：输入激活码后直接进入，刷新后自动清空临时训练数据。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v2.2</strong> 2026-06-16 21:59：肌肥大移除比赛、测试、开把、三项 PR、剩余周倒计时和休息日排布遗留项；侧边栏改为知识库 / 力量参数，肌肥大显示快速知识检索，力量举体系才显示三项 PR 和变式；科普内容补充来源小字，UI 收紧为更简洁的科技训练工具风格。</p>
             <p><strong>v2.1</strong> 2026-06-16：健美式肌肥大和专属力训体系分开；肌肥大使用 12 周基础容量、渐进超负荷、减量评估样本周期；技术笔记新增三项变式选择与使用说明；生成器特色补充体系分流、样本模式、弱项反馈和三项变式库。</p>
             <p><strong>v2.0</strong> 2026-06-16：保留 v2 样本模式：输入激活码后直接进入计划生成器；训练数据只在当前页面内临时保存，刷新后自动清空；登录注册和云端学员档案留到 v3。</p>
             <p><strong>v1.13</strong> 2026-06-13 12:35：英文模式补齐动态生成区域：阶段、频率、周布局、开把、日志和 RPE 工具；右上角主页图标改为进入三项技术笔记页；顶部说明改为通用说明。</p>
@@ -107,7 +108,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.2">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.3">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -238,13 +239,16 @@
               <p id="plannerSubtitle">先填写基础信息、周期目标和训练天数，再生成训练周表。</p>
             </div>
             <div class="top-actions">
-              <button id="goWeekButton" class="tool-button primary-tool" type="button" title="查看训练表" aria-label="查看训练表">
-                <i data-lucide="calendar-days"></i>
-              </button>
               <button class="tool-button" data-home-button type="button" title="主页" aria-label="主页">
                 <i data-lucide="home"></i>
               </button>
+              <button id="goWeekButton" class="tool-button primary-tool" type="button" title="查看训练表" aria-label="查看训练表">
+                <i data-lucide="calendar-days"></i>
+              </button>
               <button class="language-toggle" data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
+              <button class="tool-button" data-body-profile-open type="button" title="建立档案" aria-label="建立档案">
+                <i data-lucide="clipboard-plus"></i>
+              </button>
               <button class="tool-button" data-diet-open type="button" title="饮食与 BMR" aria-label="饮食与 BMR">
                 <i data-lucide="utensils"></i>
               </button>
@@ -482,7 +486,13 @@
               <button class="tool-button" id="showPlannerButton" data-home-button type="button" title="主页" aria-label="主页">
                 <i data-lucide="home"></i>
               </button>
+              <button class="tool-button primary-tool" data-workout-button type="button" title="查看训练表" aria-label="查看训练表">
+                <i data-lucide="calendar-days"></i>
+              </button>
               <button class="language-toggle" data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
+              <button class="tool-button" data-body-profile-open type="button" title="建立档案" aria-label="建立档案">
+                <i data-lucide="clipboard-plus"></i>
+              </button>
               <button class="tool-button" data-diet-open type="button" title="饮食与 BMR" aria-label="饮食与 BMR">
                 <i data-lucide="utensils"></i>
               </button>
@@ -770,6 +780,20 @@
         <small class="source-note" data-source-note="warmup">来源：NSCA 动态热身原则、ACSM 运动测试与处方指南、NASM 动作准备框架。根据疼痛和活动受限情况调整。</small>
       </div>
     </div>
+    <div id="bodyProfileModal" class="tool-modal hidden" role="dialog" aria-modal="true" aria-labelledby="bodyProfileModalTitle">
+      <div class="modal-card body-profile-card">
+        <div class="modal-head">
+          <div>
+            <span class="eyebrow">BODY PROFILE</span>
+            <h3 id="bodyProfileModalTitle">建立档案</h3>
+          </div>
+          <button class="icon-button" type="button" data-modal-close="bodyProfileModal" title="关闭">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div id="bodyProfileContent" class="body-profile-content"></div>
+      </div>
+    </div>
     <div id="analyticsModal" class="tool-modal hidden" role="dialog" aria-modal="true" aria-labelledby="analyticsModalTitle">
       <div class="modal-card analytics-card">
         <div class="modal-head">
@@ -796,6 +820,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v2.3</strong><span>2026-06-16 22:36</span><p>新增建立档案按钮，支持按日期记录体重、腰围、臂围、腹围和臀围；弹窗加入人体围度模型，4 个围度以 cm 展示，底部体重以 kg 展示；顶部工具顺序调整为主页、训练表、翻译、建立档案、饮食、图表、热身。</p></article>
           <article><strong>v2.2</strong><span>2026-06-16 21:59</span><p>肌肥大移除比赛、测试、开把、三项 PR、剩余周倒计时和休息日排布遗留项；侧边栏改为知识库 / 力量参数，肌肥大显示快速知识检索，力量举体系才显示三项 PR 和变式；科普内容补充来源小字，UI 收紧为更简洁的科技训练工具风格。</p></article>
           <article><strong>v2.1</strong><span>2026-06-16</span><p>健美式肌肥大和专属力训体系分开；肌肥大使用 12 周基础容量、渐进超负荷、减量评估样本周期；技术笔记新增三项变式选择与使用说明；生成器特色补充体系分流、样本模式、弱项反馈和三项变式库。</p></article>
           <article><strong>v2.0</strong><span>2026-06-16</span><p>保留 v2 样本模式：输入激活码后直接进入计划生成器；训练数据只在当前页面内临时保存，刷新后自动清空；登录注册和云端学员档案留到 v3。</p></article>

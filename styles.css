@@ -805,6 +805,12 @@ textarea:focus {
   color: #526b23;
 }
 
+.tool-button[data-body-profile-open] {
+  background: #eefaf6;
+  border-color: #75d2b8;
+  color: #08745f;
+}
+
 .tool-button[data-analytics-open] {
   background: #eef2ff;
   border-color: #a5b4fc;
@@ -1586,9 +1592,219 @@ mark,
 }
 
 .warmup-card,
+.body-profile-card,
 .analytics-card,
 .changelog-card {
   width: min(900px, 100%);
+}
+
+.body-profile-content {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.body-model-panel,
+.body-profile-form,
+.body-records {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.body-model-panel {
+  display: grid;
+  grid-template-rows: minmax(360px, 1fr) auto;
+  gap: 10px;
+  padding: 12px;
+}
+
+.body-model {
+  position: relative;
+  min-height: 360px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(17, 25, 31, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 25, 31, 0.04) 1px, transparent 1px),
+    #fff;
+  background-size: 22px 22px;
+  overflow: hidden;
+}
+
+.body-silhouette {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 128px;
+  height: 286px;
+  transform: translateX(-50%);
+}
+
+.body-silhouette::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  border: 2px solid #11191f;
+  background: #f7fbfa;
+}
+
+.body-silhouette::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 58px;
+  width: 96px;
+  height: 228px;
+  transform: translateX(-50%);
+  border: 2px solid #11191f;
+  border-radius: 48px 48px 40px 40px / 72px 72px 42px 42px;
+  background: linear-gradient(180deg, #f7fbfa, #edf5f2);
+}
+
+.body-line {
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  min-width: 106px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.body-line::before {
+  content: "";
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 143, 115, 0.12);
+}
+
+.body-line small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.body-line.arm {
+  right: 16px;
+  top: 92px;
+}
+
+.body-line.waist {
+  left: 16px;
+  top: 154px;
+}
+
+.body-line.abdomen {
+  right: 16px;
+  top: 202px;
+}
+
+.body-line.hip {
+  left: 16px;
+  top: 254px;
+}
+
+.body-weight-readout {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #11191f;
+  color: #fff;
+  text-align: center;
+}
+
+.body-weight-readout span {
+  color: #9db1ad;
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.body-weight-readout strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.body-profile-form {
+  padding: 12px;
+}
+
+.body-profile-form .calc-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.body-profile-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.body-profile-actions button {
+  min-height: 40px;
+  border-radius: 7px;
+  padding: 0 13px;
+  color: #fff;
+  background: var(--accent);
+  font-weight: 850;
+}
+
+.body-profile-actions .secondary {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+
+.body-records {
+  grid-column: 1 / -1;
+  padding: 12px;
+}
+
+.body-records h4 {
+  margin: 0 0 8px;
+}
+
+.body-record-list {
+  display: grid;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.body-record-card {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.8fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.body-record-card strong {
+  color: var(--ink);
+}
+
+.body-record-card span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.body-record-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .diet-lead {
@@ -2658,6 +2874,20 @@ td {
 
   .calc-grid {
     grid-template-columns: 1fr;
+  }
+
+  .body-profile-content,
+  .body-profile-form .calc-grid,
+  .body-record-card {
+    grid-template-columns: 1fr;
+  }
+
+  .body-model-panel {
+    grid-template-rows: auto auto;
+  }
+
+  .body-model {
+    min-height: 330px;
   }
 
   .diet-steps,
