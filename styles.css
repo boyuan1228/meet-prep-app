@@ -2843,9 +2843,34 @@ td {
   margin-top: 14px;
 }
 
+.feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.feedback-grid label {
+  margin-top: 0;
+}
+
+.feedback-grid input,
+.feedback-grid select {
+  min-height: 38px;
+  padding: 8px 9px;
+  font-size: 13px;
+}
+
 .log-panel button {
   width: 100%;
   margin-top: 14px;
+}
+
+#logAdjustmentHint {
+  border-left: 4px solid var(--accent);
+  background: #f4fbf8;
+  color: var(--ink);
+  line-height: 1.45;
 }
 
 .hint {

@@ -7859,6 +7859,41 @@ const STATIC_I18N = new Map(
 );
 
 [
+  ["v2.7 · 训练反馈与自动调整建议", "v2.7 · Training Feedback and Auto Adjustment"],
+  ["2026-06-19 10:45 更新", "Updated 2026-06-19 10:45"],
+  ["当天日志新增结构化训练反馈：状态、睡眠、疼痛、受限部位、完成度、实际最高 RPE 和技术质量。", "Daily logs now include structured feedback: readiness, sleep, pain, training limitation, completion, actual top RPE, and technique quality."],
+  ["保存日志时自动生成下一次训练建议：加重、维持、下调重量、减少组数、替换动作或临时改成上肢/无痛训练。", "Saving a log now generates next-session suggestions: increase load, maintain, reduce load, reduce sets, swap movements, or temporarily switch to upper-body/pain-free training."],
+  ["训练反馈会保存到本机浏览器，和当前周/当前训练日绑定。", "Training feedback is saved in the local browser and tied to the current week/day."],
+  ["免费工具方向保留，不加入付费、会员或权限限制。", "The free-tool direction is kept, with no paid membership or permission gate added."],
+  ["当天日志新增状态、睡眠、疼痛、受限部位、完成度、实际最高 RPE 和技术质量；保存后自动给出下一次训练调整建议，支持下肢受限时临时改为上肢和无痛训练，继续保持免费工具方向。", "Daily logs add readiness, sleep, pain, training limitation, completion, actual top RPE, and technique quality; after saving, the app gives next-session adjustment suggestions, including temporary upper-body and pain-free training when lower-body work is limited."],
+  ["状态", "Readiness"],
+  ["睡眠", "Sleep"],
+  ["完成度", "Completion"],
+  ["疼痛", "Pain"],
+  ["受限部位", "Training Limit"],
+  ["下肢无法训练", "Lower body unavailable"],
+  ["上肢无法训练", "Upper body unavailable"],
+  ["腰背/轴向负荷受限", "Back / axial loading limited"],
+  ["单个动作疼痛", "One movement hurts"],
+  ["实际最高 RPE", "Actual Top RPE"],
+  ["技术质量", "Technique"],
+  ["未填写", "Not set"],
+  ["很好", "Great"],
+  ["正常", "Normal"],
+  ["疲劳", "Tired"],
+  ["好", "Good"],
+  ["一般", "OK"],
+  ["差", "Poor"],
+  ["全部完成", "All completed"],
+  ["少量未完成", "Some missed"],
+  ["明显失败", "Missed badly"],
+  ["无", "None"],
+  ["轻微", "Mild"],
+  ["明显", "Noticeable"],
+  ["例如 8.5", "Example 8.5"],
+  ["稳定", "Solid"],
+  ["明显变形", "Breakdown"],
+  ["记录实际重量、RPE、疲劳或需要调整的内容", "Log actual loads, RPE, fatigue, or adjustments needed"],
   ["v2.6 · 身体档案对比反馈", "v2.6 · Body Profile Comparison Feedback"],
   ["2026-06-18 00:51 更新", "Updated 2026-06-18 00:51"],
   ["身体档案按问卷性别切换男性/女性人体模型。", "Body profiles now switch the body model between male and female based on the questionnaire sex."],
@@ -8501,7 +8536,8 @@ function logKey(weekIndex = state.weekIndex, dayIndex = state.dayIndex) {
 
 function currentLog() {
   const key = logKey();
-  state.logs[key] ||= { done: [], bodyweight: "", notes: "", itemNotes: {}, backdowns: {}, accessories: {} };
+  state.logs[key] ||= { done: [], bodyweight: "", notes: "", feedback: {}, adjustment: "", itemNotes: {}, backdowns: {}, accessories: {} };
+  state.logs[key].feedback ||= {};
   state.logs[key].itemNotes ||= {};
   state.logs[key].backdowns ||= {};
   state.logs[key].accessories ||= {};
@@ -10704,10 +10740,168 @@ function renderExercises() {
   });
 }
 
+function plannedTopRpeForDay(day = currentDay()) {
+  const values = (day.items || [])
+    .map((item) => String(item.rpe || ""))
+    .flatMap((value) => value.match(/\d+(?:\.\d+)?/g) || [])
+    .map(Number)
+    .filter((value) => value >= 5 && value <= 10);
+  return values.length ? Math.max(...values) : 7;
+}
+
+function feedbackValue(id) {
+  return $(id)?.value || "";
+}
+
+function collectTrainingFeedback() {
+  return {
+    readiness: feedbackValue("readinessInput"),
+    sleep: feedbackValue("sleepQualityInput"),
+    completion: feedbackValue("completionQualityInput"),
+    pain: feedbackValue("painInput"),
+    limitation: feedbackValue("trainingLimitInput"),
+    actualRpe: feedbackValue("actualRpeInput"),
+    technique: feedbackValue("techniqueQualityInput"),
+  };
+}
+
+function feedbackHasAnyValue(feedback = {}) {
+  return Object.values(feedback).some((value) => String(value || "").trim());
+}
+
+function trainingAdjustmentAdvice(feedback = currentLog().feedback || {}, day = currentDay()) {
+  if (!feedbackHasAnyValue(feedback)) {
+    return isEnglish()
+      ? "Fill the structured feedback after training to get a next-session adjustment suggestion."
+      : "训练后填写结构化反馈，就会生成下一次训练调整建议。";
+  }
+
+  const plannedRpe = plannedTopRpeForDay(day);
+  const actualRpe = Number(feedback.actualRpe || 0);
+  const issues = [];
+  let severity = 0;
+
+  if (feedback.limitation === "lower") {
+    return isEnglish()
+      ? "Temporary adjustment: skip squats, deadlifts, heavy leg work, and painful lower-body variations. Keep upper-body training if pain-free: bench or bench variation, rows/pulldowns, shoulders, arms, and trunk work. Use pain-free mobility or rehab work for the lower body. Return with 80-90% of the planned load and 1-2 fewer hard sets after symptoms do not worsen for 48 hours."
+      : "临时调整：暂停深蹲、硬拉、重下肢和所有会诱发疼痛的下肢变式。若无痛，可以保留上肢训练：卧推或卧推变式、划船/下拉、肩部、手臂和核心；下肢只做无痛活动度或康复容量。症状 48 小时不加重后，再用原计划 80-90% 重量、少 1-2 个高压力组回归。";
+  }
+
+  if (feedback.limitation === "upper") {
+    return isEnglish()
+      ? "Temporary adjustment: skip pressing, heavy upper-body pulling, and movements that reproduce pain. Keep pain-free lower-body work, single-leg work, trunk work, and light blood-flow work. Return upper-body loading with 80-90% of the planned load and fewer hard sets after symptoms settle."
+      : "临时调整：暂停推举、重上肢拉和所有会复现疼痛的动作。可以保留无痛下肢训练、单腿动作、核心和轻泵感训练。症状稳定后，上肢从原计划 80-90% 重量、减少高压力组开始回归。";
+  }
+
+  if (feedback.limitation === "back") {
+    return isEnglish()
+      ? "Temporary adjustment: avoid heavy axial loading, deadlift variations, good mornings, and loaded spinal flexion. Choose bench-supported rows, machines, split squats, belt squat if pain-free, hamstring curls, and trunk stability. Return axial loading gradually after daily symptoms are calm."
+      : "临时调整：避免重轴向负荷、硬拉变式、早安式和负重脊柱屈曲。优先选择胸托划船、器械动作、分腿蹲、无痛腰带深蹲、腿弯举和核心稳定。日常症状稳定后，再逐步恢复轴向负荷。";
+  }
+
+  if (feedback.limitation === "single") {
+    severity = Math.max(severity, 4);
+    issues.push(isEnglish() ? "one movement reproduces pain" : "单个动作诱发疼痛");
+  }
+
+  if (feedback.pain === "moderate") {
+    severity = Math.max(severity, 4);
+    issues.push(isEnglish() ? "noticeable pain" : "疼痛明显");
+  } else if (feedback.pain === "mild") {
+    severity = Math.max(severity, 2);
+    issues.push(isEnglish() ? "mild pain" : "轻微疼痛");
+  }
+  if (feedback.technique === "breakdown") {
+    severity = Math.max(severity, 4);
+    issues.push(isEnglish() ? "technique breakdown" : "技术明显变形");
+  } else if (feedback.technique === "mixed") {
+    severity = Math.max(severity, 1);
+    issues.push(isEnglish() ? "mixed technique" : "技术一般");
+  }
+  if (feedback.completion === "failed") {
+    severity = Math.max(severity, 3);
+    issues.push(isEnglish() ? "missed planned work" : "明显未完成");
+  } else if (feedback.completion === "partial") {
+    severity = Math.max(severity, 2);
+    issues.push(isEnglish() ? "some work missed" : "少量未完成");
+  }
+  if (actualRpe && actualRpe >= plannedRpe + 1) {
+    severity = Math.max(severity, 3);
+    issues.push(isEnglish() ? `actual RPE ${actualRpe} exceeded plan` : `实际 RPE ${actualRpe} 高于计划`);
+  } else if (actualRpe && actualRpe >= plannedRpe + 0.5) {
+    severity = Math.max(severity, 2);
+    issues.push(isEnglish() ? `actual RPE ${actualRpe} was high` : `实际 RPE ${actualRpe} 偏高`);
+  }
+  if (feedback.readiness === "tired" || feedback.sleep === "poor") {
+    severity = Math.max(severity, 2);
+    issues.push(isEnglish() ? "low recovery" : "恢复偏低");
+  }
+
+  const goodDay = feedback.readiness === "great"
+    && feedback.sleep === "good"
+    && feedback.completion === "full"
+    && ["", "none"].includes(feedback.pain || "")
+    && ["", "solid"].includes(feedback.technique || "")
+    && (!actualRpe || actualRpe <= plannedRpe);
+
+  if (severity >= 4) {
+    return isEnglish()
+      ? `Next time: reduce load by 5-10% and remove 1-2 hard sets. Main reason: ${issues.join(", ")}. If pain remains, replace the painful movement first.`
+      : `下一次：重量下调 5-10%，并减少 1-2 个高压力组。主要原因：${issues.join("、")}。如果疼痛还在，先替换疼痛动作。`;
+  }
+  if (severity === 3) {
+    return isEnglish()
+      ? `Next time: reduce load by about 5% or repeat the same load with one fewer set. Main reason: ${issues.join(", ")}.`
+      : `下一次：重量下调约 5%，或同重量少做 1 组。主要原因：${issues.join("、")}。`;
+  }
+  if (severity === 2) {
+    return isEnglish()
+      ? `Next time: keep the load, cap the top set at the planned RPE, and avoid adding extra work. Watch: ${issues.join(", ")}.`
+      : `下一次：维持重量，把顶组控制在计划 RPE 内，不额外加量。关注点：${issues.join("、")}。`;
+  }
+  if (goodDay) {
+    return isEnglish()
+      ? "Next time: add 2.5 kg on barbell main lifts or 1-2 reps on accessories, as long as warm-ups still move well."
+      : "下一次：主项可加 2.5 kg，辅助项可加 1-2 次；前提是热身速度和动作质量仍然稳定。";
+  }
+  return isEnglish()
+    ? "Next time: repeat the planned load and sets. Performance is acceptable, but there is not enough reason to force progression."
+    : "下一次：维持原计划重量和组数。表现可接受，但暂时没有必要强行加重。";
+}
+
+function renderAdjustmentHint() {
+  const target = $("logAdjustmentHint");
+  if (!target) return;
+  const log = currentLog();
+  target.textContent = log.adjustment || trainingAdjustmentAdvice(log.feedback || {}, currentDay());
+}
+
 function renderLog() {
   const log = currentLog();
+  const feedback = log.feedback || {};
   $("dayBodyweightInput").value = log.bodyweight || "";
   $("dayNotesInput").value = log.notes || "";
+  if ($("readinessInput")) $("readinessInput").value = feedback.readiness || "";
+  if ($("sleepQualityInput")) $("sleepQualityInput").value = feedback.sleep || "";
+  if ($("completionQualityInput")) $("completionQualityInput").value = feedback.completion || "";
+  if ($("painInput")) $("painInput").value = feedback.pain || "";
+  if ($("trainingLimitInput")) $("trainingLimitInput").value = feedback.limitation || "";
+  if ($("actualRpeInput")) $("actualRpeInput").value = feedback.actualRpe || "";
+  if ($("techniqueQualityInput")) $("techniqueQualityInput").value = feedback.technique || "";
+  renderAdjustmentHint();
+  const updateTrainingFeedback = () => {
+    const log = currentLog();
+    log.feedback = collectTrainingFeedback();
+    log.adjustment = trainingAdjustmentAdvice(log.feedback, currentDay());
+    renderAdjustmentHint();
+    saveState();
+  };
+  ["readinessInput", "sleepQualityInput", "completionQualityInput", "painInput", "trainingLimitInput", "actualRpeInput", "techniqueQualityInput"].forEach((id) => {
+    const input = $(id);
+    if (!input) return;
+    input.oninput = updateTrainingFeedback;
+    input.onchange = updateTrainingFeedback;
+  });
 }
 
 function renderWorkout() {
@@ -11173,8 +11367,11 @@ function saveDayLog() {
   const log = currentLog();
   log.bodyweight = $("dayBodyweightInput").value;
   log.notes = $("dayNotesInput").value;
+  log.feedback = collectTrainingFeedback();
+  log.adjustment = trainingAdjustmentAdvice(log.feedback, currentDay());
   saveState();
   renderMetrics();
+  renderAdjustmentHint();
 }
 
 function escapeHtml(value) {
