@@ -10419,10 +10419,15 @@ function meetDateText(plan) {
       ? "Hypertrophy sample"
       : "肌肥大样本";
   }
+  if (plan.systemKey === "rpeBlock") {
+    return isEnglish()
+      ? "Fixed 13-week block cycle"
+      : "固定 13 周区块周期";
+  }
   if (!state.survey.meetDate) {
     return isEnglish()
-      ? `No meet date set; using the default ${DEFAULT_PLAN_WEEKS}-week cycle`
-      : `未填写比赛日期，先按默认 ${DEFAULT_PLAN_WEEKS} 周周期`;
+      ? `${systemShortText()}: using the default ${weeksText(plan.totalWeeks)} cycle`
+      : `${systemShortText()}：默认 ${plan.totalWeeks} 周周期`;
   }
   return isEnglish() ? `Meet week is Week ${plan.totalWeeks}` : `比赛周为第 ${plan.totalWeeks} 周`;
 }
@@ -10642,14 +10647,19 @@ function renderPlanner() {
     $("planLengthLabel").textContent = isEnglish()
       ? "12-week hypertrophy sample: generated from split, weekly days, progression, and weak-point feedback."
       : "12 周肌肥大样本：按分化、训练天数、渐进超负荷和弱项反馈生成。";
+  } else if (plan.systemKey === "rpeBlock") {
+    $("planLengthLabel").textContent = isEnglish()
+      ? "RPE Block is fixed at 13 weeks: 12 training weeks plus Week 13 testing."
+      : "RPE 自调节区块周期固定 13 周：12 周训练 + 第 13 周测试。";
   } else {
+    const systemName = systemShortText(currentProgramSystem());
     $("planLengthLabel").textContent = state.survey.meetDate
     ? isEnglish()
-      ? `Current cycle is calculated backward from the meet date: ${weeksText(plan.totalWeeks)}. If it is longer than 15 weeks, the full meet timeline is used.`
-      : `当前按比赛日期倒推 ${plan.totalWeeks} 周；超过 15 周时按实际比赛周数排。`
+      ? `${systemName}: calculated backward from the meet date as ${weeksText(plan.totalWeeks)}. If it is longer than the default, the full meet timeline is used.`
+      : `${systemName}：当前按比赛日期倒推 ${plan.totalWeeks} 周；超过默认周数时按实际比赛周数排。`
     : isEnglish()
-      ? `No meet date set: generating the default ${weeksText(DEFAULT_PLAN_WEEKS)}.`
-      : `未填写比赛日期：默认生成 ${DEFAULT_PLAN_WEEKS} 周。`;
+      ? `${systemName}: no meet date set, using the default ${weeksText(plan.totalWeeks)} sample.`
+      : `${systemName}：未填写比赛日期，默认生成 ${plan.totalWeeks} 周样本。`;
   }
   const plannerDisclaimer = document.querySelector(".planner-disclaimer");
   if (plannerDisclaimer) {
