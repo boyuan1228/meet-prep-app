@@ -7018,6 +7018,16 @@ const VARIANT_OPTIONS_BY_SYSTEM = {
     squatVariantInput: ["Belt Squat", "Paused Squat", "Tempo Squat", "Safety Bar Squat"],
     deadliftVariantInput: ["Paused Deadlift", "Deficit Deadlift", "Romanian Deadlift", "Tempo Deadlift"],
   },
+  norwegian: {
+    benchVariantInput: ["Paused Bench Press", "Tempo Bench Press", "Spoto Bench Press", "Close Grip Bench Press"],
+    squatVariantInput: ["Paused Squat", "Tempo Squat", "Front Squat", "Safety Bar Squat"],
+    deadliftVariantInput: ["Paused Deadlift", "Romanian Deadlift", "Deficit Deadlift", "Block Pull"],
+  },
+  rpeBlock: {
+    benchVariantInput: ["Spoto Bench Press", "Tempo Bench Press", "Close Grip Bench Press", "Paused Bench Press"],
+    squatVariantInput: ["Tempo Squat", "Paused Squat", "Front Squat", "Belt Squat"],
+    deadliftVariantInput: ["Paused Deadlift", "Deficit Deadlift", "Romanian Deadlift", "Block Pull"],
+  },
   rts: {
     benchVariantInput: ["Paused Bench Press", "Spoto Bench Press", "Close Grip Bench Press"],
     squatVariantInput: ["Paused Squat", "Tempo Squat", "Front Squat"],
@@ -7066,6 +7076,32 @@ const PROGRAM_SYSTEMS = {
       "默认体系。结合 JTS 容量管理思路和 SSTT 15 周范本，支持 MEV/MRV、RPE、百分比估重、变式、降重组、测试周和 PDF 导出。",
     enText:
       "Default system. Combines JTS-style volume management with an SSTT 15-week template, including MEV/MRV, RPE, percentage estimates, variants, backdown sets, test-week structure, and PDF export.",
+    status: "active",
+  },
+  norwegian: {
+    short: "SBS 高频",
+    brandTitle: "SBS Norwegian 高频",
+    defaultDays: 6,
+    usesJtsSurvey: false,
+    zhTitle: "SBS Norwegian 高频力量体系",
+    enTitle: "SBS Norwegian High-Frequency Strength",
+    zhText:
+      "参考 Stronger by Science 对挪威高频力量举实验的训练应用总结：把相近周总量拆到更多训练日里，深蹲和卧推高频小剂量，硬拉约每周 2 次，平均强度中等，适合动作稳定且恢复管理能力较好的训练者。",
+    enText:
+      "A high-frequency strength template inspired by the Stronger by Science summary of Norwegian powerlifting research: similar weekly work split across more sessions, frequent small-dose squat and bench exposure, deadlift about twice per week, and moderate average intensity.",
+    status: "active",
+  },
+  rpeBlock: {
+    short: "RPE 区块",
+    brandTitle: "RPE 自调节区块周期",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "RPE 自调节区块周期",
+    enTitle: "RPE Autoregulated Block Cycle",
+    zhText:
+      "一个偏 RTS / Calgary 风格但不是原版体系的 3 阶段力量周期：Block 1 积累技术，Block 2 强化专项，Block 3 峰值准备，最后测试。重量以目标 RPE 为主，不达标不机械加重。",
+    enText:
+      "A three-block powerlifting cycle with an RTS/Calgary-like flavor, not a copy of either original system: Block 1 accumulation and skill, Block 2 intensification, Block 3 peaking, then testing. Load is governed by target RPE instead of automatic weekly jumps.",
     status: "active",
   },
   sheiko: {
@@ -7281,7 +7317,11 @@ function systemDisplayTitle(system = currentProgramSystem()) {
 }
 
 function systemDisplayShort(system = currentProgramSystem()) {
-  if (isEnglish() && (state.survey.programSystem || "bodybuilding") === "jtsSstt") return "JTS × SSTT 15-Week";
+  const key = state.survey.programSystem || "bodybuilding";
+  if (isEnglish() && key === "jtsSstt") return "JTS × SSTT 15-Week";
+  if (isEnglish() && key === "rpeBlock") return "RPE Block";
+  if (isEnglish() && key === "norwegian") return "SBS Norwegian";
+  if (isEnglish() && key === "bodybuilding") return "Hypertrophy";
   return system.short;
 }
 
@@ -7308,6 +7348,7 @@ function phaseProgressText(status) {
   if (status.progress === "比赛/测试") return isEnglish() ? "Meet / test" : "比赛/测试";
   if (status.progress === "恢复/桥接") return isEnglish() ? "Recovery / bridge" : "恢复/桥接";
   if (status.progress === "减载周") return isEnglish() ? "Deload week" : "减载周";
+  if (["rpeBlock", "norwegian"].includes(state.survey.programSystem || "bodybuilding")) return status.progress;
   const overloadMatch = String(status.progress || "").match(/(\d+)\/(\d+)/);
   if (overloadMatch) {
     return isEnglish() ? `Overload ${overloadMatch[1]}/${overloadMatch[2]}` : status.progress;
@@ -7316,9 +7357,12 @@ function phaseProgressText(status) {
 }
 
 function systemShortText(system = currentProgramSystem()) {
-  return (state.survey.programSystem || "bodybuilding") === "jtsSstt" && isEnglish()
-    ? "JTS × SSTT 15-Week"
-    : system.short;
+  const key = state.survey.programSystem || "bodybuilding";
+  if (isEnglish() && key === "jtsSstt") return "JTS × SSTT 15-Week";
+  if (isEnglish() && key === "rpeBlock") return "RPE Block";
+  if (isEnglish() && key === "norwegian") return "SBS Norwegian";
+  if (isEnglish() && key === "bodybuilding") return "Hypertrophy";
+  return system.short;
 }
 
 function localizePlanText(text) {
@@ -7332,6 +7376,9 @@ function localizePlanText(text) {
     "桥接期": "Bridge",
     "测试周": "Test Week",
     "技术容量期": "Skill Volume",
+    "Block 1 积累/技术": "Block 1 Accumulation / Skill",
+    "Block 2 强化": "Block 2 Intensification",
+    "Block 3 峰值": "Block 3 Peaking",
     "增肌/容量期": "Hypertrophy / Volume",
     "专项增力期": "Specific Strength",
     "超负荷": "Overload",
@@ -7357,6 +7404,22 @@ function localizePlanText(text) {
     "上肢轻技术": "Upper light technique",
     "下肢后链": "Lower posterior chain",
     "容量补足": "Volume fill",
+    "蹲推高频 A": "High-frequency squat/bench A",
+    "蹲推高频 B": "High-frequency squat/bench B",
+    "拉推高频": "High-frequency deadlift/bench",
+    "拉推高频 A": "High-frequency deadlift/bench A",
+    "拉推高频 B": "High-frequency deadlift/bench B",
+    "蹲推技术": "Squat/bench technique",
+    "卧推专项": "Bench specificity",
+    "硬拉克制": "Conservative deadlift",
+    "轻中强度": "Light/moderate intensity",
+    "深蹲/卧推": "Squat / bench",
+    "硬拉/卧推变式": "Deadlift / bench variation",
+    "卧推/深蹲变式": "Bench / squat variation",
+    "深蹲变式/硬拉": "Squat variation / deadlift",
+    "轻技术/核心": "Light technique / core",
+    "卧推轻量": "Light bench",
+    "硬拉轻量/核心": "Light deadlift / core",
     "深蹲": "Squat",
     "卧推": "Bench",
     "硬拉": "Deadlift",
@@ -7409,6 +7472,29 @@ function localizePlanText(text) {
     "强度日上肢": "Upper intensity day",
     "建立可恢复训练量和稳定动作技术。": "Build recoverable training volume and stable movement skill.",
     "提高专项强度，保留足够练习频率。": "Raise specific intensity while keeping enough practice frequency.",
+    "RPE 5-7 建立动作量和技术控制，使用保守训练最大值，不用历史 PR 硬套。": "Use RPE 5-7 to build movement volume and control. Use a conservative training max instead of forcing old PRs.",
+    "加入 top set + backoff，强度上升；目标 RPE 超标时下周重复或下调，不机械加重。": "Add top sets plus backoffs as intensity rises. If target RPE is exceeded, repeat or reduce next week instead of forcing a load jump.",
+    "低次数高专项，减少辅助和总量，测试前保留恢复窗口。": "Use low-rep specific work, reduce accessories and total volume, and keep a recovery window before testing.",
+    "高频小剂量：保留速度和动作一致性，不把中等强度做成极限日。": "High-frequency small doses: keep bar speed and consistency; do not turn moderate work into max work.",
+    "硬拉约每周 2 次，避免用高频把后链疲劳堆满。": "Deadlift about twice per week; do not let high frequency bury posterior-chain recovery.",
+    "轻技术蹲，补频率不抢恢复。": "Light technical squat work to add frequency without stealing recovery.",
+    "卧推变式小剂量补技术。": "Small-dose bench variation for extra technical practice.",
+    "恢复性技术量，不追疲劳。": "Recovery-oriented technical work; do not chase fatigue.",
+    "按目标 RPE 选重量；如果实际 RPE 超标，下周不机械加重，先重复或下调。": "Choose load by target RPE. If actual RPE overshoots, repeat or reduce next week instead of forcing a jump.",
+    "顶组后降重，保持技术和速度，不能超过顶组 RPE。": "Back off after the top set, keep technique and speed, and do not exceed top-set RPE.",
+    "Block 1 积累/技术：RPE 5-7，容量偏高，动作控制优先。 按目标 RPE 选重量；如果实际 RPE 超标，下周不机械加重，先重复或下调。": "Block 1 accumulation/skill: RPE 5-7, higher volume, movement control first. Choose load by target RPE; if actual RPE overshoots, repeat or reduce next week.",
+    "Block 2 强化：top set + backoff，强度上升但仍按 RPE 管理。 按目标 RPE 选重量；如果实际 RPE 超标，下周不机械加重，先重复或下调。": "Block 2 intensification: top set plus backoff, higher intensity, still RPE-managed. If actual RPE overshoots, repeat or reduce next week.",
+    "Block 3 峰值：低次数高专项，辅助减少，为测试留恢复。 按目标 RPE 选重量；如果实际 RPE 超标，下周不机械加重，先重复或下调。": "Block 3 peaking: low-rep specific work, fewer accessories, and recovery saved for testing. If actual RPE overshoots, repeat or reduce next week.",
+    "节奏/暂停类技术补量。": "Tempo or paused technical volume.",
+    "窄推/Spoto/暂停类卧推变式。": "Close-grip, Spoto, or paused bench variation.",
+    "卧推专项补量。": "Bench-specific volume.",
+    "硬拉容量克制，避免恢复被吃掉。": "Keep deadlift volume conservative so recovery is not swallowed.",
+    "轻变式保持手感。": "Light variation work to keep the groove.",
+    "最后一次低疲劳专项触碰。": "Final low-fatigue specific exposure.",
+    "测试前三天完整休息，保留速度。": "Full rest for the final three days before testing; preserve speed.",
+    "核心轻量，不累积疲劳。": "Light core work without accumulating fatigue.",
+    "测试日：按热身状态决定是否冲新 PR。": "Test day: decide whether to push a new PR based on warm-ups.",
+    "测极限前三天完整休息，不额外偷加训练量。": "Take three full rest days before max testing; no hidden extra volume.",
     "从当前训练过渡到计划起点，保留技术练习，降低疲劳。": "Transition into the plan while keeping technique practice and lowering fatigue.",
     "用较高容量建立肌肉量与技术容量。": "Build muscle mass and technical work capacity with higher volume.",
     "提高专项强度，容量保持在 MEV 到 MRV 之间推进。": "Raise specific intensity while volume progresses between MEV and MRV.",
@@ -7629,6 +7715,8 @@ function renderToolLanguage() {
   setSelectOptionsLanguage("programSystemInput", {
     bodybuilding: { zh: "健美式肌肥大", en: "Bodybuilding Hypertrophy" },
     jtsSstt: { zh: "JTS × SSTT 十五周", en: "JTS × SSTT 15-Week" },
+    norwegian: { zh: "SBS Norwegian 高频", en: "SBS Norwegian High Frequency" },
+    rpeBlock: { zh: "RPE 自调节区块周期", en: "RPE Autoregulated Block" },
     sheiko: { zh: "Sheiko", en: "Sheiko" },
     calgary: { zh: "Calgary", en: "Calgary" },
     jts: { zh: "JTS", en: "JTS" },
@@ -7669,6 +7757,14 @@ const STATIC_I18N = new Map(
     "更新内容": "Latest Update",
     "历史日志": "History",
     "查看历史日志": "View History",
+    "v2.9 · 高频与 RPE 区块体系": "v2.9 · High Frequency + RPE Block Systems",
+    "新增 SBS Norwegian 高频力量体系，参考 Stronger by Science 对挪威高频力量举实验的训练应用总结。": "Added the SBS Norwegian high-frequency strength system, based on the Stronger by Science training summary of Norwegian powerlifting research.",
+    "默认 6 天高频小剂量：深蹲和卧推高频出现，硬拉约每周 2 次，避免天天冲极限。": "Default 6-day high-frequency small-dose structure: frequent squat and bench exposure, deadlift about twice per week, and no daily maxing.",
+    "新增 RPE 自调节区块周期：3 个 block，从积累/技术到强化，再到峰值和测试周。": "Added the RPE autoregulated block cycle: three blocks from accumulation/skill to intensification, then peaking and a test week.",
+    "两个新体系都使用自己的周结构，不套用 JTS 的 MEV/MRV 问卷和模型。": "Both new systems use their own weekly structure and do not use the JTS MEV/MRV questionnaire or model.",
+    "免费工具方向保留，不加入付费、会员或权限限制。": "The tool remains free: no paid membership or access restrictions added.",
+    "v2.9": "v2.9",
+    "新增 SBS Norwegian 高频体系和 RPE 自调节区块周期；RPE 区块周期使用 3 个 block + 测试周，强调目标 RPE 优先，不达标不机械加重。": "Added SBS Norwegian high frequency and the RPE autoregulated block cycle. The RPE block cycle uses three blocks plus a test week, with target RPE taking priority over forced weekly jumps.",
     "常见问题 QA": "FAQ",
     "降重组为什么显示 0？": "Why do backdown sets show 0?",
     "不是错误。0 代表这里由疲劳下降系统生成；你填入已完成组数后，系统会自动列出剩余降重组。": "It is not an error. 0 means the fatigue-drop system will generate the work. Enter completed sets and the remaining backdowns appear automatically.",
@@ -7860,6 +7956,11 @@ const STATIC_I18N = new Map(
 );
 
 [
+  ["v2.9 · 高频与 RPE 区块体系", "v2.9 · High Frequency + RPE Block Systems"],
+  ["2026-06-19 12:10 更新", "Updated 2026-06-19 12:10"],
+  ["新增 SBS Norwegian 高频力量体系，参考 Stronger by Science 对挪威高频力量举实验的训练应用总结。", "Added the SBS Norwegian high-frequency strength system, based on the Stronger by Science training summary of Norwegian powerlifting research."],
+  ["新增 RPE 自调节区块周期：3 个 block，从积累/技术到强化，再到峰值和测试周。", "Added the RPE autoregulated block cycle: three blocks from accumulation/skill to intensification, then peaking and a test week."],
+  ["新增 SBS Norwegian 高频体系和 RPE 自调节区块周期；RPE 区块周期使用 3 个 block + 测试周，强调目标 RPE 优先，不达标不机械加重。", "Added SBS Norwegian high frequency and the RPE autoregulated block cycle. The RPE block cycle uses three blocks plus a test week, with target RPE taking priority over forced weekly jumps."],
   ["v2.8 · 受限部位一键过滤", "v2.8 · One-Tap Limitation Filter"],
   ["2026-06-19 11:20 更新", "Updated 2026-06-19 11:20"],
   ["JTS / MEV-MRV 体系新增两个临时按钮：本周移除下肢训练、本周移除上肢训练。", "JTS / MEV-MRV systems now include two temporary buttons: remove lower-body training this week and remove upper-body training this week."],
@@ -8663,6 +8764,26 @@ function phasePrescription(phaseKey, slot = 0, systemKey = state.survey.programS
     return body[phaseKey] || body.hypertrophy;
   }
 
+  if (systemKey === "norwegian") {
+    const norwegian = {
+      hypertrophy: { mainSets: 3, mainReps: slot % 2 ? 4 : 5, mainRpe: "6-7", variantSets: 2, variantReps: 5, variantRpe: "6" },
+      strength: { mainSets: 3, mainReps: slot % 2 ? 3 : 4, mainRpe: "7-8", variantSets: 2, variantReps: 4, variantRpe: "6-7" },
+      peaking: { mainSets: 2, mainReps: slot % 2 ? 2 : 3, mainRpe: "7-8", variantSets: 2, variantReps: 3, variantRpe: "6" },
+      test: { mainSets: 1, mainReps: 1, mainRpe: "8-9", variantSets: 1, variantReps: 3, variantRpe: "6" },
+    };
+    return norwegian[phaseKey] || norwegian.hypertrophy;
+  }
+
+  if (systemKey === "rpeBlock") {
+    const rpeBlock = {
+      hypertrophy: { mainSets: 4, mainReps: 5, mainRpe: "5-7", variantSets: 3, variantReps: 5, variantRpe: "6-7" },
+      strength: { mainSets: 1, mainReps: 2, mainRpe: "8", variantSets: 3, variantReps: 4, variantRpe: "6-7" },
+      peaking: { mainSets: 1, mainReps: 1, mainRpe: "8.5-9", variantSets: 2, variantReps: 3, variantRpe: "6" },
+      test: { mainSets: 1, mainReps: 1, mainRpe: "9-10", variantSets: 1, variantReps: 1, variantRpe: "6" },
+    };
+    return rpeBlock[phaseKey] || rpeBlock.hypertrophy;
+  }
+
   if (systemKey === "sheiko") return { ...base, mainSets: base.mainSets + 1, mainRpe: phaseKey === "peaking" ? "8" : "6-7" };
   if (systemKey === "westside") return { ...base, mainSets: phaseKey === "hypertrophy" ? 3 : 1, mainReps: phaseKey === "hypertrophy" ? 5 : 1, mainRpe: phaseKey === "peaking" ? "9" : "8" };
   if (systemKey === "texas" && slot === 0) return { ...base, mainSets: 5, mainReps: 5, mainRpe: phaseKey === "peaking" ? "7" : "6-7" };
@@ -8797,6 +8918,53 @@ function bodybuildingRowsFor(type, phaseKey, compact = false) {
   return addWeakPoint ? [...rows, ...bodybuildingWeakPointRows(compact)] : rows;
 }
 
+function norwegianRowsFor(dayNumber, phaseKey, compact = false) {
+  const p = phasePrescription(phaseKey, dayNumber, "norwegian");
+  const note = "高频小剂量：保留速度和动作一致性，不把中等强度做成极限日。";
+  const deadliftNote = "硬拉约每周 2 次，避免用高频把后链疲劳堆满。";
+  const templates = [
+    [row("SQUAT", p.mainSets, p.mainReps, p.mainRpe, note), row("BENCH PRESS", p.mainSets, p.mainReps, p.mainRpe, note), ...accessoryRows("lower", compact)],
+    [row("SQUAT VARIANT", p.variantSets + 1, p.variantReps, p.variantRpe, "轻技术蹲，补频率不抢恢复。"), row("BENCH PRESS", p.mainSets, p.mainReps, p.mainRpe, note), ...accessoryRows("upper", compact)],
+    [row("DEADLIFT", p.mainSets, p.mainReps, p.mainRpe, deadliftNote), row("BENCH PRESS VARIANT", p.variantSets + 1, p.variantReps, p.variantRpe, "卧推变式小剂量补技术。"), ...accessoryRows("lower", compact)],
+    [row("SQUAT", p.mainSets, Math.max(2, Number(p.mainReps) - 1 || 3), "7", note), row("BENCH PRESS", p.mainSets, Math.max(2, Number(p.mainReps) - 1 || 3), "7", note), ...accessoryRows("upper", compact)],
+    [row("SQUAT VARIANT", p.variantSets, p.variantReps, "6", "恢复性技术量，不追疲劳。"), row("BENCH PRESS", p.mainSets, p.mainReps, "6-7", note), ...accessoryRows("upper", true)],
+    [row("DEADLIFT VARIANT", p.variantSets, Math.max(2, Number(p.variantReps) - 1 || 3), "6-7", deadliftNote), row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, "6-7", note), ...accessoryRows("lower", true)],
+  ];
+  return templates[(dayNumber - 1) % templates.length];
+}
+
+function rpeBlockRowsFor(dayNumber, phaseKey, compact = false) {
+  const noAutoJump = "按目标 RPE 选重量；如果实际 RPE 超标，下周不机械加重，先重复或下调。";
+  const backoff = "顶组后降重，保持技术和速度，不能超过顶组 RPE。";
+  const blockNotes = {
+    hypertrophy: "Block 1 积累/技术：RPE 5-7，容量偏高，动作控制优先。",
+    strength: "Block 2 强化：top set + backoff，强度上升但仍按 RPE 管理。",
+    peaking: "Block 3 峰值：低次数高专项，辅助减少，为测试留恢复。",
+  };
+  const note = `${blockNotes[phaseKey] || noAutoJump} ${noAutoJump}`;
+  const phaseTemplates = {
+    hypertrophy: [
+      [row("SQUAT", 4, 5, "5-7", note), row("BENCH PRESS", 4, 5, "5-7", note), row("SQUAT VARIANT", 3, 5, "6", "节奏/暂停类技术补量。"), ...accessoryRows("lower", compact)],
+      [row("DEADLIFT VARIANT", 4, 4, "6-7", note), row("BENCH PRESS VARIANT", 4, 6, "6", "窄推/Spoto/暂停类卧推变式。"), ...accessoryRows("upper", compact)],
+      [row("BENCH PRESS", 5, 5, "6-7", note), row("BENCH PRESS VARIANT", 3, 6, "6", "卧推专项补量。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", 3, 5, "6-7", note), row("DEADLIFT", 3, 4, "6-7", note), ...accessoryRows("lower", compact)],
+    ],
+    strength: [
+      [row("SQUAT", 1, 2, "8", note), row("SQUAT", 3, 4, "6-7", backoff), row("BENCH PRESS", 1, 2, "8", note), row("BENCH PRESS", 4, 4, "6-7", backoff), ...accessoryRows("lower", compact)],
+      [row("DEADLIFT", 1, 2, "8", note), row("DEADLIFT VARIANT", 3, 3, "7", backoff), row("BENCH PRESS VARIANT", 4, 5, "7", note), ...accessoryRows("upper", compact)],
+      [row("BENCH PRESS VARIANT", 1, 3, "8", note), row("BENCH PRESS", 3, 4, "6", backoff), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", 1, 3, "8", note), row("SQUAT", 3, 3, "7", backoff), row("DEADLIFT", 3, 3, "6-7", "硬拉容量克制，避免恢复被吃掉。"), ...accessoryRows("lower", compact)],
+    ],
+    peaking: [
+      [row("SQUAT", 1, 1, "8.5-9", note), row("SQUAT", 2, 3, "6", backoff), row("BENCH PRESS", 1, 1, "8.5", note), row("BENCH PRESS", 3, 3, "6", backoff), ...accessoryRows("lower", true)],
+      [row("DEADLIFT", 1, 1, "8.5", note), row("DEADLIFT", 2, 3, "6", backoff), row("BENCH PRESS VARIANT", 3, 4, "6", "轻变式保持手感。"), ...accessoryRows("upper", true)],
+      [row("BENCH PRESS", 1, 1, "8.5-9", note), row("BENCH PRESS", 3, 2, "6", backoff), ...accessoryRows("upper", true)],
+      [row("SQUAT", 1, 1, "8", "最后一次低疲劳专项触碰。"), row("DEADLIFT VARIANT", 2, 2, "6", "测试前三天完整休息，保留速度。"), row("CABLE CRUNCHES", 2, "10-15", "6", "核心轻量，不累积疲劳。", "accessory")],
+    ],
+  };
+  return (phaseTemplates[phaseKey] || phaseTemplates.hypertrophy)[(dayNumber - 1) % 4];
+}
+
 function systemDayItems(systemKey, dayNumber, days, phaseKey, weekIndex) {
   if (systemKey === "bodybuilding") {
     const compact = days >= 5;
@@ -8812,6 +8980,8 @@ function systemDayItems(systemKey, dayNumber, days, phaseKey, weekIndex) {
     const dayTypes = templates[chosen] || templates[autoSplit];
     return bodybuildingRowsFor(dayTypes[(dayNumber - 1) % dayTypes.length], phaseKey, compact);
   }
+  if (systemKey === "norwegian") return norwegianRowsFor(dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
+  if (systemKey === "rpeBlock") return rpeBlockRowsFor(dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
   const p = phasePrescription(phaseKey, dayNumber, systemKey);
   const compact = days >= 5;
   const topNote = "按当天 RPE 调整重量，动作质量优先。";
@@ -8892,6 +9062,25 @@ function systemTestDayItems(dayNumber, systemKey = state.survey.programSystem) {
       bodybuildingRowsFor("legs", "test", true),
     ];
     return (map[dayNumber - 1] || map[0]).map((item) => ({ ...item }));
+  }
+  if (systemKey === "rpeBlock") {
+    if (dayNumber < 4) {
+      return [
+        row(
+          bodybuildingText("Full rest / easy walk", "完全休息 / 轻松散步"),
+          1,
+          "-",
+          "-",
+          bodybuildingText("Three full rest days before max testing. No hidden volume.", "测极限前三天完整休息，不额外偷加训练量。"),
+          "accessory"
+        ),
+      ];
+    }
+    return [
+      row("SQUAT", 1, 1, "9-10", "测试日：按热身状态决定是否冲新 PR。"),
+      row("BENCH PRESS", 1, 1, "9-10", "测试日：按热身状态决定是否冲新 PR。"),
+      row("DEADLIFT", 1, 1, "9-10", "测试日：按热身状态决定是否冲新 PR。"),
+    ];
   }
   const easy = dayNumber < 4;
   if (easy) {
@@ -9697,8 +9886,16 @@ function allocateSystemPhaseWeeks(totalWeeks, systemKey = state.survey.programSy
       { key: "peaking", name: "恢复评估期", weeks: deload, note: "降低疲劳，保留泵感和动作质量，用照片、围度和训练记录评估下一轮。" },
     ].filter((phase) => phase.weeks > 0);
   }
+  if (systemKey === "rpeBlock") {
+    return [
+      { key: "hypertrophy", name: "Block 1 积累/技术", weeks: 4, note: "RPE 5-7 建立动作量和技术控制，使用保守训练最大值，不用历史 PR 硬套。" },
+      { key: "strength", name: "Block 2 强化", weeks: 4, note: "加入 top set + backoff，强度上升；目标 RPE 超标时下周重复或下调，不机械加重。" },
+      { key: "peaking", name: "Block 3 峰值", weeks: 4, note: "低次数高专项，减少辅助和总量，测试前保留恢复窗口。" },
+    ];
+  }
   const ratios = {
     bodybuilding: [0.45, 0.4, 0.15],
+    norwegian: [0.45, 0.4, 0.15],
     sheiko: [0.5, 0.35, 0.15],
     calgary: [0.25, 0.5, 0.25],
     jts: [0.3, 0.45, 0.25],
@@ -9737,6 +9934,8 @@ function recommendedDaysForSystem(systemKey = state.survey.programSystem) {
 function systemFrequencies(days, systemKey = state.survey.programSystem) {
   const presets = {
     bodybuilding: { chest: days >= 5 ? 2 : 1.5, back: days >= 5 ? 2 : 1.5, delts: days >= 4 ? 2 : 1.5, legs: days >= 4 ? 2 : 1.5, arms: days >= 5 ? 2 : 1, core: 1 },
+    norwegian: { squat: days >= 6 ? 5 : Math.max(3, days - 1), bench: Math.min(days, days >= 6 ? 5 : days), deadlift: days >= 5 ? 2 : 1.5 },
+    rpeBlock: { squat: 2.5, bench: 4, deadlift: 2 },
     sheiko: { squat: days >= 4 ? 2.5 : 2, bench: Math.min(days, days >= 5 ? 4 : 3), deadlift: days >= 4 ? 2 : 1.5 },
     calgary: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
     jts: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
@@ -9908,6 +10107,18 @@ function makeWeeklyLayout(days, frequencies, model) {
       5: [["上肢主项"], ["下肢主项"], ["上肢变式"], ["下肢主项"], ["轻技术", "容量补足"]],
       6: [["上肢主项"], ["下肢主项"], ["上肢容量"], ["下肢变式"], ["上肢轻技术"], ["下肢后链"]],
     },
+    norwegian: {
+      3: [["蹲推高频 A", "技术容量"], ["拉推高频", "硬拉克制"], ["蹲推高频 B", "轻中强度"]],
+      4: [["蹲推高频 A"], ["蹲推技术"], ["拉推高频"], ["蹲推高频 B"]],
+      5: [["蹲推高频 A"], ["蹲推技术"], ["拉推高频"], ["蹲推高频 B"], ["卧推容量"]],
+      6: [["蹲推高频 A"], ["蹲推技术"], ["拉推高频 A"], ["蹲推高频 B"], ["卧推容量"], ["拉推高频 B"]],
+    },
+    rpeBlock: {
+      3: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推/深蹲变式"]],
+      4: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推专项"], ["深蹲变式/硬拉"]],
+      5: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推专项"], ["深蹲变式/硬拉"], ["轻技术/核心"]],
+      6: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推专项"], ["深蹲变式"], ["卧推轻量"], ["硬拉轻量/核心"]],
+    },
     sheiko: {
       3: [["深蹲技术量", "卧推技术量"], ["硬拉技术量", "卧推技术量"], ["深蹲技术量", "卧推技术量"]],
       4: [["深蹲", "卧推"], ["硬拉", "卧推"], ["深蹲变式", "卧推"], ["硬拉变式", "卧推"]],
@@ -9965,7 +10176,7 @@ function makeWeeklyLayout(days, frequencies, model) {
 function makePlanner() {
   const systemKey = state.survey.programSystem || "bodybuilding";
   const capacities = makeCapacities();
-  const totalWeeks = systemKey === "bodybuilding" ? 12 : weeksUntilMeet();
+  const totalWeeks = systemKey === "bodybuilding" ? 12 : systemKey === "rpeBlock" ? 13 : weeksUntilMeet();
   if (systemKey !== "jtsSstt") {
     const recommendedDays = recommendedDaysForSystem(systemKey);
     const requestedDays = state.survey.trainingDays === "auto" ? recommendedDays : Number(state.survey.trainingDays);
@@ -10006,6 +10217,15 @@ function phaseProgress(phase, localWeek, capacities) {
     const zh = { hypertrophy: "容量累积", strength: "渐进超负荷", peaking: "恢复评估" };
     const en = { hypertrophy: "Volume build", strength: "Progressive overload", peaking: "Recovery review" };
     const label = (isEnglish() ? en : zh)[phase.key] || (isEnglish() ? "Hypertrophy" : "增肌");
+    return `${label} ${localWeek}/${phase.weeks || localWeek}`;
+  }
+  if ((state.survey.programSystem || "bodybuilding") === "rpeBlock") {
+    return `${phaseDisplayName(phase)} ${localWeek}/${phase.weeks || localWeek}`;
+  }
+  if ((state.survey.programSystem || "bodybuilding") === "norwegian") {
+    const zh = { hypertrophy: "高频容量", strength: "高频专项", peaking: "高频冲刺" };
+    const en = { hypertrophy: "High-frequency volume", strength: "High-frequency specificity", peaking: "High-frequency taper" };
+    const label = (isEnglish() ? en : zh)[phase.key] || phaseDisplayName(phase);
     return `${label} ${localWeek}/${phase.weeks || localWeek}`;
   }
   const pattern = mesoPattern(averageGap(capacities, phase.key));
