@@ -7104,6 +7104,138 @@ const PROGRAM_SYSTEMS = {
       "A three-block powerlifting cycle with an RTS/Calgary-like flavor, not a copy of either original system: Block 1 accumulation and skill, Block 2 intensification, Block 3 peaking, then testing. Load is governed by target RPE instead of automatic weekly jumps.",
     status: "active",
   },
+  calgary16: {
+    short: "Calgary 16",
+    brandTitle: "Calgary Barbell 16 周",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Calgary Barbell 16 周改写模板",
+    enTitle: "Calgary Barbell 16-Week Adapted Template",
+    zhText: "偏 RPE、顶组和专项变式的 16 周备赛结构。这里做成改写版生成器，不复制原 spreadsheet。",
+    enText: "A 16-week RPE, top-set, and specific-variation prep template, implemented as an adapted generator rather than a copied spreadsheet.",
+    status: "active",
+  },
+  calgary8: {
+    short: "Calgary 8",
+    brandTitle: "Calgary Barbell 8 周",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Calgary Barbell 8 周改写模板",
+    enTitle: "Calgary Barbell 8-Week Adapted Template",
+    zhText: "较短的 RPE 强化/冲刺结构，适合已有训练基础、需要快速接近测试或比赛的人。",
+    enText: "A shorter RPE intensification and peaking structure for lifters already close to testing or competition.",
+    status: "active",
+  },
+  bullmastiff: {
+    short: "Bullmastiff",
+    brandTitle: "Bullmastiff",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Bullmastiff 风格力量周期",
+    enTitle: "Bullmastiff-Style Strength Cycle",
+    zhText: "以主项容量、百分比进展和自我调节辅助为主的力量周期改写版。",
+    enText: "An adapted strength cycle built around main-lift volume, percentage progression, and autoregulated assistance.",
+    status: "active",
+  },
+  kizen12: {
+    short: "Kizen 12",
+    brandTitle: "Kizen 12 周冲刺",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Kizen 12 周力量冲刺改写模板",
+    enTitle: "Kizen 12-Week Peaking Adapted Template",
+    zhText: "12 周力量冲刺思路：前期容量，后期低次数专项和测试准备。",
+    enText: "A 12-week peaking-style template: early volume, later low-rep specificity and test preparation.",
+    status: "active",
+  },
+  candito6: {
+    short: "Candito 6",
+    brandTitle: "Candito 6 周",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Candito 6 周力量周期改写模板",
+    enTitle: "Candito 6-Week Adapted Strength Cycle",
+    zhText: "6 周短周期：肌肉调节、容量、强度、冲刺和测试的压缩结构。",
+    enText: "A compressed 6-week structure moving through conditioning, volume, intensity, peaking, and testing.",
+    status: "active",
+  },
+  juggernaut: {
+    short: "Juggernaut",
+    brandTitle: "Juggernaut Method",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Juggernaut Method 基础改写模板",
+    enTitle: "Juggernaut Method Base Adapted Template",
+    zhText: "按 10/8/5/3 次阶段推进的基础力量周期改写版，强调累积容量和逐步提高强度。",
+    enText: "An adapted base cycle progressing through 10s, 8s, 5s, and 3s waves with accumulated volume and rising intensity.",
+    status: "active",
+  },
+  nuckols28: {
+    short: "Nuckols 28",
+    brandTitle: "Greg Nuckols 28",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Greg Nuckols 28 Programs 风格模板",
+    enTitle: "Greg Nuckols 28 Programs Style Template",
+    zhText: "按训练水平和单项频率组合的模板化思路改写，适合想分别调整深蹲、卧推、硬拉频率的人。",
+    enText: "An adapted modular template inspired by lift-specific frequency and level selection.",
+    status: "active",
+  },
+  beginnerPowerlifting: {
+    short: "Beginner",
+    brandTitle: "Beginner Powerlifting",
+    defaultDays: 3,
+    usesJtsSurvey: false,
+    zhTitle: "新手力量举基础模板",
+    enTitle: "Beginner Powerlifting Base Template",
+    zhText: "面向新手的三项基础频率、技术练习和线性进展样本。",
+    enText: "A beginner-friendly base template for SBD practice, basic frequency, and linear progression.",
+    status: "active",
+  },
+  intermediatePowerlifting: {
+    short: "Intermediate",
+    brandTitle: "Intermediate Powerlifting",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "中级力量举周期模板",
+    enTitle: "Intermediate Powerlifting Cycle Template",
+    zhText: "面向中级训练者的容量日、强度日和变式日组合。",
+    enText: "An intermediate template combining volume days, intensity days, and variation days.",
+    status: "active",
+  },
+  nsuns: {
+    short: "nSuns",
+    brandTitle: "nSuns",
+    defaultDays: 5,
+    usesJtsSurvey: false,
+    zhTitle: "nSuns 风格高容量模板",
+    enTitle: "nSuns-Style High-Volume Template",
+    zhText: "高容量 5/3/1 衍生风格，主项和补充主项容量较高，适合恢复能力较好的人。",
+    enText: "A high-volume 5/3/1-derived style with substantial main and supplemental lift work.",
+    status: "active",
+  },
+  wendler531: {
+    short: "5/3/1",
+    brandTitle: "Jim Wendler 5/3/1",
+    defaultDays: 4,
+    usesJtsSurvey: false,
+    zhTitle: "Jim Wendler 5/3/1 改写模板",
+    enTitle: "Jim Wendler 5/3/1 Adapted Template",
+    zhText: "以训练最大值、5/3/1 主项波动和补充/辅助训练组成的基础模板。",
+    enText: "A training-max based template with 5/3/1 main work plus supplemental and assistance work.",
+    status: "active",
+  },
+  madcow5x5: {
+    short: "Madcow 5x5",
+    brandTitle: "Madcow 5x5",
+    defaultDays: 3,
+    usesJtsSurvey: false,
+    zhTitle: "Madcow 5x5 改写模板",
+    enTitle: "Madcow 5x5 Adapted Template",
+    zhText: "经典三天 5x5 中级结构改写版：容量、轻量恢复和强度日递进。",
+    enText: "An adapted classic 3-day intermediate 5x5 structure: volume, light recovery, and intensity progression.",
+    status: "active",
+  },
   sheiko: {
     short: "Sheiko",
     brandTitle: "Sheiko",
@@ -7182,6 +7314,38 @@ const PROGRAM_SYSTEMS = {
     status: "active",
   },
 };
+
+const FIXED_SYSTEM_WEEKS = {
+  bodybuilding: 12,
+  rpeBlock: 13,
+  calgary16: 16,
+  calgary8: 8,
+  bullmastiff: 18,
+  kizen12: 12,
+  candito6: 6,
+  juggernaut: 16,
+  nuckols28: 8,
+  beginnerPowerlifting: 12,
+  intermediatePowerlifting: 12,
+  nsuns: 12,
+  wendler531: 12,
+  madcow5x5: 12,
+};
+
+const POPULAR_PROGRAM_KEYS = new Set([
+  "calgary16",
+  "calgary8",
+  "bullmastiff",
+  "kizen12",
+  "candito6",
+  "juggernaut",
+  "nuckols28",
+  "beginnerPowerlifting",
+  "intermediatePowerlifting",
+  "nsuns",
+  "wendler531",
+  "madcow5x5",
+]);
 
 const ACCESSORY_GROUPS = {
   upper: [
@@ -7420,6 +7584,60 @@ function localizePlanText(text) {
     "轻技术/核心": "Light technique / core",
     "卧推轻量": "Light bench",
     "硬拉轻量/核心": "Light deadlift / core",
+    "深蹲顶组": "Squat top set",
+    "卧推顶组": "Bench top set",
+    "硬拉顶组": "Deadlift top set",
+    "深蹲冲刺": "Squat peaking",
+    "卧推冲刺": "Bench peaking",
+    "硬拉冲刺": "Deadlift peaking",
+    "主项容量": "Main-lift volume",
+    "蹲推容量": "Squat/bench volume",
+    "拉推变式": "Deadlift/bench variation",
+    "蹲推变式": "Squat/bench variation",
+    "后链辅助": "Posterior-chain assistance",
+    "辅助容量": "Assistance volume",
+    "下肢主项": "Lower main work",
+    "上肢主项": "Upper main work",
+    "下肢波段": "Lower wave",
+    "上肢波段": "Upper wave",
+    "硬拉波段": "Deadlift wave",
+    "深蹲波段": "Squat wave",
+    "卧推波段": "Bench wave",
+    "推举/卧推变式": "Press / bench variation",
+    "下肢辅助": "Lower assistance",
+    "上肢辅助": "Upper assistance",
+    "深蹲模块": "Squat module",
+    "卧推模块": "Bench module",
+    "硬拉模块": "Deadlift module",
+    "卧推频率": "Bench frequency",
+    "变式模块": "Variation module",
+    "全身 A": "Full body A",
+    "全身 B": "Full body B",
+    "全身 C": "Full body C",
+    "技术日": "Technique day",
+    "轻辅助": "Light assistance",
+    "上肢轻量": "Light upper",
+    "下肢轻量": "Light lower",
+    "恢复辅助": "Recovery assistance",
+    "容量日": "Volume day",
+    "硬拉/推": "Deadlift / press",
+    "强度日": "Intensity day",
+    "容量蹲推": "Squat/bench volume",
+    "硬拉主项": "Deadlift main",
+    "下肢强度": "Lower intensity",
+    "卧推高量": "High-volume bench",
+    "深蹲高量": "High-volume squat",
+    "硬拉高量": "High-volume deadlift",
+    "上肢第二主项": "Second upper main lift",
+    "蹲推容量": "Squat/bench volume",
+    "深蹲 5/3/1": "Squat 5/3/1",
+    "卧推 5/3/1": "Bench 5/3/1",
+    "硬拉 5/3/1": "Deadlift 5/3/1",
+    "5x5 容量": "5x5 volume",
+    "轻量恢复": "Light recovery",
+    "5x5 强度": "5x5 intensity",
+    "辅助技术": "Assistance technique",
+    "核心恢复": "Core recovery",
     "深蹲": "Squat",
     "卧推": "Bench",
     "硬拉": "Deadlift",
@@ -7495,6 +7713,65 @@ function localizePlanText(text) {
     "核心轻量，不累积疲劳。": "Light core work without accumulating fatigue.",
     "测试日：按热身状态决定是否冲新 PR。": "Test day: decide whether to push a new PR based on warm-ups.",
     "测极限前三天完整休息，不额外偷加训练量。": "Take three full rest days before max testing; no hidden extra volume.",
+    "这是公开计划逻辑的改写版：按当天状态和目标 RPE 调整，不复制原 spreadsheet。": "This is an adapted version of public program logic: adjust by daily readiness and target RPE; it is not a copied spreadsheet.",
+    "补充组保持速度和动作一致性，RPE 超标就减重或少做。": "Keep supplemental work fast and consistent; reduce load or sets if RPE overshoots.",
+    "卧推容量/技术日。": "Bench volume / technique day.",
+    "轻变式补技术。": "Light variation technique work.",
+    "短周期保留推频率。": "Keep bench frequency in the short cycle.",
+    "主项容量推进，完成度好再加重。": "Main-lift volume progression; add load only when completion quality is good.",
+    "主项容量推进。": "Main-lift volume progression.",
+    "硬拉容量克制。": "Conservative deadlift volume.",
+    "上肢辅助按 RPE 自调节。": "Autoregulate upper assistance by RPE.",
+    "变式容量补弱项。": "Variation volume for weak points.",
+    "后链补量。": "Posterior-chain volume.",
+    "推容量日。": "Bench volume day.",
+    "短周期下肢主项。": "Short-cycle lower main work.",
+    "下肢日第二主项。": "Second main lift on lower day.",
+    "短周期上肢主项。": "Short-cycle upper main work.",
+    "卧推变式补量。": "Bench variation volume.",
+    "技术/容量日。": "Technique / volume day.",
+    "轻后链。": "Light posterior chain.",
+    "上肢容量日。": "Upper volume day.",
+    "Juggernaut 波段改写：次数逐阶段降低，强度逐步上升。": "Adapted Juggernaut wave: reps decrease by phase while intensity rises.",
+    "主项波段推进。": "Main-lift wave progression.",
+    "硬拉波段推进。": "Deadlift wave progression.",
+    "补充推举容量。": "Supplemental pressing volume.",
+    "按单项频率和水平选择的模块化思路。": "Modular approach based on lift-specific frequency and level.",
+    "卧推可更高频。": "Bench can tolerate higher frequency.",
+    "硬拉频率克制。": "Deadlift frequency stays conservative.",
+    "第二推日。": "Second bench day.",
+    "第三推日/变式。": "Third bench / variation day.",
+    "新手技术和线性进展。": "Beginner technique and linear progression.",
+    "每次保留余力。": "Keep reps in reserve every session.",
+    "轻技术。": "Light technique.",
+    "轻推。": "Light press.",
+    "强度略高但不磨。": "Slightly higher intensity without grinding.",
+    "完成质量优先。": "Completion quality first.",
+    "容量日。": "Volume day.",
+    "硬拉主项。": "Deadlift main work.",
+    "变式推。": "Press variation.",
+    "变式技术。": "Variation technique.",
+    "强度推。": "Bench intensity.",
+    "强度蹲。": "Squat intensity.",
+    "轻拉。": "Light pull.",
+    "高容量主项日。": "High-volume main-lift day.",
+    "补充组。": "Supplemental sets.",
+    "第二推。": "Second press.",
+    "主项日。": "Main-lift day.",
+    "第二上肢主项。": "Second upper main lift.",
+    "回补推量。": "Extra bench volume.",
+    "补充拉。": "Supplemental pull.",
+    "轻中等下肢容量。": "Light/moderate lower volume.",
+    "推频率补足。": "Extra bench frequency.",
+    "训练最大值思路，最后组不必硬冲失败。": "Training-max approach; the final set does not need to be forced to failure.",
+    "主项波动。": "Main-lift wave.",
+    "容量日，逐组递增。": "Volume day, ramping across sets.",
+    "主拉。": "Main pull.",
+    "轻量恢复日。": "Light recovery day.",
+    "轻推/变式。": "Light press / variation.",
+    "强度日递增。": "Intensity day ramping.",
+    "顶部三次。": "Top triple.",
+    "强度推。": "Bench intensity.",
     "从当前训练过渡到计划起点，保留技术练习，降低疲劳。": "Transition into the plan while keeping technique practice and lowering fatigue.",
     "用较高容量建立肌肉量与技术容量。": "Build muscle mass and technical work capacity with higher volume.",
     "提高专项强度，容量保持在 MEV 到 MRV 之间推进。": "Raise specific intensity while volume progresses between MEV and MRV.",
@@ -7714,9 +7991,21 @@ function renderToolLanguage() {
   });
   setSelectOptionsLanguage("programSystemInput", {
     bodybuilding: { zh: "健美式肌肥大", en: "Bodybuilding Hypertrophy" },
-    jtsSstt: { zh: "JTS × SSTT 十五周", en: "JTS × SSTT 15-Week" },
+    jtsSstt: { zh: "JTS × SSTT 十五周（推荐）", en: "JTS × SSTT 15-Week (Recommended)" },
     norwegian: { zh: "SBS Norwegian 高频", en: "SBS Norwegian High Frequency" },
     rpeBlock: { zh: "RPE 自调节区块周期", en: "RPE Autoregulated Block" },
+    calgary16: { zh: "Calgary Barbell 16 周", en: "Calgary Barbell 16-Week" },
+    calgary8: { zh: "Calgary Barbell 8 周", en: "Calgary Barbell 8-Week" },
+    bullmastiff: { zh: "Bullmastiff", en: "Bullmastiff" },
+    kizen12: { zh: "Kizen 12 周冲刺", en: "Kizen 12-Week Peaking" },
+    candito6: { zh: "Candito 6 周", en: "Candito 6-Week" },
+    juggernaut: { zh: "Juggernaut Method", en: "Juggernaut Method" },
+    nuckols28: { zh: "Greg Nuckols 28", en: "Greg Nuckols 28" },
+    beginnerPowerlifting: { zh: "新手力量举基础", en: "Beginner Powerlifting" },
+    intermediatePowerlifting: { zh: "中级力量举周期", en: "Intermediate Powerlifting" },
+    nsuns: { zh: "nSuns", en: "nSuns" },
+    wendler531: { zh: "Jim Wendler 5/3/1", en: "Jim Wendler 5/3/1" },
+    madcow5x5: { zh: "Madcow 5x5", en: "Madcow 5x5" },
     sheiko: { zh: "Sheiko", en: "Sheiko" },
     calgary: { zh: "Calgary", en: "Calgary" },
     jts: { zh: "JTS", en: "JTS" },
@@ -8965,6 +9254,88 @@ function rpeBlockRowsFor(dayNumber, phaseKey, compact = false) {
   return (phaseTemplates[phaseKey] || phaseTemplates.hypertrophy)[(dayNumber - 1) % 4];
 }
 
+function popularProgramRowsFor(systemKey, dayNumber, phaseKey, compact = false) {
+  const p = phasePrescription(phaseKey, dayNumber, systemKey);
+  const quality = "这是公开计划逻辑的改写版：按当天状态和目标 RPE 调整，不复制原 spreadsheet。";
+  const backoff = "补充组保持速度和动作一致性，RPE 超标就减重或少做。";
+  const isPeak = phaseKey === "peaking";
+  const templates = {
+    calgary16: [
+      [row("SQUAT", 1, isPeak ? 1 : 3, isPeak ? "8.5" : "8", quality), row("SQUAT", 3, isPeak ? 2 : 5, "6-7", backoff), row("BENCH PRESS", 4, isPeak ? 3 : 5, "6-7", quality), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 1, isPeak ? 1 : 3, isPeak ? "8.5" : "8", quality), row("BENCH PRESS VARIANT", 3, isPeak ? 3 : 6, "6-7", backoff), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", 1, isPeak ? 1 : 3, isPeak ? "8.5" : "8", quality), row("DEADLIFT VARIANT", 3, isPeak ? 2 : 4, "6-7", backoff), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 4, isPeak ? 2 : 6, "6-7", "卧推容量/技术日。"), row("SQUAT VARIANT", 2, 5, "6", "轻变式补技术。"), ...accessoryRows("upper", compact)],
+    ],
+    calgary8: [
+      [row("SQUAT", 1, isPeak ? 1 : 2, "8-9", quality), row("SQUAT", 3, isPeak ? 2 : 4, "6-7", backoff), ...accessoryRows("lower", true)],
+      [row("BENCH PRESS", 1, isPeak ? 1 : 2, "8-9", quality), row("BENCH PRESS", 4, isPeak ? 2 : 4, "6-7", backoff), ...accessoryRows("upper", true)],
+      [row("DEADLIFT", 1, isPeak ? 1 : 2, "8-9", quality), row("DEADLIFT VARIANT", 2, isPeak ? 2 : 3, "6-7", backoff), ...accessoryRows("lower", true)],
+      [row("BENCH PRESS VARIANT", 3, isPeak ? 3 : 5, "6-7", "短周期保留推频率。"), ...accessoryRows("upper", true)],
+    ],
+    bullmastiff: [
+      [row("SQUAT", 4, isPeak ? 3 : 6, "6-8", "主项容量推进，完成度好再加重。"), row("BENCH PRESS", 4, isPeak ? 3 : 6, "6-8", "主项容量推进。"), ...accessoryRows("lower", compact)],
+      [row("DEADLIFT", 3, isPeak ? 2 : 5, "6-8", "硬拉容量克制。"), row("BENCH PRESS VARIANT", 3, "8-10", "7", "上肢辅助按 RPE 自调节。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", 3, "8-10", "7", "变式容量补弱项。"), row("BENCH PRESS", 5, isPeak ? 3 : 5, "6-8", "第二推日补容量。"), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT VARIANT", 3, "6-8", "7", "后链补量。"), ...accessoryRows("lower", compact)],
+    ],
+    kizen12: [
+      [row("SQUAT", p.mainSets, p.mainReps, p.mainRpe, quality), row("BENCH PRESS", p.mainSets, p.mainReps, p.mainRpe, quality), ...accessoryRows("lower", compact)],
+      [row("DEADLIFT", p.mainSets, p.mainReps, p.mainRpe, quality), row("BENCH PRESS VARIANT", p.variantSets, p.variantReps, p.variantRpe, backoff), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", p.variantSets, p.variantReps, p.variantRpe, backoff), row("BENCH PRESS", p.mainSets, p.mainReps, "6-7", "推容量日。"), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT VARIANT", p.variantSets, p.variantReps, p.variantRpe, backoff), ...accessoryRows("lower", compact)],
+    ],
+    candito6: [
+      [row("SQUAT", phaseKey === "hypertrophy" ? 4 : 3, phaseKey === "hypertrophy" ? 6 : isPeak ? 1 : 3, isPeak ? "8-9" : "7-8", "短周期下肢主项。"), row("DEADLIFT", phaseKey === "hypertrophy" ? 2 : 1, phaseKey === "hypertrophy" ? 6 : 3, "6-8", "下肢日第二主项。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", phaseKey === "hypertrophy" ? 4 : 3, phaseKey === "hypertrophy" ? 6 : isPeak ? 1 : 3, isPeak ? "8-9" : "7-8", "短周期上肢主项。"), row("BENCH PRESS VARIANT", 3, "6-8", "6-7", "卧推变式补量。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", 3, phaseKey === "hypertrophy" ? 8 : 5, "6-7", "技术/容量日。"), row("DEADLIFT VARIANT", 2, 5, "6-7", "轻后链。"), ...accessoryRows("lower", true)],
+      [row("BENCH PRESS", 4, phaseKey === "hypertrophy" ? 8 : 4, "6-7", "上肢容量日。"), ...accessoryRows("upper", true)],
+    ],
+    juggernaut: [
+      [row("SQUAT", 5, phaseKey === "hypertrophy" ? 10 : phaseKey === "strength" ? 5 : 3, "6-8", "Juggernaut 波段改写：次数逐阶段降低，强度逐步上升。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 5, phaseKey === "hypertrophy" ? 10 : phaseKey === "strength" ? 5 : 3, "6-8", "主项波段推进。"), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", 4, phaseKey === "hypertrophy" ? 8 : phaseKey === "strength" ? 5 : 3, "6-8", "硬拉波段推进。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS VARIANT", 4, phaseKey === "hypertrophy" ? 10 : 6, "6-7", "补充推举容量。"), ...accessoryRows("upper", compact)],
+    ],
+    nuckols28: [
+      [row("SQUAT", 4, p.mainReps, p.mainRpe, "按单项频率和水平选择的模块化思路。"), row("BENCH PRESS VARIANT", 3, 6, "6-7", "次主项。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 5, p.mainReps, p.mainRpe, "卧推可更高频。"), row("SQUAT VARIANT", 2, 5, "6", "轻变式。"), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", 3, p.mainReps, p.mainRpe, "硬拉频率克制。"), row("BENCH PRESS", 4, 6, "6-7", "第二推日。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS VARIANT", 4, 6, "6-7", "第三推日/变式。"), ...accessoryRows("upper", compact)],
+    ],
+    beginnerPowerlifting: [
+      [row("SQUAT", 3, 5, "6-7", "新手技术和线性进展。"), row("BENCH PRESS", 3, 5, "6-7", "新手技术和线性进展。"), row("DEADLIFT", 1, 5, "6-7", "每次保留余力。"), ...accessoryRows("lower", true)],
+      [row("SQUAT", 3, 5, "6", "轻技术。"), row("BENCH PRESS VARIANT", 3, 6, "6", "轻推。"), ...accessoryRows("upper", true)],
+      [row("SQUAT", 3, 5, "7", "强度略高但不磨。"), row("BENCH PRESS", 3, 5, "7", "强度略高但不磨。"), row("DEADLIFT", 1, 5, "7", "完成质量优先。"), ...accessoryRows("lower", true)],
+    ],
+    intermediatePowerlifting: [
+      [row("SQUAT", 4, 5, "7", "容量日。"), row("BENCH PRESS", 4, 5, "7", "容量日。"), ...accessoryRows("lower", compact)],
+      [row("DEADLIFT", 3, 4, "7", "硬拉主项。"), row("BENCH PRESS VARIANT", 3, 6, "6-7", "变式推。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT VARIANT", 3, 5, "6-7", "变式技术。"), row("BENCH PRESS", 5, 3, "7-8", "强度推。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT", 3, 3, "7-8", "强度蹲。"), row("DEADLIFT VARIANT", 2, 4, "6-7", "轻拉。"), ...accessoryRows("lower", compact)],
+    ],
+    nsuns: [
+      [row("BENCH PRESS", 1, "5/3/1", "7-9", "高容量主项日。"), row("BENCH PRESS", 6, 5, "6-8", "补充组。"), row("BENCH PRESS VARIANT", 3, 8, "7", "第二推。"), ...accessoryRows("upper", compact)],
+      [row("SQUAT", 1, "5/3/1", "7-9", "主项日。"), row("SQUAT", 6, 5, "6-8", "补充组。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS VARIANT", 1, "5/3/1", "7-9", "第二上肢主项。"), row("BENCH PRESS", 5, 5, "6-7", "回补推量。"), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", 1, "5/3/1", "7-9", "主项日。"), row("DEADLIFT", 5, 3, "6-8", "补充拉。"), ...accessoryRows("lower", compact)],
+      [row("SQUAT VARIANT", 4, 6, "6-7", "轻中等下肢容量。"), row("BENCH PRESS", 4, 6, "6-7", "推频率补足。"), ...accessoryRows("upper", true)],
+    ],
+    wendler531: [
+      [row("SQUAT", 3, "5/3/1", "7-9", "训练最大值思路，最后组不必硬冲失败。"), row("SQUAT", 5, 5, "6-7", "补充组。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS", 3, "5/3/1", "7-9", "主项波动。"), row("BENCH PRESS", 5, 5, "6-7", "补充组。"), ...accessoryRows("upper", compact)],
+      [row("DEADLIFT", 3, "5/3/1", "7-9", "主项波动。"), row("DEADLIFT", 3, 5, "6-7", "补充拉。"), ...accessoryRows("lower", compact)],
+      [row("BENCH PRESS VARIANT", 3, "5/3/1", "7-9", "推举/卧推变式日。"), ...accessoryRows("upper", compact)],
+    ],
+    madcow5x5: [
+      [row("SQUAT", 5, 5, "6-8", "容量日，逐组递增。"), row("BENCH PRESS", 5, 5, "6-8", "容量日。"), row("DEADLIFT", 1, 5, "7", "主拉。"), ...accessoryRows("lower", true)],
+      [row("SQUAT", 4, 5, "5-6", "轻量恢复日。"), row("BENCH PRESS VARIANT", 4, 5, "6", "轻推/变式。"), ...accessoryRows("upper", true)],
+      [row("SQUAT", 4, 5, "7", "强度日递增。"), row("SQUAT", 1, 3, "8", "顶部三次。"), row("BENCH PRESS", 4, 5, "7", "强度推。"), row("DEADLIFT VARIANT", 3, 5, "6-7", "后链补量。"), ...accessoryRows("lower", true)],
+    ],
+  };
+  const pool = templates[systemKey] || templates.intermediatePowerlifting;
+  return pool[(dayNumber - 1) % pool.length];
+}
+
 function systemDayItems(systemKey, dayNumber, days, phaseKey, weekIndex) {
   if (systemKey === "bodybuilding") {
     const compact = days >= 5;
@@ -8982,6 +9353,7 @@ function systemDayItems(systemKey, dayNumber, days, phaseKey, weekIndex) {
   }
   if (systemKey === "norwegian") return norwegianRowsFor(dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
   if (systemKey === "rpeBlock") return rpeBlockRowsFor(dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
+  if (POPULAR_PROGRAM_KEYS.has(systemKey)) return popularProgramRowsFor(systemKey, dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
   const p = phasePrescription(phaseKey, dayNumber, systemKey);
   const compact = days >= 5;
   const topNote = "按当天 RPE 调整重量，动作质量优先。";
@@ -9896,6 +10268,18 @@ function allocateSystemPhaseWeeks(totalWeeks, systemKey = state.survey.programSy
   const ratios = {
     bodybuilding: [0.45, 0.4, 0.15],
     norwegian: [0.45, 0.4, 0.15],
+    calgary16: [0.25, 0.5, 0.25],
+    calgary8: [0.15, 0.5, 0.35],
+    bullmastiff: [0.45, 0.4, 0.15],
+    kizen12: [0.3, 0.45, 0.25],
+    candito6: [0.35, 0.45, 0.2],
+    juggernaut: [0.5, 0.35, 0.15],
+    nuckols28: [0.35, 0.45, 0.2],
+    beginnerPowerlifting: [0.55, 0.35, 0.1],
+    intermediatePowerlifting: [0.35, 0.45, 0.2],
+    nsuns: [0.5, 0.35, 0.15],
+    wendler531: [0.45, 0.4, 0.15],
+    madcow5x5: [0.45, 0.4, 0.15],
     sheiko: [0.5, 0.35, 0.15],
     calgary: [0.25, 0.5, 0.25],
     jts: [0.3, 0.45, 0.25],
@@ -9936,6 +10320,18 @@ function systemFrequencies(days, systemKey = state.survey.programSystem) {
     bodybuilding: { chest: days >= 5 ? 2 : 1.5, back: days >= 5 ? 2 : 1.5, delts: days >= 4 ? 2 : 1.5, legs: days >= 4 ? 2 : 1.5, arms: days >= 5 ? 2 : 1, core: 1 },
     norwegian: { squat: days >= 6 ? 5 : Math.max(3, days - 1), bench: Math.min(days, days >= 6 ? 5 : days), deadlift: days >= 5 ? 2 : 1.5 },
     rpeBlock: { squat: 2.5, bench: 4, deadlift: 2 },
+    calgary16: { squat: 2, bench: 3, deadlift: 1.5 },
+    calgary8: { squat: 2, bench: 3, deadlift: 1.5 },
+    bullmastiff: { squat: 2, bench: 3, deadlift: 2 },
+    kizen12: { squat: 2, bench: 3, deadlift: 1.5 },
+    candito6: { squat: 2, bench: 2.5, deadlift: 1.5 },
+    juggernaut: { squat: 1.5, bench: 2, deadlift: 1.5 },
+    nuckols28: { squat: 2, bench: days >= 4 ? 3 : 2, deadlift: 1.5 },
+    beginnerPowerlifting: { squat: 3, bench: 3, deadlift: 2 },
+    intermediatePowerlifting: { squat: 2, bench: 3, deadlift: 2 },
+    nsuns: { squat: 2, bench: days >= 5 ? 4 : 3, deadlift: 1.5 },
+    wendler531: { squat: 1.5, bench: 2, deadlift: 1.5 },
+    madcow5x5: { squat: 3, bench: 2.5, deadlift: 1.5 },
     sheiko: { squat: days >= 4 ? 2.5 : 2, bench: Math.min(days, days >= 5 ? 4 : 3), deadlift: days >= 4 ? 2 : 1.5 },
     calgary: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
     jts: { squat: days >= 4 ? 2 : 1.5, bench: Math.min(days, 3), deadlift: days >= 4 ? 2 : 1.5 },
@@ -10119,6 +10515,78 @@ function makeWeeklyLayout(days, frequencies, model) {
       5: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推专项"], ["深蹲变式/硬拉"], ["轻技术/核心"]],
       6: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推专项"], ["深蹲变式"], ["卧推轻量"], ["硬拉轻量/核心"]],
     },
+    calgary16: {
+      3: [["深蹲强度"], ["卧推强度"], ["硬拉强度"]],
+      4: [["深蹲顶组"], ["卧推顶组"], ["硬拉顶组"], ["卧推容量"]],
+      5: [["深蹲顶组"], ["卧推顶组"], ["硬拉顶组"], ["卧推容量"], ["变式技术"]],
+      6: [["深蹲顶组"], ["卧推顶组"], ["硬拉顶组"], ["卧推容量"], ["深蹲变式"], ["卧推变式"]],
+    },
+    calgary8: {
+      3: [["深蹲冲刺"], ["卧推冲刺"], ["硬拉冲刺"]],
+      4: [["深蹲冲刺"], ["卧推冲刺"], ["硬拉冲刺"], ["卧推变式"]],
+      5: [["深蹲冲刺"], ["卧推冲刺"], ["硬拉冲刺"], ["卧推变式"], ["轻技术"]],
+      6: [["深蹲冲刺"], ["卧推冲刺"], ["硬拉冲刺"], ["卧推变式"], ["深蹲轻量"], ["卧推轻量"]],
+    },
+    bullmastiff: {
+      3: [["主项容量"], ["后链/卧推变式"], ["变式容量"]],
+      4: [["蹲推容量"], ["拉推变式"], ["蹲推变式"], ["后链辅助"]],
+      5: [["蹲推容量"], ["拉推变式"], ["卧推容量"], ["深蹲变式"], ["后链辅助"]],
+      6: [["蹲推容量"], ["拉推变式"], ["卧推容量"], ["深蹲变式"], ["硬拉变式"], ["辅助容量"]],
+    },
+    kizen12: {
+      3: [["深蹲/卧推"], ["硬拉/卧推变式"], ["变式容量"]],
+      4: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推容量"], ["硬拉变式"]],
+      5: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推容量"], ["深蹲变式"], ["硬拉变式"]],
+      6: [["深蹲/卧推"], ["硬拉/卧推变式"], ["卧推容量"], ["深蹲变式"], ["卧推轻量"], ["硬拉变式"]],
+    },
+    candito6: {
+      3: [["下肢主项"], ["上肢主项"], ["变式/容量"]],
+      4: [["下肢主项"], ["上肢主项"], ["下肢变式"], ["上肢容量"]],
+      5: [["下肢主项"], ["上肢主项"], ["下肢变式"], ["上肢容量"], ["轻技术"]],
+      6: [["下肢主项"], ["上肢主项"], ["下肢变式"], ["上肢容量"], ["卧推轻量"], ["核心/恢复"]],
+    },
+    juggernaut: {
+      3: [["下肢波段"], ["上肢波段"], ["硬拉波段"]],
+      4: [["深蹲波段"], ["卧推波段"], ["硬拉波段"], ["推举/卧推变式"]],
+      5: [["深蹲波段"], ["卧推波段"], ["硬拉波段"], ["推举/卧推变式"], ["辅助容量"]],
+      6: [["深蹲波段"], ["卧推波段"], ["硬拉波段"], ["推举/卧推变式"], ["下肢辅助"], ["上肢辅助"]],
+    },
+    nuckols28: {
+      3: [["深蹲模块"], ["卧推模块"], ["硬拉模块"]],
+      4: [["深蹲模块"], ["卧推模块"], ["硬拉模块"], ["卧推频率"]],
+      5: [["深蹲模块"], ["卧推模块"], ["硬拉模块"], ["卧推频率"], ["变式模块"]],
+      6: [["深蹲模块"], ["卧推模块"], ["硬拉模块"], ["卧推频率"], ["深蹲变式"], ["硬拉变式"]],
+    },
+    beginnerPowerlifting: {
+      3: [["全身 A"], ["全身 B"], ["全身 C"]],
+      4: [["全身 A"], ["技术日"], ["全身 B"], ["轻辅助"]],
+      5: [["全身 A"], ["技术日"], ["全身 B"], ["上肢轻量"], ["下肢轻量"]],
+      6: [["全身 A"], ["技术日"], ["全身 B"], ["上肢轻量"], ["下肢轻量"], ["恢复辅助"]],
+    },
+    intermediatePowerlifting: {
+      3: [["容量日"], ["硬拉/推"], ["强度日"]],
+      4: [["容量蹲推"], ["硬拉主项"], ["卧推强度"], ["下肢强度"]],
+      5: [["容量蹲推"], ["硬拉主项"], ["卧推强度"], ["下肢强度"], ["轻技术"]],
+      6: [["容量蹲推"], ["硬拉主项"], ["卧推强度"], ["下肢强度"], ["卧推容量"], ["后链辅助"]],
+    },
+    nsuns: {
+      3: [["卧推高量"], ["深蹲高量"], ["硬拉高量"]],
+      4: [["卧推高量"], ["深蹲高量"], ["上肢第二主项"], ["硬拉高量"]],
+      5: [["卧推高量"], ["深蹲高量"], ["上肢第二主项"], ["硬拉高量"], ["蹲推容量"]],
+      6: [["卧推高量"], ["深蹲高量"], ["上肢第二主项"], ["硬拉高量"], ["蹲推容量"], ["辅助容量"]],
+    },
+    wendler531: {
+      3: [["深蹲 5/3/1"], ["卧推 5/3/1"], ["硬拉 5/3/1"]],
+      4: [["深蹲 5/3/1"], ["卧推 5/3/1"], ["硬拉 5/3/1"], ["推举/卧推变式"]],
+      5: [["深蹲 5/3/1"], ["卧推 5/3/1"], ["硬拉 5/3/1"], ["推举/卧推变式"], ["辅助容量"]],
+      6: [["深蹲 5/3/1"], ["卧推 5/3/1"], ["硬拉 5/3/1"], ["推举/卧推变式"], ["下肢辅助"], ["上肢辅助"]],
+    },
+    madcow5x5: {
+      3: [["5x5 容量"], ["轻量恢复"], ["5x5 强度"]],
+      4: [["5x5 容量"], ["轻量恢复"], ["5x5 强度"], ["辅助技术"]],
+      5: [["5x5 容量"], ["轻量恢复"], ["5x5 强度"], ["上肢辅助"], ["下肢辅助"]],
+      6: [["5x5 容量"], ["轻量恢复"], ["5x5 强度"], ["上肢辅助"], ["下肢辅助"], ["核心恢复"]],
+    },
     sheiko: {
       3: [["深蹲技术量", "卧推技术量"], ["硬拉技术量", "卧推技术量"], ["深蹲技术量", "卧推技术量"]],
       4: [["深蹲", "卧推"], ["硬拉", "卧推"], ["深蹲变式", "卧推"], ["硬拉变式", "卧推"]],
@@ -10176,7 +10644,7 @@ function makeWeeklyLayout(days, frequencies, model) {
 function makePlanner() {
   const systemKey = state.survey.programSystem || "bodybuilding";
   const capacities = makeCapacities();
-  const totalWeeks = systemKey === "bodybuilding" ? 12 : systemKey === "rpeBlock" ? 13 : weeksUntilMeet();
+  const totalWeeks = FIXED_SYSTEM_WEEKS[systemKey] || weeksUntilMeet();
   if (systemKey !== "jtsSstt") {
     const recommendedDays = recommendedDaysForSystem(systemKey);
     const requestedDays = state.survey.trainingDays === "auto" ? recommendedDays : Number(state.survey.trainingDays);
@@ -10424,6 +10892,11 @@ function meetDateText(plan) {
       ? "Fixed 13-week block cycle"
       : "固定 13 周区块周期";
   }
+  if (FIXED_SYSTEM_WEEKS[plan.systemKey]) {
+    return isEnglish()
+      ? `Fixed ${weeksText(plan.totalWeeks)} adapted template`
+      : `固定 ${plan.totalWeeks} 周改写模板`;
+  }
   if (!state.survey.meetDate) {
     return isEnglish()
       ? `${systemShortText()}: using the default ${weeksText(plan.totalWeeks)} cycle`
@@ -10651,6 +11124,11 @@ function renderPlanner() {
     $("planLengthLabel").textContent = isEnglish()
       ? "RPE Block is fixed at 13 weeks: 12 training weeks plus Week 13 testing."
       : "RPE 自调节区块周期固定 13 周：12 周训练 + 第 13 周测试。";
+  } else if (FIXED_SYSTEM_WEEKS[plan.systemKey]) {
+    const systemName = systemShortText(currentProgramSystem());
+    $("planLengthLabel").textContent = isEnglish()
+      ? `${systemName}: fixed ${weeksText(plan.totalWeeks)} adapted template.`
+      : `${systemName}：固定 ${plan.totalWeeks} 周改写模板。`;
   } else {
     const systemName = systemShortText(currentProgramSystem());
     $("planLengthLabel").textContent = state.survey.meetDate
