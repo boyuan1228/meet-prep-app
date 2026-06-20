@@ -8046,6 +8046,12 @@ const STATIC_I18N = new Map(
     "更新内容": "Latest Update",
     "历史日志": "History",
     "查看历史日志": "View History",
+    "v2.11 · 高质量训练体系小课堂": "v2.11 · High-Quality System Classroom",
+    "2026-06-20 00:15 更新": "Updated 2026-06-20 00:15",
+    "新增“高质量体系小课堂”，用训练者能听懂的方式解释强体系的判断标准。": "Added a high-quality system classroom that explains strong training systems in athlete-friendly language.",
+    "把专项性、可恢复容量、强度分布、进展规则、反馈闭环和人群适配整理成 6 个核心点。": "Organized specificity, recoverable volume, intensity distribution, progression rules, feedback loops, and audience fit into six core points.",
+    "知识库和侧栏都能看到短版/完整版说明，方便教练给学员解释。": "The Knowledge Base and sidebar now show short and full versions so coaches can explain the logic to athletes.",
+    "新增高质量训练体系小课堂，面向训练者解释专项性、可恢复容量、强度分布、进展规则、反馈闭环和人群适配，并补充 JTS/SBS 类体系为什么强。": "Added a high-quality training-system classroom explaining specificity, recoverable volume, intensity distribution, progression rules, feedback loops, audience fit, and why JTS/SBS-style systems are strong.",
     "v2.9 · 高频与 RPE 区块体系": "v2.9 · High Frequency + RPE Block Systems",
     "新增 SBS Norwegian 高频力量体系，参考 Stronger by Science 对挪威高频力量举实验的训练应用总结。": "Added the SBS Norwegian high-frequency strength system, based on the Stronger by Science training summary of Norwegian powerlifting research.",
     "默认 6 天高频小剂量：深蹲和卧推高频出现，硬拉约每周 2 次，避免天天冲极限。": "Default 6-day high-frequency small-dose structure: frequent squat and bench exposure, deadlift about twice per week, and no daily maxing.",
@@ -8448,7 +8454,9 @@ function renderSystemChrome() {
             <li>照片、围度、泵感、关节舒适度和训练日志趋势要一起看。</li>
           </ul>
           <small class="source-note">${sourceText("hypertrophy")}</small>`;
+      sidebarLesson.insertAdjacentHTML("beforeend", systemQualityLesson("sidebar"));
     } else {
+      sidebarLesson.insertAdjacentHTML("beforeend", systemQualityLesson("sidebar"));
       sidebarLesson.insertAdjacentHTML("beforeend", `<small class="source-note">${sourceText("training")}</small>`);
     }
   }
@@ -8653,9 +8661,72 @@ function renderProgramIntro() {
   `;
 }
 
+function systemQualityLesson(mode = "full") {
+  const compact = mode === "sidebar";
+  const pillars = isEnglish()
+    ? [
+        ["Specificity", "The plan should clearly serve the target lift, muscle, or competition skill instead of collecting random hard exercises."],
+        ["Recoverable Volume", "More sets are only useful when the athlete can adapt to them. A high-quality system manages MEV/MRV, fatigue, and deloads."],
+        ["Intensity Distribution", "Heavy, medium, light, technical, and taper work should have roles. Not every day should feel like a test."],
+        ["Progression Rule", "Load, reps, sets, or execution quality should progress, but target RPE overrides forced weekly jumps."],
+        ["Feedback Loop", "Logs, RPE, pain, sleep, bodyweight, and performance trends should change the next decision."],
+        ["Audience Fit", "A beginner, advanced lifter, peaking lifter, and physique athlete should not all run the same plan unchanged."],
+      ]
+    : [
+        ["专项性", "训练要清楚服务目标动作、目标肌群或比赛表现，而不是随机堆一堆很累的动作。"],
+        ["可恢复容量", "组数多不等于更强；有效容量必须能恢复、能适应，才有意义。高质量体系会管理 MEV/MRV、疲劳和减载。"],
+        ["强度分布", "重日、中等日、轻日、技术日和冲刺/减量都要有角色；不是每天都像测试。"],
+        ["进展规则", "重量、次数、组数或动作质量要逐步推进，但目标 RPE 高于机械加重。"],
+        ["反馈闭环", "训练日志、RPE、疼痛、睡眠、体重和表现趋势，要能反过来影响下一步安排。"],
+        ["人群适配", "新手、进阶者、备赛者和健美增肌人群，不应该无脑套同一张表。"],
+      ];
+  const intro = isEnglish()
+    ? "A strong training system is not the one with the harshest week. It is the one that can explain why each week exists, how fatigue is controlled, and how the athlete should adjust when reality disagrees with the sheet."
+    : "真正强的训练体系，不是把人练到最累的那张表，而是能讲清楚每一周为什么存在、疲劳怎么被控制、当现实和表格不一致时该怎么调整。";
+  const jtsLine = isEnglish()
+    ? "JTS-style planning is strong when it connects phase structure, volume landmarks, specificity, deloads, and peaking."
+    : "JTS 类思路强在把阶段安排、容量地标、专项性、减载和冲刺串成一条线。";
+  const sbsLine = isEnglish()
+    ? "Stronger by Science-style thinking is strong when research on volume, frequency, tapering, and progression becomes practical coaching decisions."
+    : "SBS 类思路强在把容量、频率、减量和进展的研究证据，转成训练者能执行的决策。";
+
+  if (compact) {
+    return `
+      <section class="system-quality-lesson compact">
+        <span class="lesson-kicker">${isEnglish() ? "System Quality" : "体系质量"}</span>
+        <strong>${isEnglish() ? "How to judge a strong system" : "怎么判断一个体系强不强"}</strong>
+        <p>${intro}</p>
+        <div class="quality-pill-list">
+          ${pillars.map(([title]) => `<span>${escapeHtml(title)}</span>`).join("")}
+        </div>
+        <small class="source-note">${sourceText("systemQuality")}</small>
+      </section>
+    `;
+  }
+
+  return `
+    <section class="system-quality-lesson">
+      <span class="lesson-kicker">${isEnglish() ? "System Quality Classroom" : "高质量体系小课堂"}</span>
+      <strong>${isEnglish() ? "The strongest system is the one the athlete can actually adapt to" : "最强体系，是训练者真正能适应并持续进步的体系"}</strong>
+      <p>${intro}</p>
+      <div class="quality-grid">
+        ${pillars
+          .map(([title, body]) => `<article><span>${escapeHtml(title)}</span><p>${escapeHtml(body)}</p></article>`)
+          .join("")}
+      </div>
+      <div class="quality-compare">
+        <p><b>JTS</b> ${escapeHtml(jtsLine)}</p>
+        <p><b>SBS</b> ${escapeHtml(sbsLine)}</p>
+      </div>
+      <small class="source-note">${sourceText("systemQuality")}</small>
+    </section>
+  `;
+}
+
 function sourceText(type = "training") {
   const zh = {
     training: "参考：ACSM 阻力训练立场声明、NSCA Essentials of Strength Training and Conditioning、NASM OPT 模型、JTS Strength 训练资料。内容为训练教育摘要，不替代医疗或现场教练。",
+    systemQuality: "参考：JTS Scientific Principles、JTS Strength 训练资料、Stronger by Science 完整力量训练指南、训练频率、训练容量和 tapering 文章。内容为训练教育摘要。",
     hypertrophy: "参考：ACSM/NSCA 阻力训练原则、NASM OPT 模型、Brad Schoenfeld 肌肥大训练综述。内容为训练教育摘要。",
     rehab: "参考：ACSM 运动测试与处方指南、NSCA 训练基础、NASM Corrective Exercise 思路。疼痛或伤病请咨询医生/康复师。",
     technique: "参考：JTS Strength 三项变式说明、NSCA 力量训练基础、IPF 技术规则公开资料。内容为技术教育摘要。",
@@ -8664,6 +8735,7 @@ function sourceText(type = "training") {
   };
   const en = {
     training: "Sources: ACSM resistance-training position stands, NSCA Essentials of Strength Training and Conditioning, NASM OPT model, and JTS Strength material. Educational summary only.",
+    systemQuality: "Sources: JTS Scientific Principles, JTS Strength material, and Stronger by Science articles on complete strength training, frequency, volume, and tapering. Educational summary only.",
     hypertrophy: "Sources: ACSM/NSCA resistance-training principles, NASM OPT model, and Brad Schoenfeld hypertrophy literature. Educational summary only.",
     rehab: "Sources: ACSM exercise testing and prescription guidance, NSCA training foundations, and NASM corrective-exercise concepts. Consult a clinician for pain or injury.",
     technique: "Sources: JTS Strength variation guides, NSCA strength-training foundations, and public IPF technical rules. Educational summary only.",
@@ -8755,6 +8827,7 @@ function renderKnowledgePanel() {
   if (!root) return;
   const cards = knowledgeCards();
   root.innerHTML = `
+    ${systemQualityLesson()}
     <label class="knowledge-search">
       ${isEnglish() ? "Knowledge Search" : "快速知识检索"}
       <input id="knowledgeSearchInput" type="search" placeholder="${isEnglish() ? "Search anatomy, rehab, hypertrophy..." : "搜索解剖、康复、肌肥大..."}" />

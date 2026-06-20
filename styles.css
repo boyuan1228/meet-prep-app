@@ -536,6 +536,78 @@ textarea:focus {
   color: #8ea29c;
 }
 
+.system-quality-lesson {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-left: 3px solid var(--accent);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.system-quality-lesson.compact {
+  margin-top: 10px;
+}
+
+.system-quality-lesson strong {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.system-quality-lesson p {
+  margin: 0;
+  color: #b8c7c2;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.quality-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.quality-grid article {
+  padding: 8px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.quality-grid span {
+  display: block;
+  margin-bottom: 3px;
+  color: #7fe7c8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.quality-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.quality-pill-list span {
+  border-radius: 999px;
+  padding: 3px 7px;
+  background: rgba(0, 143, 115, 0.18);
+  color: #7fe7c8;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.quality-compare {
+  display: grid;
+  gap: 5px;
+  padding-top: 2px;
+}
+
+.quality-compare b {
+  color: #fff;
+}
+
 .knowledge-list {
   display: grid;
   gap: 8px;
@@ -3093,6 +3165,10 @@ td {
   }
 
   .system-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quality-grid {
     grid-template-columns: 1fr;
   }
 
