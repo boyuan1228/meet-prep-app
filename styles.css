@@ -3509,3 +3509,507 @@ td {
     padding: 0;
   }
 }
+
+/* Forge UI v2.13: tighter coaching-workstation skin */
+:root {
+  --bg: #edf1ec;
+  --surface: #ffffff;
+  --surface-2: #f7f9f4;
+  --ink: #12191d;
+  --muted: #657274;
+  --line: #d9e1dc;
+  --accent: #0f8b7c;
+  --accent-2: #e14b2b;
+  --accent-3: #3157c9;
+  --warn: #b7791f;
+  --ok: #087a55;
+  --sidebar: #0d171b;
+  --sidebar-soft: #14242a;
+  --shadow: 0 16px 34px rgba(20, 31, 36, 0.08);
+  --shadow-strong: 0 22px 54px rgba(9, 21, 26, 0.16);
+}
+
+body {
+  background:
+    linear-gradient(0deg, rgba(16, 27, 31, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 27, 31, 0.025) 1px, transparent 1px),
+    var(--bg);
+  background-size: 28px 28px;
+}
+
+.activation-gate {
+  background:
+    linear-gradient(135deg, rgba(225, 75, 43, 0.14), transparent 34%),
+    linear-gradient(180deg, #0d171b, #132329 52%, #0b1114);
+}
+
+.activation-card {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+}
+
+.activation-card button,
+.section-head button,
+.log-panel button,
+.profile-toggle {
+  min-height: 44px;
+  border-radius: 8px;
+}
+
+.app-shell {
+  grid-template-columns: 318px minmax(0, 1fr);
+}
+
+.sidebar {
+  background:
+    linear-gradient(135deg, rgba(15, 139, 124, 0.18), transparent 32%),
+    linear-gradient(180deg, var(--sidebar-soft), var(--sidebar) 52%, #091114);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.brand-logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.brand h1 {
+  font-size: 20px;
+}
+
+.brand p {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.profile-panel,
+.sidebar-lesson,
+.system-quality-lesson,
+.knowledge-card {
+  border-radius: 8px;
+}
+
+.profile-panel {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.main {
+  padding: 24px clamp(18px, 2.4vw, 34px);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin: -8px 0 18px;
+  padding: 14px 0 12px;
+  background: linear-gradient(180deg, rgba(237, 241, 236, 0.96), rgba(237, 241, 236, 0.82));
+  backdrop-filter: blur(10px);
+}
+
+.topbar h2 {
+  font-size: clamp(28px, 3.2vw, 42px);
+  letter-spacing: 0;
+}
+
+.eyebrow {
+  color: var(--accent-2);
+  letter-spacing: 0.06em;
+}
+
+.top-actions {
+  gap: 8px;
+}
+
+.tool-button,
+.language-toggle,
+.icon-button,
+.mini-toggle,
+.day-tab {
+  border-radius: 8px;
+}
+
+.tool-button {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(17, 25, 31, 0.08);
+}
+
+.tool-button.primary-tool {
+  background: #0f8b7c;
+  border-color: #0f8b7c;
+  box-shadow: 0 14px 24px rgba(15, 139, 124, 0.22);
+}
+
+.tool-button[data-home-button] {
+  background: #16232a;
+  border-color: #16232a;
+}
+
+.language-toggle {
+  background: #e14b2b;
+  border-color: #e14b2b;
+  box-shadow: 0 14px 24px rgba(225, 75, 43, 0.2);
+}
+
+.tool-button[data-diet-open] {
+  background: #fff6e8;
+  border-color: #f0c37c;
+  color: #9a5f12;
+}
+
+.tool-button[data-analytics-open] {
+  background: #eef3ff;
+  border-color: #91a8ef;
+  color: #2444a2;
+}
+
+.tool-button[data-warmup-open] {
+  background: #fff0ea;
+  border-color: #ee9a80;
+  color: #b73920;
+}
+
+.tool-button[data-body-profile-open] {
+  background: #eafaf5;
+  border-color: #6dccb2;
+  color: #087a66;
+}
+
+.meet-prep-strip,
+.questionnaire,
+.planner-output,
+.workout-panel,
+.log-panel,
+.metric,
+.program-intro,
+.summary-card,
+.capacity-card,
+.detail-panel,
+.technique-card,
+.diet-card,
+.warmup-card,
+.body-profile-card,
+.analytics-card,
+.changelog-card,
+.modal-card {
+  border-radius: 8px;
+  box-shadow: 0 14px 32px rgba(15, 26, 31, 0.07);
+}
+
+.meet-prep-strip {
+  border-left: 5px solid var(--accent-2);
+  background: linear-gradient(180deg, #fff, #fafbf7);
+}
+
+.program-card strong,
+.meet-prep-block strong,
+.summary-card strong {
+  letter-spacing: 0;
+}
+
+.phase-rail {
+  gap: 8px;
+}
+
+.rail-step {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #f8faf6;
+}
+
+.rail-step.active {
+  background: linear-gradient(135deg, var(--accent-2), #d83824);
+  border-color: transparent;
+}
+
+.planner-summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.summary-card {
+  min-height: 96px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 246, 0.95));
+}
+
+.summary-card strong {
+  font-size: 22px;
+}
+
+.day-tabs {
+  gap: 10px;
+}
+
+.day-tab {
+  min-width: 128px;
+  border-color: #d4ddd8;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(17, 25, 31, 0.06);
+}
+
+.day-tab.active {
+  background: linear-gradient(135deg, #0f8b7c, #086f63);
+  border-color: transparent;
+}
+
+.section-head {
+  padding: 16px 18px;
+  background: linear-gradient(180deg, #fff, #fbfcf8);
+}
+
+.section-head h3 {
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+.table-wrap {
+  background: #fff;
+}
+
+table {
+  min-width: 760px;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f4f7f2;
+  color: #516066;
+  letter-spacing: 0.04em;
+}
+
+td {
+  padding: 11px 13px;
+}
+
+tbody tr {
+  transition: background-color 140ms ease;
+}
+
+tbody tr:hover {
+  background: #fbf7f1;
+}
+
+.exercise-name {
+  font-weight: 850;
+}
+
+.kind {
+  font-weight: 800;
+}
+
+.estimate {
+  color: #007a53;
+  font-variant-numeric: tabular-nums;
+}
+
+.note-edit {
+  border-radius: 8px;
+  background: #fbfcfa;
+}
+
+.control-row,
+.generated-row {
+  background: #f3faf7;
+}
+
+.generated-backdown {
+  background: #ffffff;
+}
+
+.backdown-control input {
+  border-radius: 8px;
+}
+
+.floating-tool {
+  background: linear-gradient(180deg, #0f8b7c, #087064);
+  box-shadow: 0 18px 36px rgba(15, 139, 124, 0.24);
+}
+
+@media (max-width: 1120px) {
+  .app-shell {
+    display: block;
+  }
+
+  .sidebar {
+    position: relative;
+    height: auto;
+    max-height: none;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    background-size: 22px 22px;
+  }
+
+  .main,
+  .sidebar {
+    padding: 12px;
+  }
+
+  .brand {
+    gap: 12px;
+    padding: 6px;
+  }
+
+  .brand-logo {
+    width: 54px;
+    height: 54px;
+  }
+
+  .brand h1 {
+    font-size: 22px;
+  }
+
+  .topbar {
+    position: relative;
+    margin: 0 0 14px;
+    padding: 0;
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .topbar h2 {
+    font-size: 30px;
+  }
+
+  .top-actions {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(44px, 1fr));
+    gap: 8px;
+  }
+
+  .tool-button,
+  .language-toggle {
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+  }
+
+  .meet-prep-strip {
+    padding: 12px;
+  }
+
+  .phase-rail {
+    display: block;
+  }
+
+  .phase-rail::before {
+    border-radius: 8px;
+    background: linear-gradient(135deg, #0f8b7c, #087064);
+  }
+
+  .planner-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .summary-card {
+    min-height: 84px;
+    padding: 10px;
+  }
+
+  .summary-card strong {
+    font-size: 20px;
+  }
+
+  .day-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .day-tab {
+    min-width: 0;
+    padding: 11px;
+  }
+
+  .section-head {
+    padding: 14px;
+  }
+
+  .section-head h3 {
+    font-size: 28px;
+  }
+
+  table {
+    min-width: 0;
+  }
+
+  tbody tr {
+    grid-template-columns: minmax(112px, 1.55fr) 38px 46px 50px minmax(64px, 0.95fr);
+    padding: 12px 10px;
+    background: #fff;
+  }
+
+  tbody tr + tr {
+    border-top: 1px solid #eef2ee;
+  }
+
+  td:nth-child(2)::before {
+    content: "\7EC4";
+  }
+
+  td:nth-child(3)::before {
+    content: "\6B21";
+  }
+
+  td:nth-child(4)::before {
+    content: "RPE";
+  }
+
+  td:nth-child(5)::before {
+    content: "\91CD\91CF";
+  }
+
+  .exercise-name,
+  .accessory-select {
+    font-size: 15px;
+    font-weight: 850;
+  }
+
+  .estimate {
+    font-size: 14px;
+  }
+
+  .notes-cell {
+    margin-top: 4px;
+  }
+
+  .note-edit {
+    min-height: 36px;
+    max-height: 40px;
+  }
+}
+
+@media (max-width: 430px) {
+  .top-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  tbody tr {
+    grid-template-columns: minmax(98px, 1.4fr) 34px 42px 46px minmax(58px, 0.9fr);
+    gap: 5px;
+  }
+
+  .exercise-name,
+  .accessory-select {
+    font-size: 14px;
+  }
+}
