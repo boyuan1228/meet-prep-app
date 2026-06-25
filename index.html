@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ForgePlan 自定义训练计划库</title>
-    <link rel="stylesheet" href="./styles.css?v=20260620-v211-0015" />
+    <link rel="stylesheet" href="./styles.css?v=20260621-v212-0010" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260620-v211-0015"></script>
+    <script defer src="./app.js?v=20260621-v212-0010"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.11">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.12">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -60,16 +60,17 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v2.11 · 高质量训练体系小课堂</strong>
-          <small class="update-time">2026-06-20 00:15 更新</small>
+          <strong>v2.12 · Juggernaut 诊断小课堂</strong>
+          <small class="update-time">2026-06-21 00:10 更新</small>
           <ul>
-            <li>新增“高质量体系小课堂”，用训练者能听懂的方式解释强体系的判断标准。</li>
-            <li>把专项性、可恢复容量、强度分布、进展规则、反馈闭环和人群适配整理成 6 个核心点。</li>
-            <li>知识库和侧栏都能看到短版/完整版说明，方便教练给学员解释。</li>
+            <li>根据 Juggernaut Powerlifting Clinic Manual 中文版改写新增训练诊断小课堂。</li>
+            <li>知识库加入最低有效剂量、专项优先、PR 不只加重量、弱点变式选择、疼痛后回归和生病训练调整。</li>
+            <li>三项技术笔记补充深蹲、卧推、硬拉的 Juggernaut 诊断检查点和卡点修正方向。</li>
             <li>免费工具方向保留，不加入付费、会员或权限限制。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v2.12</strong> 2026-06-21 00:10：根据 Juggernaut Powerlifting Clinic Manual 中文版改写新增训练诊断小课堂；知识库加入最低有效剂量、专项优先、PR 不只加重量、弱点变式选择、疼痛后回归和生病训练调整；三项技术笔记补充深蹲、卧推、硬拉的诊断检查点。</p>
             <p><strong>v2.11</strong> 2026-06-20 00:15：新增高质量训练体系小课堂，面向训练者解释专项性、可恢复容量、强度分布、进展规则、反馈闭环和人群适配，并补充 JTS/SBS 类体系为什么强。</p>
             <p><strong>v2.10</strong> 2026-06-20 00:05：新增 Calgary 16/8、Bullmastiff、Kizen、Candito、Juggernaut、Greg Nuckols、nSuns、5/3/1、Madcow 5x5 等改写模板，并把 JTS × SSTT 标记为推荐。</p>
             <p><strong>v2.9</strong> 2026-06-19 12:10：新增 SBS Norwegian 高频体系和 RPE 自调节区块周期；RPE 区块周期使用 3 个 block + 测试周，强调目标 RPE 优先，不达标不机械加重。</p>
@@ -117,7 +118,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.11">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.12">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -917,6 +918,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v2.12</strong><span>2026-06-21 00:10</span><p>根据 Juggernaut Powerlifting Clinic Manual 中文版改写新增训练诊断小课堂；知识库加入最低有效剂量、专项优先、PR 不只加重量、弱点变式选择、疼痛后回归和生病训练调整；三项技术笔记补充深蹲、卧推、硬拉的诊断检查点。</p></article>
           <article><strong>v2.11</strong><span>2026-06-20 00:15</span><p>新增高质量训练体系小课堂，面向训练者解释专项性、可恢复容量、强度分布、进展规则、反馈闭环和人群适配，并补充 JTS/SBS 类体系为什么强。</p></article>
           <article><strong>v2.10</strong><span>2026-06-20 00:05</span><p>新增 Calgary 16/8、Bullmastiff、Kizen、Candito、Juggernaut、Greg Nuckols、nSuns、5/3/1、Madcow 5x5 等改写模板，并把 JTS × SSTT 标记为推荐。</p></article>
           <article><strong>v2.9</strong><span>2026-06-19 12:10</span><p>新增 SBS Norwegian 高频体系和 RPE 自调节区块周期；RPE 区块周期使用 3 个 block + 测试周，强调目标 RPE 优先，不达标不机械加重。</p></article>

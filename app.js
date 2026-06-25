@@ -8046,6 +8046,12 @@ const STATIC_I18N = new Map(
     "更新内容": "Latest Update",
     "历史日志": "History",
     "查看历史日志": "View History",
+    "v2.12 · Juggernaut 诊断小课堂": "v2.12 · Juggernaut Clinic Classroom",
+    "2026-06-21 00:10 更新": "Updated 2026-06-21 00:10",
+    "根据 Juggernaut Powerlifting Clinic Manual 中文版改写新增训练诊断小课堂。": "Added a training-diagnosis classroom rewritten from the Chinese Juggernaut Powerlifting Clinic Manual.",
+    "知识库加入最低有效剂量、专项优先、PR 不只加重量、弱点变式选择、疼痛后回归和生病训练调整。": "Knowledge Base adds minimum effective dose, sport-specific practice, non-load PRs, weak-point variation selection, return after pain, and sick-day adjustments.",
+    "三项技术笔记补充深蹲、卧推、硬拉的 Juggernaut 诊断检查点和卡点修正方向。": "Technique Notes add Juggernaut-style diagnostic checks and sticking-point fixes for squat, bench, and deadlift.",
+    "根据 Juggernaut Powerlifting Clinic Manual 中文版改写新增训练诊断小课堂；知识库加入最低有效剂量、专项优先、PR 不只加重量、弱点变式选择、疼痛后回归和生病训练调整；三项技术笔记补充深蹲、卧推、硬拉的诊断检查点。": "Added a training-diagnosis classroom rewritten from the Chinese Juggernaut Powerlifting Clinic Manual; Knowledge Base adds minimum effective dose, sport-specific practice, non-load PRs, weak-point variation selection, return after pain, and sick-day adjustments; Technique Notes add squat, bench, and deadlift diagnostic checkpoints.",
     "v2.11 · 高质量训练体系小课堂": "v2.11 · High-Quality System Classroom",
     "2026-06-20 00:15 更新": "Updated 2026-06-20 00:15",
     "新增“高质量体系小课堂”，用训练者能听懂的方式解释强体系的判断标准。": "Added a high-quality system classroom that explains strong training systems in athlete-friendly language.",
@@ -8723,22 +8729,61 @@ function systemQualityLesson(mode = "full") {
   `;
 }
 
+function juggernautClinicLesson() {
+  const principles = isEnglish()
+    ? [
+        ["Minimum dose", "Do the least work that still moves the result forward. Save room to add work later."],
+        ["Sport skill first", "Squat, bench, and deadlift practice cannot be fully replaced by clever accessories."],
+        ["Many kinds of PR", "Progress can be load, reps, cleaner technique, faster bar speed, or better repeatability."],
+        ["Warm up with intent", "Raise temperature, turn on the muscles you need, and prime speed before heavy work."],
+        ["Accessories have rank", "Supplemental lifts build weak points; small accessories support them. Do not let accessories steal effort from the main lift."],
+        ["Return by regression", "After pain or time off, come back with easier range, lower load, and repeatable technique before chasing normal work."],
+      ]
+    : [
+        ["最低有效剂量", "能进步就不要先把容量堆满，给以后继续加量留下空间。"],
+        ["专项动作优先", "想提高深蹲、卧推、硬拉，就必须练这些动作本身；辅助项不能完全替代专项练习。"],
+        ["PR 不只一种", "进步可以是更重、更多次数、更稳技术、更快速度，或同重量做得更漂亮。"],
+        ["热身要有目的", "先升温，再激活目标肌群，最后用低次数爆发动作唤醒速度。"],
+        ["辅助项有层级", "复合变式用来补弱点，小辅助用来补肌肉；不要让辅助项抢走主项精力。"],
+        ["回归先降级", "伤病或停练后先用更小行程、更低重量和可重复动作回归，再逐步接回原计划。"],
+      ];
+  return `
+    <section class="system-quality-lesson clinic-lesson">
+      <span class="lesson-kicker">${isEnglish() ? "Juggernaut Clinic" : "Juggernaut 诊断小课堂"}</span>
+      <strong>${isEnglish() ? "The simple version for athletes" : "给训练者看的通俗版"}</strong>
+      <p>${
+        isEnglish()
+          ? "The useful lesson is not to copy a manual. It is to learn how to diagnose training: use enough work, practice the sport lifts, pick variations for real weak points, and adjust when recovery or pain changes."
+          : "这本手册最值得放进 App 的不是照搬动作表，而是训练诊断思路：做够就好、专项优先、按弱点选变式、恢复或疼痛变化时及时降级。"
+      }</p>
+      <div class="quality-grid">
+        ${principles
+          .map(([title, body]) => `<article><span>${escapeHtml(title)}</span><p>${escapeHtml(body)}</p></article>`)
+          .join("")}
+      </div>
+      <small class="source-note">${sourceText("juggernautClinic")}</small>
+    </section>
+  `;
+}
+
 function sourceText(type = "training") {
   const zh = {
     training: "参考：ACSM 阻力训练立场声明、NSCA Essentials of Strength Training and Conditioning、NASM OPT 模型、JTS Strength 训练资料。内容为训练教育摘要，不替代医疗或现场教练。",
     systemQuality: "参考：JTS Scientific Principles、JTS Strength 训练资料、Stronger by Science 完整力量训练指南、训练频率、训练容量和 tapering 文章。内容为训练教育摘要。",
+    juggernautClinic: "参考：Juggernaut Powerlifting Clinic Manual 中文版。内容已改写为训练教育摘要，不复制原文，不替代医疗、康复或现场教练。",
     hypertrophy: "参考：ACSM/NSCA 阻力训练原则、NASM OPT 模型、Brad Schoenfeld 肌肥大训练综述。内容为训练教育摘要。",
     rehab: "参考：ACSM 运动测试与处方指南、NSCA 训练基础、NASM Corrective Exercise 思路。疼痛或伤病请咨询医生/康复师。",
-    technique: "参考：JTS Strength 三项变式说明、NSCA 力量训练基础、IPF 技术规则公开资料。内容为技术教育摘要。",
+    technique: "参考：JTS Strength 三项变式说明、Juggernaut Powerlifting Clinic Manual 中文版、NSCA 力量训练基础、IPF 技术规则公开资料。内容为技术教育摘要。",
     nutrition: "参考：Stan Efferding Vertical Diet 公开资料、ACSM 运动营养建议、ISSN 蛋白质摄入立场声明。饮食内容不是医疗建议。",
     warmup: "参考：NSCA 动态热身原则、ACSM 运动测试与处方指南、NASM 动作准备框架。根据疼痛和活动受限情况调整。",
   };
   const en = {
     training: "Sources: ACSM resistance-training position stands, NSCA Essentials of Strength Training and Conditioning, NASM OPT model, and JTS Strength material. Educational summary only.",
     systemQuality: "Sources: JTS Scientific Principles, JTS Strength material, and Stronger by Science articles on complete strength training, frequency, volume, and tapering. Educational summary only.",
+    juggernautClinic: "Source: Juggernaut Powerlifting Clinic Manual, rewritten as an educational summary. Not copied verbatim and not medical, rehab, or in-person coaching advice.",
     hypertrophy: "Sources: ACSM/NSCA resistance-training principles, NASM OPT model, and Brad Schoenfeld hypertrophy literature. Educational summary only.",
     rehab: "Sources: ACSM exercise testing and prescription guidance, NSCA training foundations, and NASM corrective-exercise concepts. Consult a clinician for pain or injury.",
-    technique: "Sources: JTS Strength variation guides, NSCA strength-training foundations, and public IPF technical rules. Educational summary only.",
+    technique: "Sources: JTS Strength variation guides, Juggernaut Powerlifting Clinic Manual, NSCA strength-training foundations, and public IPF technical rules. Educational summary only.",
     nutrition: "Sources: Stan Efferding Vertical Diet public material, ACSM sports nutrition guidance, and ISSN protein-position stand. Not medical advice.",
     warmup: "Sources: NSCA dynamic warm-up principles, ACSM exercise guidance, and NASM movement-preparation framework. Adjust for pain or limitations.",
   };
@@ -8762,6 +8807,12 @@ function knowledgeCards() {
         { tag: "Hip", title: "Hip internal rotation", body: "Limited or poorly controlled hip rotation can affect squat depth and gait. Use controlled mobility plus strength in the new range, not aggressive stretching only.", source: "NASM CES; NSCA" },
         { tag: "Rehab", title: "Pain rule", body: "Pain that sharpens, changes technique, or persists after training should reduce load, range, or volume.", source: "ACSM guidelines; NASM CES" },
         { tag: "Recovery", title: "Fatigue check", body: "Sleep, appetite, joint comfort, and performance trend together matter more than one isolated workout.", source: "NSCA; ACSM" },
+        { tag: "Juggernaut", title: "Minimum effective dose", body: "If three hard sets improve the lift, do not rush to five. Save extra volume as a future tool.", source: "Juggernaut Clinic Manual" },
+        { tag: "Juggernaut", title: "Main lift first", body: "Variants help, but the competition lift is still the highest-transfer practice. Accessories should support the lift, not replace it.", source: "Juggernaut Clinic Manual" },
+        { tag: "Juggernaut", title: "Progress is not only load", body: "A set can be a PR because it has more reps, cleaner positions, faster speed, or the same load at lower effort.", source: "Juggernaut Clinic Manual" },
+        { tag: "Juggernaut", title: "Weak-point selection", body: "Pick variations by the miss: off-chest bench, above-parallel squat, off-floor deadlift, lockout, or loss of position.", source: "Juggernaut Clinic Manual" },
+        { tag: "Juggernaut", title: "Return after pain", body: "Come back with a regressed version: shorter range, lower load, reverse-band support, or higher block height before normal loading.", source: "Juggernaut Clinic Manual" },
+        { tag: "Juggernaut", title: "Sick-day adjustment", body: "Illness is stress. Reduce intensity and skip heavy work rather than adding more stress to recovery.", source: "Juggernaut Clinic Manual" },
       ]
     : [
         { tag: "解剖学", title: "肩胛与推类动作", body: "推类动作先稳定肩胛和胸廓，再追重量；卧推是上背平台、胸廓张力和腿驱动共同工作。", source: "NSCA Essentials；NASM OPT" },
@@ -8778,6 +8829,12 @@ function knowledgeCards() {
         { tag: "髋", title: "髋内旋受限", body: "髋旋转受限或控制差会影响深蹲深度和步态。用可控活动度加新范围力量，不要只做暴力拉伸。", source: "NASM CES；NSCA" },
         { tag: "康复学", title: "疼痛规则", body: "疼痛变尖锐、改变动作、或训练后持续存在时，优先降重量、降行程或降容量。", source: "ACSM 指南；NASM CES" },
         { tag: "恢复", title: "疲劳判断", body: "睡眠、食欲、关节舒适度和表现趋势要一起看，不要只用一次训练好坏做判断。", source: "NSCA；ACSM" },
+        { tag: "Juggernaut", title: "最低有效剂量", body: "如果 3 个高质量工作组能让你进步，就不要急着做 5 组。多出来的容量应该留给之后继续推进。", source: "Juggernaut 诊断手册" },
+        { tag: "Juggernaut", title: "专项动作优先", body: "变式有价值，但比赛动作本身仍然是最高迁移的练习。辅助项应该服务主项，不是取代主项。", source: "Juggernaut 诊断手册" },
+        { tag: "Juggernaut", title: "进步不只等于加重量", body: "同重量做得更稳、更快、次数更多、RPE 更低，也是一种 PR。不要只盯杠铃片。", source: "Juggernaut 诊断手册" },
+        { tag: "Juggernaut", title: "按卡点选变式", body: "离胸弱、平行上方卡、离地慢、锁定弱、姿态丢失，对应的变式不一样；先诊断，再选动作。", source: "Juggernaut 诊断手册" },
+        { tag: "Juggernaut", title: "疼痛后回归训练", body: "回归时先降级动作：缩短行程、降低重量、用反向弹力带或更高垫高，再逐步接回正常动作。", source: "Juggernaut 诊断手册" },
+        { tag: "Juggernaut", title: "生病时怎么练", body: "生病本身就是压力。宁愿明显降低强度、取消重组，也不要把高强度训练叠到恢复压力上。", source: "Juggernaut 诊断手册" },
       ];
 }
 
@@ -8828,6 +8885,7 @@ function renderKnowledgePanel() {
   const cards = knowledgeCards();
   root.innerHTML = `
     ${systemQualityLesson()}
+    ${juggernautClinicLesson()}
     <label class="knowledge-search">
       ${isEnglish() ? "Knowledge Search" : "快速知识检索"}
       <input id="knowledgeSearchInput" type="search" placeholder="${isEnglish() ? "Search anatomy, rehab, hypertrophy..." : "搜索解剖、康复、肌肥大..."}" />
@@ -11896,6 +11954,15 @@ function techniqueNotesData() {
                 "Avoid hips shooting up while the chest lags behind. Keep the bar close to a vertical path.",
               ],
             },
+            {
+              title: "Juggernaut diagnosis",
+              items: [
+                "A closer grip and elbows squeezed toward the midline can make the upper back tighter, but only if shoulders and elbows tolerate it.",
+                "Walkout should be two to three deliberate steps. Extra steps waste energy and make heavy attempts less repeatable.",
+                "Do not cue only knees out. Keep tripod foot pressure and think about screwing the feet into the floor so hip torque does not dump weight to the outside edge.",
+                "If the torso folds, use front squats, safety-bar squats, and upper-back rows. If the miss is at or just above depth, use paused squats or dead-start pin squats near the sticking point.",
+              ],
+            },
           ],
         },
         {
@@ -11934,6 +12001,15 @@ function techniqueNotesData() {
                 "Avoid the bar drifting away, hips rising first, yanking with the low back, and touch-and-go reps that change every start position.",
               ],
             },
+            {
+              title: "Juggernaut diagnosis",
+              items: [
+                "A useful conventional stance starting point is close to the athlete's vertical-jump stance. Bar position, grip width, and hip height still need to fit the lifter's build.",
+                "Before the pull, build tension by screwing the feet into the floor, loading glutes and hamstrings, pulling slack out, locking the lats, and breathing into the trunk.",
+                "Start the bar by driving the floor away and pushing the shoulders up and back. Keep the bar pulled into the body, especially around the knees.",
+                "If off-floor strength is weak, use dead-stop reps, small deficit pulls, front/SSB squats, and paused pulls. For lockout, use hip thrusts, block pulls, sumo/conventional contrast, or snatch-grip/RDL work.",
+              ],
+            },
           ],
         },
         {
@@ -11970,6 +12046,15 @@ function techniqueNotesData() {
                 "Use cues: feet down, chest to bar, elbows drive the bar, upper back stays tight, press to lockout.",
                 "Leg drive pushes the body toward the upper back, not the hips off the bench.",
                 "Common misses: wrist collapse, dumping tension on the chest, hips lifting, shoulders rolling forward, and inconsistent touch point.",
+              ],
+            },
+            {
+              title: "Juggernaut diagnosis",
+              items: [
+                "Pick a grip that lets the bar sit over the wrist and the wrist over the elbow at the chest. That stack matters more than copying someone else's grip width.",
+                "Grip the bar hard, load the lats on the way down, and keep the upper back tight. Leg drive should push the body toward the head, not lift the hips.",
+                "For off-chest weakness, use longer pauses, deep-range dumbbell pressing, and more upper-back strength. For midrange misses, use Spoto or low pin press.",
+                "For lockout weakness, use close-grip work, dips, or overload tools carefully. Too much overload can stop transferring to raw benching.",
               ],
             },
           ],
@@ -12076,6 +12161,15 @@ function techniqueNotesData() {
               "避免屁股先起、胸口后追。杠铃尽量保持接近垂直路径。",
             ],
           },
+          {
+            title: "Juggernaut 诊断补充",
+            items: [
+              "握距越靠近通常越容易收紧上背，但前提是肩肘能舒服承受；肘部向身体中线夹紧，再把肘意图推到杠下。",
+              "出杠尽量控制在 2-3 步。步子越多，越浪费力气，也越容易让重组站位不稳定。",
+              "不要只喊膝盖外推。保持足底三点，同时想象把脚拧进地面，这样髋部张力不会变成压到脚外侧。",
+              "如果底部身体折叠，优先用前蹲、安全杆深蹲和上背划船补；如果卡在底部或平行上方，用暂停深蹲或卡点附近定点深蹲。",
+            ],
+          },
         ],
       },
       {
@@ -12114,6 +12208,15 @@ function techniqueNotesData() {
               "避免杠铃离身体太远、屁股先抬、起拉前没拉紧杠铃、用腰猛拽、连续弹地借力。",
             ],
           },
+          {
+            title: "Juggernaut 诊断补充",
+            items: [
+              "传统硬拉站距可以先参考垂直跳站距，但杠铃位置、握距和髋高必须按个人身材微调。",
+              "起拉前先把脚拧进地面，拉紧臀腿、拉掉杠铃松弛、锁住背阔肌，再把气吸进躯干。",
+              "离地时不是单纯向上拽，而是脚压地、肩膀向上向后，杠铃经过膝盖时继续把杠拉向身体。",
+              "离地弱可用完全停住的重复、小赤字硬拉、前蹲/安全杆深蹲和暂停硬拉；锁定弱可用臀推、垫高拉、相扑/传统互补或宽抓/RDL。",
+            ],
+          },
         ],
       },
       {
@@ -12150,6 +12253,15 @@ function techniqueNotesData() {
               "口令：脚踩地、胸顶杠、肘推杠、背别松、推向锁定。",
               "腿驱动是把身体向上背方向推，不是把屁股顶离凳子。",
               "常见错误：手腕后折、底部泄力、屁股离凳、肩膀前顶、触胸点不一致。",
+            ],
+          },
+          {
+            title: "Juggernaut 诊断补充",
+            items: [
+              "握距不是越宽越好，关键是杠铃触胸时能让杠在手腕上、手腕在肘上，形成稳定受力线。",
+              "握杠要用力，下放时像加载背阔肌弹簧；腿驱动是把身体推向头部方向，不是把臀部顶离卧推凳。",
+              "离胸弱优先用长暂停、深幅哑铃卧推和上背力量；中段弱可用 Spoto 卧推或低位定点卧推。",
+              "锁定弱可用窄距卧推、双杠臂屈伸或谨慎使用过载工具；过度过载不一定会转化到无装备卧推。",
             ],
           },
         ],
