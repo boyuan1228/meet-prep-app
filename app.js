@@ -7535,6 +7535,9 @@ function localizePlanText(text) {
   const exact = {
     "过渡期": "Transition",
     "增肌期": "Hypertrophy",
+    "基础增肌期": "Base Hypertrophy",
+    "渐进超负荷期": "Progressive Overload",
+    "减量评估期": "Taper Review",
     "增力期": "Strength",
     "冲刺期": "Peaking",
     "桥接期": "Bridge",
@@ -7947,6 +7950,11 @@ function renderToolLanguage() {
   setButtonLanguage("#resetButton", "删除日志", "Delete logs");
   setButtonLanguage("#backupButton", "备份/恢复数据", "Backup or restore data");
   setButtonLanguage("#floatingRpeButton", "RPE 计算器", "RPE calculator");
+  setButtonLanguage(".mobile-bottom-nav [data-home-button]", "首页", "Home");
+  setButtonLanguage(".mobile-bottom-nav [data-workout-button]", "训练表", "Training");
+  setButtonLanguage(".mobile-bottom-nav [data-body-profile-open]", "档案", "Profile");
+  setButtonLanguage(".mobile-bottom-nav [data-diet-open]", "饮食", "Nutrition");
+  setButtonLanguage(".mobile-bottom-nav [data-analytics-open]", "图表", "Charts");
   setButtonLanguage("[data-modal-close]", "关闭", "Close");
   setTextLanguage("dietModalTitle", "垂直饮食法", "Vertical Diet");
   setTextLanguage("bodyProfileModalTitle", "建立档案", "Body Profile");
@@ -8046,6 +8054,12 @@ const STATIC_I18N = new Map(
     "更新内容": "Latest Update",
     "历史日志": "History",
     "查看历史日志": "View History",
+    "v2.15 · 移动端执行布局": "v2.15 · Mobile Execution Layout",
+    "手机端新增底部固定导航：主页、训练表、语言、档案、饮食、图表不用再回到顶部找。": "Mobile now has a fixed bottom navigation for home, training, language, profile, nutrition, and charts.",
+    "训练日表格改成更清晰的执行卡片，动作、组、次数、RPE、重量同屏可读。": "Training-day rows are now clearer execution cards with movement, sets, reps, RPE, and load visible together.",
+    "阶段进度在窄屏只显示当前阶段摘要，减少横向溢出和视觉噪音。": "Phase progress on narrow screens now shows only the current phase summary to reduce overflow and noise.",
+    "RPE 参考、备注和当天日志间距重新整理，手机浏览更紧凑。": "RPE reference, notes, and daily log spacing have been tightened for mobile browsing.",
+    "手机端新增底部固定导航；训练表行改成执行卡片；阶段进度窄屏只显示当前阶段摘要；RPE 参考、备注和当天日志间距重新整理。": "Added fixed mobile bottom navigation; training rows now behave like execution cards; narrow-screen phase progress shows the current summary only; RPE reference, notes, and daily log spacing were tightened.",
     "v2.14 · 云端配置提示": "v2.14 · Cloud Setup Guidance",
     "根目录 Supabase 版本新增 URL 自动纠错：误填 /rest/v1 时会自动改回项目地址。": "The root Supabase version now auto-corrects URLs that accidentally include /rest/v1 back to the project URL.",
     "学员档案/计划表不存在时，提示用户执行 supabase/schema.sql，不再只显示英文报错。": "When student/plan tables are missing, the app tells users to run supabase/schema.sql instead of only showing the raw English error.",
@@ -8094,6 +8108,12 @@ const STATIC_I18N = new Map(
     "不一定。辅助项可以先加次数；如果上周太难，重复同重量即可。": "Not always. Progress accessories with reps first. If last week was too hard, repeat the load.",
     "力量周期": "Strength Cycle",
     "计划生成 · 训练记录 · PDF 导出": "Plan Builder · Training Log · PDF Export",
+    "首页": "Home",
+    "训练": "Training",
+    "训练表": "Training",
+    "档案": "Profile",
+    "饮食": "Nutrition",
+    "图表": "Charts",
     "知识库 / 参数": "Knowledge / Inputs",
     "姓名": "Name",
     "深蹲": "Squat",
@@ -12353,6 +12373,12 @@ function renderTechniqueNotes() {
   `;
 }
 
+function renderMobileNav() {
+  document.querySelectorAll("[data-mobile-nav]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.mobileNav === state.view);
+  });
+}
+
 function render() {
   renderActivationGate();
   renderLanguage();
@@ -12372,6 +12398,7 @@ function render() {
   $("plannerView").classList.toggle("hidden", state.view !== "planner");
   $("workoutView").classList.toggle("hidden", state.view !== "workout");
   $("techniqueView")?.classList.toggle("hidden", state.view !== "technique");
+  renderMobileNav();
   renderWeeks();
   renderPlanner();
   renderOpenerTitle();

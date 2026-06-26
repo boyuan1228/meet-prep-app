@@ -4013,3 +4013,435 @@ tbody tr:hover {
     font-size: 14px;
   }
 }
+
+/* Forge UI v2.15: mobile execution layout */
+.mobile-bottom-nav {
+  display: none;
+}
+
+.activation-gate:not(.hidden) ~ .mobile-bottom-nav,
+.app-shell.hidden + .mobile-bottom-nav {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  body:has(.app-shell:not(.hidden)) {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+
+  .app-shell {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+
+  .sidebar {
+    padding: 14px 14px 10px;
+  }
+
+  .brand {
+    align-items: center;
+  }
+
+  .brand h1 {
+    font-size: 24px;
+    line-height: 1.05;
+  }
+
+  .brand p {
+    font-size: 14px;
+    line-height: 1.25;
+  }
+
+  .week-nav {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(154px, 42vw);
+    gap: 10px;
+    overflow-x: auto;
+    padding: 2px 2px 8px;
+    scroll-snap-type: x proximity;
+  }
+
+  .week-button {
+    min-height: 112px;
+    scroll-snap-align: start;
+  }
+
+  .week-button .week-main {
+    font-size: 19px;
+  }
+
+  .main {
+    padding: 16px 12px 8px;
+  }
+
+  .topbar {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .topbar .top-actions {
+    display: none;
+  }
+
+  .topbar h2 {
+    font-size: 30px;
+    line-height: 1.08;
+  }
+
+  .topbar .eyebrow {
+    font-size: 11px;
+  }
+
+  .planner-layout,
+  .workout-layout {
+    gap: 12px;
+  }
+
+  .meet-prep-strip,
+  .questionnaire,
+  .planner-output,
+  .workout-panel,
+  .log-panel,
+  .metric {
+    box-shadow: 0 10px 22px rgba(17, 25, 31, 0.08);
+  }
+
+  .meet-prep-strip {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .meet-prep-block {
+    min-width: 0;
+  }
+
+  .meet-prep-block strong {
+    font-size: 24px;
+    line-height: 1.08;
+  }
+
+  .meet-prep-block small {
+    font-size: 13px;
+  }
+
+  .phase-rail {
+    margin: 2px 0 6px;
+  }
+
+  .phase-rail::before {
+    padding: 9px 11px;
+    text-align: left;
+    border-radius: 8px;
+  }
+
+  .planner-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .summary-card {
+    min-height: 92px;
+  }
+
+  .day-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    overflow: visible;
+    margin-bottom: 12px;
+  }
+
+  .day-tab {
+    min-width: 0;
+    min-height: 68px;
+    padding: 12px;
+  }
+
+  .day-tab strong,
+  .day-tab span:first-child {
+    font-size: 17px;
+  }
+
+  .section-head {
+    padding: 14px 14px 12px;
+  }
+
+  .section-head h3 {
+    font-size: 30px;
+    line-height: 1.05;
+  }
+
+  .log-rpe-reference {
+    padding: 13px;
+    margin-bottom: 12px;
+  }
+
+  .rpe-reference .rpe-grid {
+    grid-template-columns: repeat(4, minmax(72px, 1fr));
+    gap: 7px;
+    overflow-x: auto;
+    padding: 2px 2px 4px;
+  }
+
+  .rpe-reference .rpe-chip {
+    min-width: 72px;
+    padding: 8px 9px;
+    text-align: center;
+  }
+
+  .table-wrap {
+    background: transparent;
+  }
+
+  table,
+  tbody {
+    display: block;
+    width: 100%;
+  }
+
+  tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 38px 45px 48px minmax(58px, 0.82fr);
+    gap: 7px;
+    align-items: start;
+    margin: 0 0 9px;
+    padding: 12px;
+    border: 1px solid #dce6e1;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 8px 18px rgba(17, 25, 31, 0.055);
+  }
+
+  tbody tr:hover {
+    background: #fff;
+  }
+
+  tbody tr.generated-row,
+  tbody tr.control-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 38px 45px 48px minmax(58px, 0.82fr);
+    background: #f6fbf8;
+  }
+
+  tbody tr.control-row,
+  tbody tr.injury-filter-row,
+  tbody tr.filtered-empty-row {
+    display: block;
+    padding: 12px;
+    background: #f3faf7;
+  }
+
+  tbody tr.control-row td,
+  tbody tr.injury-filter-row td,
+  tbody tr.filtered-empty-row td {
+    display: block;
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  th,
+  td {
+    display: block;
+    min-width: 0;
+  }
+
+  td:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  td:nth-child(2),
+  td:nth-child(3),
+  td:nth-child(4),
+  td:nth-child(5) {
+    min-height: 42px;
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  td:nth-child(2)::before,
+  td:nth-child(3)::before,
+  td:nth-child(4)::before,
+  td:nth-child(5)::before {
+    margin-bottom: 2px;
+    color: #6c7a7c;
+    font-size: 9px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td:nth-child(2)::before {
+    content: "SETS";
+  }
+
+  td:nth-child(3)::before {
+    content: "REPS";
+  }
+
+  td:nth-child(4)::before {
+    content: "RPE";
+  }
+
+  td:nth-child(5)::before {
+    content: "KG";
+  }
+
+  td:nth-child(6) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .exercise-name,
+  .accessory-select {
+    max-width: 100%;
+    font-size: 15px;
+    line-height: 1.18;
+  }
+
+  .accessory-select {
+    min-height: 42px;
+  }
+
+  .kind {
+    margin-top: 5px;
+    width: fit-content;
+  }
+
+  .estimate {
+    font-size: 13px;
+    line-height: 1.18;
+  }
+
+  .notes-cell {
+    margin-top: 3px;
+  }
+
+  .note-edit {
+    min-height: 32px;
+    max-height: 38px;
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+
+  .log-panel {
+    padding-bottom: 12px;
+  }
+
+  .feedback-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 80;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid rgba(216, 226, 221, 0.95);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 18px 44px rgba(13, 23, 27, 0.22);
+    backdrop-filter: blur(16px);
+  }
+
+  .mobile-bottom-nav button {
+    min-width: 0;
+    min-height: 50px;
+    display: grid;
+    place-items: center;
+    gap: 2px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: #f6f9f7;
+    color: #142027;
+    font-size: 11px;
+    font-weight: 850;
+    line-height: 1;
+  }
+
+  .mobile-bottom-nav button svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .mobile-bottom-nav button.active,
+  .mobile-bottom-nav button[data-language-toggle] {
+    background: #0f8b7c;
+    color: #fff;
+  }
+
+  .mobile-bottom-nav button[data-body-profile-open] {
+    background: #eafaf5;
+    color: #087a66;
+  }
+
+  .mobile-bottom-nav button[data-diet-open] {
+    background: #fff6e8;
+    color: #9a5f12;
+  }
+
+  .mobile-bottom-nav button[data-analytics-open] {
+    background: #eef3ff;
+    color: #2444a2;
+  }
+
+  .floating-tools {
+    bottom: calc(94px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 430px) {
+  .brand h1 {
+    font-size: 22px;
+  }
+
+  .week-nav {
+    grid-auto-columns: minmax(146px, 48vw);
+  }
+
+  .meet-prep-block strong {
+    font-size: 22px;
+  }
+
+  .day-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  tbody tr,
+  tbody tr.generated-row,
+  tbody tr.control-row {
+    grid-template-columns: minmax(0, 1.22fr) 32px 38px 40px minmax(48px, 0.74fr);
+    gap: 6px;
+    padding: 10px;
+  }
+
+  td:nth-child(2),
+  td:nth-child(3),
+  td:nth-child(4),
+  td:nth-child(5) {
+    font-size: 13px;
+  }
+
+  .exercise-name,
+  .accessory-select {
+    font-size: 14px;
+  }
+
+  .mobile-bottom-nav {
+    gap: 4px;
+    padding: 7px;
+  }
+
+  .mobile-bottom-nav button {
+    min-height: 48px;
+    font-size: 10px;
+  }
+}

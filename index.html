@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ForgePlan 自定义训练计划库</title>
-    <link rel="stylesheet" href="./styles.css?v=20260625-v214-supabase" />
+    <link rel="stylesheet" href="./styles.css?v=20260626-v215-mobile-layout" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260625-v214-supabase"></script>
+    <script defer src="./app.js?v=20260626-v215-mobile-layout"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.14">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.15">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -60,16 +60,17 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v2.14 · 云端配置提示</strong>
-          <small class="update-time">2026-06-25 更新</small>
+          <strong>v2.15 · 移动端执行布局</strong>
+          <small class="update-time">2026-06-26 更新</small>
           <ul>
-            <li>根目录 Supabase 版本新增 URL 自动纠错：误填 /rest/v1 时会自动改回项目地址。</li>
-            <li>学员档案/计划表不存在时，提示用户执行 supabase/schema.sql，不再只显示英文报错。</li>
-            <li>连接失败时提示检查 URL、publishable/anon key 和 Supabase 项目状态。</li>
-            <li>线上样本版同步更新缓存版本号，减少旧包导致的误报。</li>
+            <li>手机端新增底部固定导航：主页、训练表、语言、档案、饮食、图表不用再回到顶部找。</li>
+            <li>训练日表格改成更清晰的执行卡片，动作、组、次数、RPE、重量同屏可读。</li>
+            <li>阶段进度在窄屏只显示当前阶段摘要，减少横向溢出和视觉噪音。</li>
+            <li>RPE 参考、备注和当天日志间距重新整理，手机浏览更紧凑。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v2.15</strong> 2026-06-26：手机端新增底部固定导航；训练表行改成执行卡片；阶段进度窄屏只显示当前阶段摘要；RPE 参考、备注和当天日志间距重新整理。</p>
             <p><strong>v2.14</strong> 2026-06-25：根目录 Supabase 版本新增 URL 自动纠错、表缺失提示和连接失败提示；线上样本版同步更新缓存版本号。</p>
             <p><strong>v2.13</strong> 2026-06-25：重做 UI 工作台皮肤，优化深色侧栏、浅色工作区、功能按钮配色、卡片阴影、移动端按钮网格和训练表可读性；更新 CSS/App 缓存版本号。</p>
             <p><strong>v2.12</strong> 2026-06-21 00:10：根据 Juggernaut Powerlifting Clinic Manual 中文版改写新增训练诊断小课堂；知识库加入最低有效剂量、专项优先、PR 不只加重量、弱点变式选择、疼痛后回归和生病训练调整；三项技术笔记补充深蹲、卧推、硬拉的诊断检查点。</p>
@@ -120,7 +121,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.14">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.15">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -689,6 +690,29 @@
         </section>
       </main>
     </div>
+    <nav class="mobile-bottom-nav" aria-label="移动端主导航">
+      <button data-home-button data-mobile-nav="planner" type="button" title="主页" aria-label="主页">
+        <i data-lucide="home"></i>
+        <span>首页</span>
+      </button>
+      <button data-workout-button data-mobile-nav="workout" type="button" title="训练表" aria-label="训练表">
+        <i data-lucide="calendar-days"></i>
+        <span>训练</span>
+      </button>
+      <button data-language-toggle type="button" title="切换语言" aria-label="切换语言">EN</button>
+      <button data-body-profile-open type="button" title="建立档案" aria-label="建立档案">
+        <i data-lucide="clipboard-plus"></i>
+        <span>档案</span>
+      </button>
+      <button data-diet-open type="button" title="饮食与 BMR" aria-label="饮食与 BMR">
+        <i data-lucide="utensils"></i>
+        <span>饮食</span>
+      </button>
+      <button data-analytics-open type="button" title="训练图表" aria-label="训练图表">
+        <i data-lucide="bar-chart-3"></i>
+        <span>图表</span>
+      </button>
+    </nav>
     <div class="floating-tools" aria-label="训练工具">
       <button id="floatingRpeButton" class="floating-tool" type="button" title="RPE 计算器">
         <i data-lucide="calculator"></i>
@@ -920,6 +944,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v2.15</strong><span>2026-06-26</span><p>手机端新增底部固定导航；训练表行改成执行卡片；阶段进度窄屏只显示当前阶段摘要；RPE 参考、备注和当天日志间距重新整理。</p></article>
           <article><strong>v2.14</strong><span>2026-06-25</span><p>根目录 Supabase 版本新增 URL 自动纠错、表缺失提示和连接失败提示；线上样本版同步更新缓存版本号。</p></article>
           <article><strong>v2.13</strong><span>2026-06-25</span><p>重做 UI 工作台皮肤，优化深色侧栏、浅色工作区、功能按钮配色、卡片阴影、移动端按钮网格和训练表可读性；更新 CSS/App 缓存版本号。</p></article>
           <article><strong>v2.12</strong><span>2026-06-21 00:10</span><p>根据 Juggernaut Powerlifting Clinic Manual 中文版改写新增训练诊断小课堂；知识库加入最低有效剂量、专项优先、PR 不只加重量、弱点变式选择、疼痛后回归和生病训练调整；三项技术笔记补充深蹲、卧推、硬拉的诊断检查点。</p></article>
