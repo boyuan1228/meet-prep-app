@@ -7967,6 +7967,14 @@ function renderToolLanguage() {
   setTextLanguage("rpeModalTitle", "RPE 计算器", "RPE Calculator");
   setTextLanguage("rpeE1rmButton", "计算 1RM", "Calculate 1RM");
   setTextLanguage("rpeLoadButton", "计算建议重量", "Calculate Suggested Load");
+  setTextLanguage("warmupModalTitle", "训练前热身动作", "Pre-Training Warm-up");
+  setTextLanguage("warmupLoadTitle", "热身重量生成器", "Warm-up Load Builder");
+  setTextLanguage(
+    "warmupLoadHint",
+    "输入今天的 topset 或正式组重量，按比例生成空杆到 80-85% 的递进热身。",
+    "Enter today's top set or work-set load to build a ramp from the empty bar to 80-85%."
+  );
+  setTextLanguage("warmupBuildButton", "生成热身重量", "Build Warm-ups");
   const rpeSectionTitles = document.querySelectorAll("#rpeModal .calc-section h4");
   if (rpeSectionTitles[0]) rpeSectionTitles[0].textContent = isEnglish() ? "Estimated 1RM" : "预估 1RM";
   if (rpeSectionTitles[1]) rpeSectionTitles[1].textContent = isEnglish() ? "Suggested Load" : "建议重量";
@@ -7990,6 +7998,9 @@ function renderToolLanguage() {
   setInputLabelLanguage("bmrHeightInput", "身高 cm", "Height cm");
   setInputLabelLanguage("bmrWeightInput", "体重", "Bodyweight");
   setInputLabelLanguage("bmrActivityInput", "活动水平", "Activity level");
+  setInputLabelLanguage("warmupTargetInput", "目标重量 kg", "Target load");
+  setInputLabelLanguage("warmupBarInput", "空杆重量 kg", "Empty bar");
+  setInputLabelLanguage("warmupStepInput", "取整单位 kg", "Rounding step kg");
   setSelectOptionsLanguage("bmrSexInput", {
     male: { zh: "男性", en: "Male" },
     female: { zh: "女性", en: "Female" },
@@ -8032,6 +8043,14 @@ function renderToolLanguage() {
       ? "Enter values to calculate basal metabolic rate and estimated maintenance calories."
       : "输入数据后计算基础代谢和维持热量。";
   }
+  const warmupResult = $("warmupLoadResult");
+  if (warmupResult?.dataset.generated) {
+    renderWarmupLoadResult();
+  } else if (warmupResult) {
+    warmupResult.textContent = isEnglish()
+      ? "Enter a target load to build warm-up sets."
+      : "输入目标重量后生成热身组。";
+  }
 }
 
 const STATIC_TEXT_ORIGINALS = new WeakMap();
@@ -8053,11 +8072,21 @@ const STATIC_I18N = new Map(
     "热身动作库": "Warm-up Library",
     "训练图表": "Training Charts",
     "PDF 导出": "PDF Export",
+    "热身重量生成器": "Warm-up Load Builder",
+    "输入今天的 topset 或正式组重量，按比例生成空杆到 80-85% 的递进热身。": "Enter today's top set or work-set load to build a ramp from the empty bar to 80-85%.",
+    "输入目标重量后生成热身组。": "Enter a target load to build warm-up sets.",
     "激活码": "Access Code",
     "激活并进入": "Unlock",
     "更新内容": "Latest Update",
     "历史日志": "History",
     "查看历史日志": "View History",
+    "v2.18 · 热身重量生成器": "v2.18 · Warm-up Load Builder",
+    "2026-06-30 13:53 更新": "Updated 2026-06-30 13:53",
+    "热身弹窗新增目标重量生成器，输入 topset/正式组重量即可生成热身重量。": "The warm-up modal now includes a target-load builder: enter a top set or work-set load to generate warm-up loads.",
+    "热身逻辑按空杆、35%、50%、65%、80-85% 递进，重量会自动取整并去重。": "Warm-ups ramp through empty bar, 35%, 50%, 65%, and 80-85%, with automatic rounding and duplicate removal.",
+    "打开热身工具时会尝试读取当前训练日第一条可估重主项，减少手动输入。": "Opening the warm-up tool tries to read the first estimable main lift from the current training day.",
+    "中文/英文界面都补齐热身生成器文案。": "Chinese and English copy is now complete for the warm-up builder.",
+    "热身弹窗新增目标重量生成器；按空杆、35%、50%、65%、80-85% 递进生成热身重量；打开时尝试读取当前训练日第一条可估重主项；补齐中英文文案。": "Added a target-load warm-up builder; it ramps empty bar, 35%, 50%, 65%, and 80-85%; opening it tries to read the first estimable main lift from the current day; Chinese and English copy is complete.",
     "v2.17 · 移动端排版精修": "v2.17 · Mobile Layout Polish",
     "2026-06-26 23:59 更新": "Updated 2026-06-26 23:59",
     "手机端训练表继续收紧，动作、组、次数、RPE 和重量在一行里更稳。": "Mobile training rows are tighter, keeping movement, sets, reps, RPE, and load steadier on one line.",
@@ -13087,6 +13116,125 @@ function calculateRpeLoad() {
     : `<strong>建议重量：${displayMass(load)}</strong><span>${reps} 次 @ RPE ${rpe}。</span>`;
 }
 
+function roundWarmupLoad(value, step = 2.5) {
+  const numeric = Number(value);
+  const roundStep = Number(step) || 2.5;
+  if (!numeric) return 0;
+  return Math.round(numeric / roundStep) * roundStep;
+}
+
+function warmupTargetSuggestionKg() {
+  const day = currentDay();
+  const items = day?.items || [];
+  for (let index = 0; index < items.length; index += 1) {
+    const item = items[index];
+    const type = movementType(item);
+    if (type === "accessory" || isBackdownRow(item)) continue;
+    const load = numberFrom(estimatedLoadWithContext(item, index, items) || item.weight || estimatedLoad(item));
+    if (load) return load;
+  }
+  return 0;
+}
+
+function setWarmupTargetFromCurrentDay() {
+  const targetInput = $("warmupTargetInput");
+  const barInput = $("warmupBarInput");
+  if (!targetInput) return;
+  const suggested = warmupTargetSuggestionKg();
+  if (suggested && (!targetInput.value || targetInput.dataset.autofilled === "true")) {
+    targetInput.value = isEnglish() ? Math.round((suggested * KG_TO_LBS) / 5) * 5 : suggested;
+    targetInput.dataset.autofilled = "true";
+  }
+  if (
+    barInput &&
+    (!barInput.value ||
+      barInput.dataset.autofilled === "true" ||
+      (isEnglish() && Number(barInput.value) === 20) ||
+      (!isEnglish() && Number(barInput.value) === 45))
+  ) {
+    barInput.value = isEnglish() ? 45 : 20;
+    barInput.dataset.autofilled = "true";
+  }
+}
+
+function warmupRows(targetKg, barKg, step) {
+  const target = roundWarmupLoad(targetKg, step);
+  const bar = roundWarmupLoad(barKg || 20, step);
+  if (!target || target <= bar) return [];
+  const rows = [
+    {
+      key: "bar",
+      label: isEnglish() ? "Empty bar" : "空杆",
+      percent: "",
+      load: bar,
+      reps: "8-10",
+      intent: isEnglish() ? "Technique, path, and bracing." : "找轨迹、速度和支撑。",
+    },
+  ];
+  [
+    [0.35, "6-7", isEnglish() ? "First loaded ramp, still very easy." : "第一档加片，仍然很轻。"],
+    [0.5, "4-5", isEnglish() ? "Keep speed; no fatigue." : "保持速度，不累积疲劳。"],
+    [0.65, "3", isEnglish() ? "Start feeling the working pattern." : "开始接近正式组动作感觉。"],
+    [0.825, "1-2", isEnglish() ? "Primer single/double before the top set." : "正式组前的激活单次/双次。"],
+  ].forEach(([percent, reps, intent]) => {
+    const load = roundWarmupLoad(target * percent, step);
+    const previous = rows[rows.length - 1]?.load || 0;
+    if (!load || load <= bar || load >= target || load - previous < step * 1.5) return;
+    rows.push({
+      key: `p${Math.round(percent * 100)}`,
+      label: percent === 0.825 ? "80-85%" : `${Math.round(percent * 100)}%`,
+      percent,
+      load,
+      reps,
+      intent,
+    });
+  });
+  rows.push({
+    key: "target",
+    label: isEnglish() ? "Top set / work set" : "正式组 / topset",
+    percent: "100%",
+    load: target,
+    reps: isEnglish() ? "as planned" : "按计划",
+    intent: isEnglish() ? "Start the prescribed work here." : "从这里进入计划正式组。",
+    target: true,
+  });
+  return rows;
+}
+
+function renderWarmupLoadResult() {
+  const result = $("warmupLoadResult");
+  if (!result) return;
+  const targetKg = massInputToKg($("warmupTargetInput")?.value || 0);
+  const barKg = massInputToKg($("warmupBarInput")?.value || 0) || 20;
+  const step = Number($("warmupStepInput")?.value || 2.5);
+  const rows = warmupRows(targetKg, barKg, step);
+  if (!rows.length) {
+    delete result.dataset.generated;
+    result.textContent = isEnglish()
+      ? "Enter a target load heavier than the empty bar."
+      : "请输入大于空杆重量的目标重量。";
+    return;
+  }
+  result.dataset.generated = "true";
+  const note = isEnglish()
+    ? "This is a ramping guide, not fixed 50/70/120. If warm-ups feel slow or painful, reduce the target or add one smaller jump."
+    : "这是按目标重量递进，不是固定 50/70/120。热身速度慢或疼痛时，降低目标或多加一档小跳重。";
+  result.innerHTML = `
+    <div class="warmup-load-table">
+      ${rows
+        .map(
+          (row) => `<div class="warmup-set-row ${row.target ? "target" : ""}">
+            <span>${escapeHtml(row.label)}</span>
+            <strong>${escapeHtml(displayMass(row.load))}</strong>
+            <em>${escapeHtml(row.reps)}</em>
+            <small>${escapeHtml(row.intent)}</small>
+          </div>`
+        )
+        .join("")}
+    </div>
+    <p>${escapeHtml(note)}</p>`;
+}
+
 function liftKeyForItem(item) {
   const type = movementType(item);
   if (type === "bench" || type === "benchVariant") return "bench";
@@ -13353,7 +13501,11 @@ function bindActions() {
   });
   $("techniqueBackButton")?.addEventListener("click", () => setView("planner"));
   document.querySelectorAll("[data-warmup-open]").forEach((button) => {
-    button.addEventListener("click", () => toggleModal("warmupModal", true));
+    button.addEventListener("click", () => {
+      setWarmupTargetFromCurrentDay();
+      renderWarmupLoadResult();
+      toggleModal("warmupModal", true);
+    });
   });
   document.querySelectorAll("[data-analytics-open]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -13376,6 +13528,13 @@ function bindActions() {
   $("bmrCalculateButton")?.addEventListener("click", calculateBmr);
   $("rpeE1rmButton")?.addEventListener("click", calculateRpeE1rm);
   $("rpeLoadButton")?.addEventListener("click", calculateRpeLoad);
+  $("warmupBuildButton")?.addEventListener("click", renderWarmupLoadResult);
+  ["warmupTargetInput", "warmupBarInput", "warmupStepInput"].forEach((id) => {
+    $(id)?.addEventListener(id === "warmupStepInput" ? "change" : "input", (event) => {
+      if (event.currentTarget) delete event.currentTarget.dataset.autofilled;
+      renderWarmupLoadResult();
+    });
+  });
   $("historyLogLink")?.addEventListener("click", () => {
     const history = $("historyLog");
     if (history) history.open = true;
