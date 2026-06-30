@@ -6927,10 +6927,18 @@ const EXERCISE_ZH = {
   "CABLE ROWS": "绳索划船",
   "CHEST SUPPORTED ROWS": "胸托划船",
   "CLOSE GRIP BENCH PRESS": "窄握卧推",
+  "CLOSE GRIP INCLINE BENCH PRESS": "上斜窄握卧推",
   "AB WHEEL ROLLOUT": "腹轮",
+  "CALVE RAISE OPTION": "提踵选项",
+  "CABLE FLYS (HIGH TO LOW)": "绳索夹胸（高到低）",
+  "CABLE LATERAL RAISES": "绳索侧平举",
+  "CABLE OVER HEAD EXT.": "绳索过顶臂屈伸",
   "DB ANTERIOR DELT PRESS": "哑铃前束推举",
   "DB HAMMER CURLS": "哑铃锤式弯举",
   "DB LATERAL RAISES": "哑铃侧平举",
+  "DB RDLS": "哑铃罗马尼亚硬拉",
+  "DB STAGGERED STANCE RDL": "哑铃错步罗马尼亚硬拉",
+  "DB TRICEP KICK BACKS": "哑铃三头后踢",
   "DEAD BUGS": "死虫",
   "DEADLIFT": "硬拉",
   "DEADLIFT VARIANT": "硬拉变式",
@@ -6940,11 +6948,14 @@ const EXERCISE_ZH = {
   "FLAT DB PRESS": "平板哑铃推",
   "GHD CORE ISO HOLD": "GHD 核心静力保持",
   "GHD CRUNCHES": "GHD 卷腹",
+  "DIPS": "双杠臂屈伸",
   "HATSFIELD SPLIT SQUAT": "哈特菲尔德分腿蹲",
   "HANGING LEG RAISES": "悬垂举腿",
+  "HAMSTRING SLIDERS": "腘绳肌滑盘弯举",
   "INCLINE DB PRESS": "上斜哑铃推",
   "LAT PULLDOWNS": "高位下拉",
   "LEG CURLS": "腿弯举",
+  "LEG EXTENSIONS": "腿屈伸",
   "LEG PRESS CALVE RAISES": "腿举机提踵",
   "MACHINE LATERAL RAISES": "器械侧平举",
   "NEUTRAL GRIP PULL-DOWNS": "中立握下拉",
@@ -6959,6 +6970,7 @@ const EXERCISE_ZH = {
   "SEAL ROWS": "俯卧划船",
   "SEATED CALVE RAISES": "坐姿提踵",
   "SINGLE ARM DB ROWS": "单臂哑铃划船",
+  "SINGLE LEG HAMSTRING CURLS": "单腿腘绳肌弯举",
   "SIDE PLANK": "侧桥",
   "SKULL CRUSHERS": "仰卧臂屈伸",
   "SQUAT": "深蹲",
@@ -6966,6 +6978,8 @@ const EXERCISE_ZH = {
   "TRICEP PUSHDOWNS": "绳索下压",
   "TWO ARM DB CURLS": "双臂哑铃弯举",
   "WEIGHTED V-UPS": "负重 V 字卷腹",
+  "WIDE GRIP PULLDOWNS": "宽握下拉",
+  "PULL-UPS": "引体向上",
   "SPOTO BENCH PRESS": "斯波托卧推",
   "PAUSED BENCH PRESS": "暂停卧推",
   "TEMPO BENCH PRESS": "节奏卧推",
@@ -7037,6 +7051,11 @@ const VARIANT_OPTIONS_BY_SYSTEM = {
     squatVariantInput: ["Paused Squat", "Belt Squat", "Tempo Squat", "Front Squat"],
     deadliftVariantInput: ["Paused Deadlift", "Romanian Deadlift", "Deficit Deadlift", "Block Pull"],
   },
+  sstt3: {
+    benchVariantInput: ["Close Grip Incline Bench Press", "Close Grip Bench Press", "Paused Bench Press"],
+    squatVariantInput: ["Belt Squat", "Paused Squat", "Tempo Squat", "Hatfield Squat"],
+    deadliftVariantInput: ["Romanian Deadlift", "Paused Deadlift", "Deficit Deadlift", "Block Pull"],
+  },
   rts: {
     benchVariantInput: ["Paused Bench Press", "Spoto Bench Press", "Close Grip Bench Press", "Board Press"],
     squatVariantInput: ["Paused Squat", "Tempo Squat", "Front Squat"],
@@ -7098,6 +7117,19 @@ const PROGRAM_SYSTEMS = {
       "基于你提供的 90 分钟力量举周期模板：8 周主体加第 9 周 PR 测试，D1-D5 按卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度分配；MEV/MRV 使用 JTS 容量问卷计算。",
     enText:
       "A 90-minute strength cycle based on the provided template: eight training weeks plus a Week 9 PR test, with D1-D5 split into bench volume, squat intensity, bench variation, deadlift intensity, and bench intensity. MEV/MRV uses the JTS questionnaire logic.",
+    status: "active",
+  },
+  sstt3: {
+    short: "SSTT 3D",
+    brandTitle: "SSTT 3-Day Strength",
+    defaultDays: 3,
+    usesJtsSurvey: false,
+    zhTitle: "SSTT 三天力量训练体系",
+    enTitle: "SSTT 3-Day Strength System",
+    zhText:
+      "基于你提供的 3 天力量模板改写：9 周、每周 3 练，按深蹲日、卧推日、硬拉日推进。保留 RPE 与百分比估重逻辑，Week 5 减载，Week 9 测试。",
+    enText:
+      "An adapted 9-week, 3-day strength template built from the provided workbook. It rotates squat, bench, and deadlift days, keeps RPE and percentage-based load targets, deloads in Week 5, and tests in Week 9.",
     status: "active",
   },
   norwegian: {
@@ -7340,6 +7372,7 @@ const PROGRAM_SYSTEMS = {
 const FIXED_SYSTEM_WEEKS = {
   bodybuilding: 12,
   "905": 9,
+  sstt3: 9,
   rpeBlock: 13,
   calgary16: 16,
   calgary8: 8,
@@ -7378,6 +7411,8 @@ const ACCESSORY_GROUPS = {
     "DB ANTERIOR DELT PRESS",
     "LAT PULLDOWNS",
     "NEUTRAL GRIP PULL-DOWNS",
+    "WIDE GRIP PULLDOWNS",
+    "PULL-UPS",
     "CABLE ROWS",
     "SEAL ROWS",
     "CHEST SUPPORTED ROWS",
@@ -7385,7 +7420,11 @@ const ACCESSORY_GROUPS = {
     "BARBELL ROWS",
     "PENDLEY ROWS",
     "SINGLE ARM DB ROWS",
+    "DIPS",
+    "CABLE FLYS (HIGH TO LOW)",
     "TRICEP PUSHDOWNS",
+    "CABLE OVER HEAD EXT.",
+    "DB TRICEP KICK BACKS",
     "SKULL CRUSHERS",
     "EZ BAR CURLS",
     "BARBELL CURLS",
@@ -7394,6 +7433,7 @@ const ACCESSORY_GROUPS = {
     "DB HAMMER CURLS",
     "PREACHER CURLS",
     "DB LATERAL RAISES",
+    "CABLE LATERAL RAISES",
     "MACHINE LATERAL RAISES",
     "REAR DELT FLYS",
     "EXTERNAL ROTATION",
@@ -7404,11 +7444,17 @@ const ACCESSORY_GROUPS = {
   ],
   lower: [
     "HATSFIELD SPLIT SQUAT",
+    "LEG EXTENSIONS",
     "LEG CURLS",
+    "HAMSTRING SLIDERS",
+    "SINGLE LEG HAMSTRING CURLS",
     "NORDIC CURLS",
+    "DB RDLS",
+    "DB STAGGERED STANCE RDL",
     "REVERSE HYPER-EXTENSIONS",
     "LEG PRESS CALVE RAISES",
     "SEATED CALVE RAISES",
+    "CALVE RAISE OPTION",
     "LAT PULLDOWNS",
     "NEUTRAL GRIP PULL-DOWNS",
     "CABLE ROWS",
@@ -7444,6 +7490,8 @@ const ACCESSORY_OPTIONS = [
   "DB ANTERIOR DELT PRESS",
   "LAT PULLDOWNS",
   "NEUTRAL GRIP PULL-DOWNS",
+  "WIDE GRIP PULLDOWNS",
+  "PULL-UPS",
   "CABLE ROWS",
   "SEAL ROWS",
   "CHEST SUPPORTED ROWS",
@@ -7451,7 +7499,11 @@ const ACCESSORY_OPTIONS = [
   "BARBELL ROWS",
   "PENDLEY ROWS",
   "SINGLE ARM DB ROWS",
+  "DIPS",
+  "CABLE FLYS (HIGH TO LOW)",
   "TRICEP PUSHDOWNS",
+  "CABLE OVER HEAD EXT.",
+  "DB TRICEP KICK BACKS",
   "SKULL CRUSHERS",
   "EZ BAR CURLS",
   "BARBELL CURLS",
@@ -7460,15 +7512,22 @@ const ACCESSORY_OPTIONS = [
   "DB HAMMER CURLS",
   "PREACHER CURLS",
   "DB LATERAL RAISES",
+  "CABLE LATERAL RAISES",
   "MACHINE LATERAL RAISES",
   "REAR DELT FLYS",
   "EXTERNAL ROTATION",
   "HATSFIELD SPLIT SQUAT",
+  "LEG EXTENSIONS",
   "LEG CURLS",
+  "HAMSTRING SLIDERS",
+  "SINGLE LEG HAMSTRING CURLS",
   "NORDIC CURLS",
+  "DB RDLS",
+  "DB STAGGERED STANCE RDL",
   "REVERSE HYPER-EXTENSIONS",
   "LEG PRESS CALVE RAISES",
   "SEATED CALVE RAISES",
+  "CALVE RAISE OPTION",
   "GHD CRUNCHES",
   "GHD CORE ISO HOLD",
   "WEIGHTED V-UPS",
@@ -7512,6 +7571,7 @@ function systemDisplayShort(system = currentProgramSystem()) {
   if (isEnglish() && key === "jtsSstt") return "JTS × SSTT 15-Week";
   if (isEnglish() && key === "rpeBlock") return "RPE Block";
   if (isEnglish() && key === "905") return "905";
+  if (isEnglish() && key === "sstt3") return "SSTT 3-Day Strength";
   if (isEnglish() && key === "norwegian") return "SBS Norwegian";
   if (isEnglish() && key === "bodybuilding") return "Hypertrophy";
   return system.short;
@@ -7540,7 +7600,7 @@ function phaseProgressText(status) {
   if (status.progress === "比赛/测试") return isEnglish() ? "Meet / test" : "比赛/测试";
   if (status.progress === "恢复/桥接") return isEnglish() ? "Recovery / bridge" : "恢复/桥接";
   if (status.progress === "减载周") return isEnglish() ? "Deload week" : "减载周";
-  if (["rpeBlock", "norwegian", "905"].includes(state.survey.programSystem || "bodybuilding")) return status.progress;
+  if (["rpeBlock", "norwegian", "905", "sstt3"].includes(state.survey.programSystem || "bodybuilding")) return status.progress;
   const overloadMatch = String(status.progress || "").match(/(\d+)\/(\d+)/);
   if (overloadMatch) {
     return isEnglish() ? `Overload ${overloadMatch[1]}/${overloadMatch[2]}` : status.progress;
@@ -7553,6 +7613,7 @@ function systemShortText(system = currentProgramSystem()) {
   if (isEnglish() && key === "jtsSstt") return "JTS × SSTT 15-Week";
   if (isEnglish() && key === "rpeBlock") return "RPE Block";
   if (isEnglish() && key === "905") return "905";
+  if (isEnglish() && key === "sstt3") return "SSTT 3-Day Strength";
   if (isEnglish() && key === "norwegian") return "SBS Norwegian";
   if (isEnglish() && key === "bodybuilding") return "Hypertrophy";
   return system.short;
@@ -7587,6 +7648,16 @@ function localizePlanText(text) {
     "卧推变式": "Bench variation",
     "硬拉强度": "Deadlift intensity",
     "卧推强度": "Bench intensity",
+    "主项积累": "Main Lift Accumulation",
+    "减载恢复": "Deload Recovery",
+    "强度推进": "Intensity Progression",
+    "测试周": "Test Week",
+    "深蹲日": "Squat Day",
+    "卧推日": "Bench Day",
+    "硬拉日": "Deadlift Day",
+    "恢复/核心": "Recovery / Core",
+    "上肢辅助": "Upper Accessories",
+    "轻技术": "Light Technique",
     "超负荷": "Overload",
     "减载": "Deload",
     "测试": "Test",
@@ -8053,6 +8124,7 @@ function renderToolLanguage() {
     bodybuilding: { zh: "健美式肌肥大", en: "Bodybuilding Hypertrophy" },
     jtsSstt: { zh: "JTS × SSTT 十五周（推荐）", en: "JTS × SSTT 15-Week (Recommended)" },
     "905": { zh: "905", en: "905" },
+    sstt3: { zh: "SSTT 三天力量", en: "SSTT 3-Day Strength" },
     norwegian: { zh: "SBS Norwegian 高频", en: "SBS Norwegian High Frequency" },
     rpeBlock: { zh: "RPE 自调节区块周期", en: "RPE Autoregulated Block" },
     calgary16: { zh: "Calgary Barbell 16 周", en: "Calgary Barbell 16-Week" },
@@ -9506,6 +9578,245 @@ function system905RowsFor(weekIndex, dayNumber) {
   return day.map((item) => ({ ...item }));
 }
 
+function roundedPercent(value) {
+  return Math.round(Number(value || 0) * 1000) / 1000;
+}
+
+const SYSTEM_SSTT3_WEEKS = [
+  {
+    phase: "hypertrophy",
+    effort: "6-7",
+    squat: [
+      [1, 5, "6", 0.762],
+      [1, 1, "6", 0.863],
+      [3, 5, "-", roundedPercent(0.762 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "6", 0.863],
+      [1, 6, "6.5", 0.751],
+      [3, 6, "-", roundedPercent(0.751 * 0.875)],
+    ],
+    deadlift: [
+      [1, 5, "4", 0.707],
+      [1, 5, "5", 0.739],
+      [3, 5, "-", roundedPercent(0.739 * 0.875)],
+    ],
+  },
+  {
+    phase: "hypertrophy",
+    effort: "7-8",
+    squat: [
+      [1, 5, "7", 0.786],
+      [1, 1, "6", 0.863],
+      [3, 5, "-", roundedPercent(0.786 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "6", 0.863],
+      [1, 6, "7", 0.762],
+      [3, 6, "-", roundedPercent(0.762 * 0.875)],
+    ],
+    deadlift: [
+      [1, 5, "5", 0.739],
+      [1, 5, "6", 0.762],
+      [3, 5, "-", roundedPercent(0.762 * 0.875)],
+    ],
+  },
+  {
+    phase: "hypertrophy",
+    effort: "7-8",
+    squat: [
+      [1, 5, "8", 0.811],
+      [1, 1, "7", 0.892],
+      [3, 5, "-", roundedPercent(0.811 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "7", 0.892],
+      [1, 6, "8", 0.786],
+      [3, 6, "-", roundedPercent(0.786 * 0.875)],
+    ],
+    deadlift: [
+      [1, 5, "6", 0.762],
+      [1, 5, "7", 0.786],
+      [3, 5, "-", roundedPercent(0.786 * 0.875)],
+    ],
+  },
+  {
+    phase: "strength",
+    effort: "8-9",
+    squat: [
+      [1, 5, "9", 0.837],
+      [1, 1, "8", 0.922],
+      [3, 5, "-", roundedPercent(0.837 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "8", 0.922],
+      [1, 6, "9", 0.811],
+      [3, 6, "-", roundedPercent(0.811 * 0.875)],
+    ],
+    deadlift: [
+      [1, 5, "8", 0.811],
+      [1, 5, "9", 0.837],
+      [3, 5, "-", roundedPercent(0.837 * 0.875)],
+    ],
+  },
+  {
+    phase: "deload",
+    effort: "6-7",
+    squat: [
+      [1, 5, "6", 0.762],
+      [1, 1, "6", 0.863],
+      [2, 5, "-", roundedPercent(0.762 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "6", 0.863],
+      [1, 6, "6.5", 0.751],
+      [2, 6, "-", roundedPercent(0.751 * 0.875)],
+    ],
+    deadlift: [
+      [1, 5, "4", 0.707],
+      [1, 5, "5", 0.739],
+      [2, 5, "-", roundedPercent(0.739 * 0.875)],
+    ],
+  },
+  {
+    phase: "strength",
+    effort: "6-7",
+    squat: [
+      [1, 1, "6", 0.863],
+      [1, 4, "6", 0.786],
+      [3, 4, "-", roundedPercent(0.786 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "7", 0.892],
+      [1, 5, "6", 0.762],
+      [3, 5, "-", roundedPercent(0.762 * 0.875)],
+    ],
+    deadlift: [
+      [1, 1, "5.5", 0.85],
+      [1, 4, "5", 0.762],
+      [1, 4, "6", 0.786],
+      [2, 4, "-", roundedPercent(0.786 * 0.875)],
+    ],
+  },
+  {
+    phase: "strength",
+    effort: "7-8",
+    squat: [
+      [1, 1, "7", 0.892],
+      [1, 4, "7", 0.811],
+      [3, 4, "-", roundedPercent(0.811 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "7.5", 0.907],
+      [1, 5, "7", 0.786],
+      [3, 5, "-", roundedPercent(0.786 * 0.875)],
+    ],
+    deadlift: [
+      [1, 1, "6.5", 0.878],
+      [1, 4, "6", 0.786],
+      [1, 4, "7", 0.811],
+      [2, 4, "-", roundedPercent(0.811 * 0.875)],
+    ],
+  },
+  {
+    phase: "peaking",
+    effort: "7-8",
+    squat: [
+      [1, 1, "8", 0.922],
+      [1, 4, "8", 0.837],
+      [2, 4, "-", roundedPercent(0.837 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "8.5", 0.939],
+      [1, 5, "8", 0.811],
+      [2, 5, "-", roundedPercent(0.811 * 0.875)],
+    ],
+    deadlift: [
+      [1, 1, "7.5", 0.907],
+      [1, 4, "7", 0.811],
+      [1, 4, "7", 0.811],
+      [2, 4, "-", roundedPercent(0.811 * 0.875)],
+    ],
+  },
+  {
+    phase: "test",
+    effort: "8-9",
+    squat: [
+      [1, 1, "10", 1],
+      [1, 4, "8", 0.837],
+      [2, 4, "-", roundedPercent(0.837 * 0.875)],
+    ],
+    bench: [
+      [1, 1, "10", 1],
+      [1, 5, "8", 0.811],
+      [2, 5, "-", roundedPercent(0.811 * 0.875)],
+    ],
+    deadlift: [
+      [1, 1, "9.5-10", 1],
+      [1, 4, "7", 0.811],
+      [1, 4, "8", 0.837],
+      [2, 4, "-", roundedPercent(0.837 * 0.875)],
+    ],
+  },
+];
+
+function sstt3MainRows(lift, rows, note) {
+  const type = lift === "SQUAT" ? "squat" : lift === "BENCH PRESS" ? "bench" : "deadlift";
+  return rows.map(([sets, reps, rpe, percent], index) =>
+    row905(lift, sets, reps, rpe, percent, index === 0 ? note : index === rows.length - 1 ? "按当天状态完成降重组；RPE 超标就减重。" : "", type)
+  );
+}
+
+function sstt3Accessories(dayNumber, weekIndex, effort) {
+  const late = weekIndex >= 5;
+  if (dayNumber === 1) {
+    return [
+      row905("CLOSE GRIP INCLINE BENCH PRESS", late ? 3 : 3, late ? "8-10" : "10,8,6", effort, "", "卧推变式，保留余力。", "benchVariant"),
+      row905(late ? "NEUTRAL GRIP PULL-DOWNS" : "NEUTRAL GRIP PULL-DOWNS", 4, late ? "12,8,8,12" : "15,10,8,15", effort, "", "", "accessory", "upper"),
+      row905("LEG EXTENSIONS", late ? 3 : 2, late ? "10-12" : "12-15", effort, "", "", "accessory", "lower"),
+      row905(late ? "NORDIC CURLS" : "HAMSTRING SLIDERS", late ? 3 : 1, late ? "8-10" : "10-12", effort, "", "", "accessory", "lower"),
+      row905(late ? "PREACHER CURLS" : "CABLE CURLS", late ? 3 : 2, late ? "8-10" : "12-15", effort, "", "", "accessory", "upper"),
+      row905(late ? "TRICEP PUSHDOWNS" : "SKULL CRUSHERS", 3, late ? "10-12" : "12-15", effort, "", "", "accessory", "upper"),
+      row905(late ? "CABLE LATERAL RAISES" : "MACHINE LATERAL RAISES", late ? 3 : 4, late ? "10-12" : "12-15", effort, "", "", "accessory", "upper"),
+      row905("WEIGHTED V-UPS", 3, "15+", "-", "", "", "accessory", "core"),
+    ];
+  }
+  if (dayNumber === 2) {
+    return [
+      row905(late ? "DB STAGGERED STANCE RDL" : "DB RDLS", 3, late ? "8" : "10", late ? "4,5,6" : "4,5,6", "", "", "accessory", "lower"),
+      row905("BELT SQUAT", late ? 4 : 4, late ? "8" : "10", late ? "4,5,6,7" : "5,6,7,8", "", "递增组，最后一组不要硬磨。", "squatVariant"),
+      row905(late ? "SEAL ROWS" : "CHEST SUPPORTED ROWS", 4, late ? "9,5,5,9" : "10,6,6,10", effort, "", "", "accessory", "upper"),
+      row905(late ? "CABLE CURLS" : "EZ BAR CURLS", 3, late ? "8-10" : "10-12", effort, "", "", "accessory", "upper"),
+      row905(late ? "DIPS" : "TRICEP PUSHDOWNS", 3, late ? "8+8" : "10+10", effort, "", "", "accessory", "upper"),
+      row905("CABLE FLYS (HIGH TO LOW)", 3, "21s", effort, "", "", "accessory", "upper"),
+      row905("CALVE RAISE OPTION", 4, "10", effort, "", "", "accessory", "lower"),
+      row905("GHD CRUNCHES", 3, "15-20", "-", "", "", "accessory", "core"),
+    ];
+  }
+  return [
+    row905(late ? "FLAT DB PRESS" : "INCLINE DB PRESS", 4, late ? "10,5,5,10" : "12,10,6,12", effort, "", "", "accessory", "upper"),
+    row905(late ? "PULL-UPS" : "WIDE GRIP PULLDOWNS", 1, "DENSITY", "-", "", "密度组：在动作质量允许范围内累积总次数。", "accessory", "upper"),
+    row905("HATSFIELD SPLIT SQUAT", 3, late ? "8-10" : "10-12", effort, "", "", "accessory", "lower"),
+    row905("SINGLE LEG HAMSTRING CURLS", late ? 2 : 3, late ? "12-15" : "15-20", effort, "", "", "accessory", "lower"),
+    row905("REAR DELT FLYS", 3, late ? "12-15" : "15-20", effort, "", "", "accessory", "upper"),
+    row905("DB HAMMER CURLS", 3, late ? "5-7" : "6-8", effort, "", "", "accessory", "upper"),
+    row905(late ? "DB TRICEP KICK BACKS" : "CABLE OVER HEAD EXT.", 3, late ? "5-7" : "6-8", effort, "", "", "accessory", "upper"),
+    row905("CABLE CRUNCHES", 3, "15-20", "-", "", "", "accessory", "core"),
+  ];
+}
+
+function systemSstt3RowsFor(weekIndex, dayNumber) {
+  const week = SYSTEM_SSTT3_WEEKS[Math.min(Math.max(weekIndex, 0), SYSTEM_SSTT3_WEEKS.length - 1)];
+  const normalizedDay = ((dayNumber - 1) % 3) + 1;
+  if (normalizedDay === 1) {
+    return [...sstt3MainRows("SQUAT", week.squat, week.phase === "test" ? "测试周深蹲单次；后续组只保留动作手感。" : "深蹲主项日。"), ...sstt3Accessories(1, weekIndex, week.effort)];
+  }
+  if (normalizedDay === 2) {
+    return [...sstt3MainRows("BENCH PRESS", week.bench, week.phase === "test" ? "测试周卧推单次；不要把回退组做成极限。" : "卧推主项日。"), ...sstt3Accessories(2, weekIndex, week.effort)];
+  }
+  return [...sstt3MainRows("DEADLIFT", week.deadlift, week.phase === "test" ? "测试周硬拉单次；速度明显变慢就停。" : "硬拉主项日。"), ...sstt3Accessories(3, weekIndex, week.effort)];
+}
+
 function accessoryRows(group, compact = false) {
   const tag = (items) => items.map((item) => ({ ...item, accessoryGroup: group }));
   if (group === "upper") {
@@ -9777,6 +10088,7 @@ function systemDayItems(systemKey, dayNumber, days, phaseKey, weekIndex) {
   if (systemKey === "norwegian") return norwegianRowsFor(dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
   if (systemKey === "rpeBlock") return rpeBlockRowsFor(dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
   if (systemKey === "905") return system905RowsFor(weekIndex, dayNumber);
+  if (systemKey === "sstt3") return systemSstt3RowsFor(weekIndex, dayNumber);
   if (POPULAR_PROGRAM_KEYS.has(systemKey)) return popularProgramRowsFor(systemKey, dayNumber, phaseKey, days >= 5).map((item) => ({ ...item }));
   const p = phasePrescription(phaseKey, dayNumber, systemKey);
   const compact = days >= 5;
@@ -9897,6 +10209,9 @@ function systemTestDayItems(dayNumber, systemKey = state.survey.programSystem) {
       row("DEADLIFT", 1, 1, "9-10", "PR 测试：历史 PR 过久时三把保守优先。"),
     ];
   }
+  if (systemKey === "sstt3") {
+    return systemSstt3RowsFor(SYSTEM_SSTT3_WEEKS.length - 1, dayNumber);
+  }
   const easy = dayNumber < 4;
   if (easy) {
     const p = phasePrescription("test", dayNumber);
@@ -9995,7 +10310,7 @@ function movementType(item) {
   if (name === "BENCH PRESS") return "bench";
   if (name === "SQUAT") return "squat";
   if (name === "DEADLIFT") return "deadlift";
-  if (["BENCH PRESS VARIANT", "CLOSE GRIP BENCH PRESS"].includes(name)) return "benchVariant";
+  if (["BENCH PRESS VARIANT", "CLOSE GRIP BENCH PRESS", "CLOSE GRIP INCLINE BENCH PRESS"].includes(name)) return "benchVariant";
   if (["SQUAT VARIANT", "BELT SQUAT"].includes(name)) return "squatVariant";
   if (name === "DEADLIFT VARIANT") return "deadliftVariant";
   return "accessory";
@@ -10748,6 +11063,16 @@ function allocateSystemPhaseWeeks(totalWeeks, systemKey = state.survey.programSy
       { key: "peaking", name: "峰值准备", weeks: 2, note: "第 7-8 周减少额外疲劳，保留专项强度，为第 9 周测试做准备。" },
     ];
   }
+  if (systemKey === "sstt3") {
+    return [
+      { key: "hypertrophy", name: "主项积累", weeks: 3, note: "前三周用五次组和低到中等 RPE 建立主项技术、容量和辅助肌群耐受。" },
+      { key: "strength", name: "强度推进", weeks: 1, note: "第 4 周把主项推到 RPE 8-9 的高压力周。" },
+      { key: "deload", name: "减载恢复", weeks: 1, note: "第 5 周回到较轻百分比，保留动作但降低疲劳。" },
+      { key: "strength", name: "强度推进", weeks: 2, note: "第 6-7 周改为单次加四次组，提高专项强度。" },
+      { key: "peaking", name: "峰值准备", weeks: 1, note: "第 8 周进入较重单次，辅助量维持但不继续堆疲劳。" },
+      { key: "test", name: "测试周", weeks: 1, note: "第 9 周按深蹲、卧推、硬拉三天分别测试，后续组只保留手感。" },
+    ];
+  }
   const ratios = {
     bodybuilding: [0.45, 0.4, 0.15],
     norwegian: [0.45, 0.4, 0.15],
@@ -10802,6 +11127,7 @@ function systemFrequencies(days, systemKey = state.survey.programSystem) {
   const presets = {
     bodybuilding: { chest: days >= 5 ? 2 : 1.5, back: days >= 5 ? 2 : 1.5, delts: days >= 4 ? 2 : 1.5, legs: days >= 4 ? 2 : 1.5, arms: days >= 5 ? 2 : 1, core: 1 },
     "905": { squat: days >= 5 ? 2 : 1.5, bench: days >= 5 ? 4 : 3, deadlift: 2 },
+    sstt3: { squat: 1, bench: 1.5, deadlift: 1 },
     norwegian: { squat: days >= 6 ? 5 : Math.max(3, days - 1), bench: Math.min(days, days >= 6 ? 5 : days), deadlift: days >= 5 ? 2 : 1.5 },
     rpeBlock: { squat: 2.5, bench: 4, deadlift: 2 },
     calgary16: { squat: 2, bench: 3, deadlift: 1.5 },
@@ -11005,6 +11331,12 @@ function makeWeeklyLayout(days, frequencies, model) {
       5: [["卧推容量"], ["深蹲强度", "暂停硬拉"], ["卧推变式"], ["硬拉强度"], ["卧推强度"]],
       6: [["卧推容量"], ["深蹲强度"], ["暂停硬拉"], ["卧推变式"], ["硬拉强度"], ["卧推强度"]],
     },
+    sstt3: {
+      3: [["深蹲日"], ["卧推日"], ["硬拉日"]],
+      4: [["深蹲日"], ["卧推日"], ["硬拉日"], ["恢复/核心"]],
+      5: [["深蹲日"], ["卧推日"], ["恢复/核心"], ["硬拉日"], ["上肢辅助"]],
+      6: [["深蹲日"], ["上肢辅助"], ["卧推日"], ["恢复/核心"], ["硬拉日"], ["轻技术"]],
+    },
     calgary16: {
       3: [["深蹲强度"], ["卧推强度"], ["硬拉强度"]],
       4: [["深蹲顶组"], ["卧推顶组"], ["硬拉顶组"], ["卧推容量"]],
@@ -11174,6 +11506,12 @@ function phaseProgress(phase, localWeek, capacities) {
   if ((state.survey.programSystem || "bodybuilding") === "905") {
     const zh = { hypertrophy: "积累", deload: "减载", strength: "转化", peaking: "峰值准备" };
     const en = { hypertrophy: "Accumulation", deload: "Deload", strength: "Conversion", peaking: "Peak prep" };
+    const label = (isEnglish() ? en : zh)[phase.key] || phaseDisplayName(phase);
+    return `${label} ${localWeek}/${phase.weeks || localWeek}`;
+  }
+  if ((state.survey.programSystem || "bodybuilding") === "sstt3") {
+    const zh = { hypertrophy: "积累", strength: "强度", deload: "减载", peaking: "峰值", test: "测试" };
+    const en = { hypertrophy: "Accumulation", strength: "Strength", deload: "Deload", peaking: "Peak", test: "Test" };
     const label = (isEnglish() ? en : zh)[phase.key] || phaseDisplayName(phase);
     return `${label} ${localWeek}/${phase.weeks || localWeek}`;
   }
@@ -11553,7 +11891,7 @@ function renderSystemPlanner(plan) {
     <article class="capacity-card"><h4>${isEnglish() ? "Test Week" : "测试周"}</h4><div><span>${isEnglish() ? "Last week" : "最后一周"}</span><strong>${isEnglish() ? "Kept" : "保留"}</strong></div><div><span>${isEnglish() ? "Openers" : "开把"}</span><strong>${wantsOpenerPanel() ? (isEnglish() ? "Enabled" : "启用") : (isEnglish() ? "Optional" : "可选")}</strong></div></article>
   `;
   $("phasePlan").innerHTML = plan.phases
-    .filter((phase) => ["hypertrophy", "strength", "peaking"].includes(phase.key) || (plan.systemKey === "905" && phase.key === "deload"))
+    .filter((phase) => ["hypertrophy", "strength", "peaking"].includes(phase.key) || (["905", "sstt3"].includes(plan.systemKey) && phase.key === "deload") || (plan.systemKey === "sstt3" && phase.key === "test"))
     .map((phase) => `<div class="phase-row"><strong>${phaseDisplayName(phase)}</strong><span><mark>${weeksText(phase.weeks)}</mark> ${localizePlanText(phase.note)}</span></div>`)
     .join("");
   const frequencyRows = Object.entries(plan.frequencies)
@@ -11598,6 +11936,22 @@ function renderSystemPlanner(plan) {
           "主项估重按模板里的训练最大值百分比执行。905 会先用保守训练最大值，而不是直接拿历史 PR 硬套。",
           "变式动作会跟随你在个人数据里选择的卧推、深蹲、硬拉变式；如果没填变式 1RM，则从主项保守估算。",
           "如果目标 RPE 超标，下次优先重复或下调，不要机械按百分比继续加。",
+        ]
+    : plan.systemKey === "sstt3"
+    ? isEnglish()
+      ? [
+          "SSTT 3-Day Strength keeps the provided workbook logic as an adapted 9-week, 3-day cycle.",
+          "The weekly split is simple: squat day, bench day, deadlift day. Week 5 is a deload, and Week 9 is the test week.",
+          "Main lift loads use the workbook percentage targets from your current SBD maxes; RPE still decides whether to adjust the day up or down.",
+          "Accessory rows are rewritten into selectable app rows, so users can swap similar upper, lower, and core movements without copying the spreadsheet layout.",
+          "If a listed percentage overshoots the target RPE, lower the load or repeat the same exposure instead of forcing progression.",
+        ]
+      : [
+          "SSTT 三天力量保留你提供的表格逻辑，并改写成 9 周、每周 3 练的 App 体系。",
+          "每周结构很直接：深蹲日、卧推日、硬拉日；第 5 周减载，第 9 周测试。",
+          "主项估重按表格百分比读取你当前三项最大值，但当天仍然用 RPE 决定是否上调或下调。",
+          "辅助项已经改写成可替换的 App 行，用户可以在同类上肢、下肢、核心动作里替换，不复制原表版式。",
+          "如果百分比重量让实际 RPE 超标，就降重量或重复同一暴露，不要硬按表格推进。",
         ]
     : isEnglish()
     ? [
