@@ -6896,6 +6896,28 @@ const state = {
     bodybuildingSplit: "auto",
     bodybuildingWeakPoint: "none",
     bodybuildingWeakPriority: "medium",
+    system905Mode: "full",
+    system905Goal: "general",
+    system905Level: "intermediate",
+    system905Days: "5",
+    system905WeakPoint: "none",
+    system905Round: "2.5",
+    system905SquatTmFactor: "",
+    system905BenchTmFactor: "",
+    system905DeadliftTmFactor: "",
+    system905BenchTrainingBest: "",
+    system905SquatRecentWeight: "",
+    system905SquatRecentReps: "",
+    system905SquatRecentRpe: "",
+    system905BenchRecentWeight: "",
+    system905BenchRecentReps: "",
+    system905BenchRecentRpe: "",
+    system905DeadliftRecentWeight: "",
+    system905DeadliftRecentReps: "",
+    system905DeadliftRecentRpe: "",
+    system905SquatManualTm: "",
+    system905BenchManualTm: "",
+    system905DeadliftManualTm: "",
   },
   logs: {},
   injuryFilters: {},
@@ -6922,6 +6944,13 @@ const EXERCISE_ZH = {
   "BELT SQUAT": "腰带深蹲",
   "BENCH PRESS": "卧推",
   "BENCH PRESS VARIANT": "卧推变式",
+  "BENCH PRESS BACKDOWN": "卧推降重组",
+  "BENCH PRESS TECHNIQUE": "卧推技术组",
+  "2BOARD BENCH PRESS": "2Board 木板卧推",
+  "BOX SQUAT / HIGH BOX SQUAT": "箱式 / 高箱深蹲",
+  "SQUAT BACKDOWN": "深蹲降重组",
+  "DEADLIFT BACKDOWN": "硬拉降重组",
+  "GLUTE BRIDGE / REVERSE HYPER": "臀桥 / 反向挺身",
   "CABLE CRUNCHES": "绳索卷腹",
   "CABLE CURLS": "绳索弯举",
   "CABLE ROWS": "绳索划船",
@@ -6957,6 +6986,7 @@ const EXERCISE_ZH = {
   "LEG CURLS": "腿弯举",
   "LEG EXTENSIONS": "腿屈伸",
   "LEG PRESS CALVE RAISES": "腿举机提踵",
+  "LEG PRESS": "腿举",
   "MACHINE LATERAL RAISES": "器械侧平举",
   "NEUTRAL GRIP PULL-DOWNS": "中立握下拉",
   "NORDIC CURLS": "北欧腿弯举",
@@ -7047,8 +7077,8 @@ const VARIANT_OPTIONS_BY_SYSTEM = {
     deadliftVariantInput: ["Paused Deadlift", "Deficit Deadlift", "Romanian Deadlift", "Block Pull"],
   },
   "905": {
-    benchVariantInput: ["Close Grip Bench Press", "Paused Bench Press", "Spoto Bench Press", "Board Press"],
-    squatVariantInput: ["Paused Squat", "Belt Squat", "Tempo Squat", "Front Squat"],
+    benchVariantInput: ["Close Grip Bench Press", "Spoto Bench Press", "2Board Bench Press"],
+    squatVariantInput: ["Paused Squat", "Tempo Squat", "Box Squat / High Box Squat"],
     deadliftVariantInput: ["Paused Deadlift", "Romanian Deadlift", "Deficit Deadlift", "Block Pull"],
   },
   sstt3: {
@@ -7110,13 +7140,13 @@ const PROGRAM_SYSTEMS = {
     short: "905",
     brandTitle: "905",
     defaultDays: 5,
-    usesJtsSurvey: true,
+    usesJtsSurvey: false,
     zhTitle: "905 · 90 分钟力量周期",
     enTitle: "905 · 90-Minute Strength Cycle",
     zhText:
-      "基于你提供的 90 分钟力量举周期模板：8 周主体加第 9 周 PR 测试，D1-D5 按卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度分配；MEV/MRV 使用 JTS 容量问卷计算。",
+      "基于你提供的 90 分钟力量周期模板：8 周主体加第 9 周 PR 测试，D1-D5 按卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度分配；DIY 输入、TM、变式系数和弱项辅项按 Excel 逻辑生成。",
     enText:
-      "A 90-minute strength cycle based on the provided template: eight training weeks plus a Week 9 PR test, with D1-D5 split into bench volume, squat intensity, bench variation, deadlift intensity, and bench intensity. MEV/MRV uses the JTS questionnaire logic.",
+      "A 90-minute strength cycle based on the provided workbook: eight training weeks plus a Week 9 PR test, with D1-D5 split into bench volume, squat intensity, bench variation, deadlift intensity, and bench intensity. DIY inputs, TM, variant coefficients, and weak-point accessories follow the Excel logic.",
     status: "active",
   },
   sstt3: {
@@ -7951,6 +7981,7 @@ function localizeKind(kind) {
     deadliftVariant: "硬拉变式",
     accessory: "辅助",
     auto: "自动拆分",
+    recovery: "恢复",
   };
   const en = {
     bench: "Bench Main",
@@ -7961,6 +7992,7 @@ function localizeKind(kind) {
     deadliftVariant: "Deadlift Variant",
     accessory: "Accessory",
     auto: "Auto Split",
+    recovery: "Recovery",
   };
   return (isEnglish() ? en : zh)[kind] || kind;
 }
@@ -8576,6 +8608,132 @@ function translateStaticTextNodes() {
   });
 }
 
+function system905QuestionnaireHtml() {
+  const tm = {
+    squat: calculateSuggestedTM("squat"),
+    bench: calculateSuggestedTM("bench"),
+    deadlift: calculateSuggestedTM("deadlift"),
+  };
+  const label = (zh, en) => (isEnglish() ? en : zh);
+  const input = (key, placeholder = "") =>
+    `<input data-survey-key="${key}" type="number" step="0.001" placeholder="${escapeHtml(placeholder)}" />`;
+  return `
+    <div class="system-builder-form system-905-form">
+      <div class="system-builder-head">
+        <strong>${label("905 DIY 输入", "905 DIY Inputs")}</strong>
+        <p>${label(
+          "按照 Excel 的可编辑区集中填写：模式、训练水平、训练天数、近期代表组、手动 TM、弱项和取整单位。蓝色计算逻辑由系统自动生成。",
+          "Centralized inputs from the workbook: mode, level, weekly days, recent sets, manual TM, weak point, and rounding. Calculated cells are generated automatically."
+        )}</p>
+      </div>
+      <div class="system-mini-grid">
+        <article><span>${label("深蹲 TM", "Squat TM")}</span><strong>${tm.squat || "-"} kg</strong></article>
+        <article><span>${label("卧推 TM", "Bench TM")}</span><strong>${tm.bench || "-"} kg</strong></article>
+        <article><span>${label("硬拉 TM", "Deadlift TM")}</span><strong>${tm.deadlift || "-"} kg</strong></article>
+      </div>
+      <label>
+        ${label("训练模式", "Training mode")}
+        <select data-survey-key="system905Mode">
+          <option value="full">${label("三项完整", "Full SBD")}</option>
+          <option value="benchSpecialization">${label("卧推专项", "Bench specialization")}</option>
+          <option value="kneeFriendly">${label("膝盖友好", "Knee-friendly")}</option>
+          <option value="prOnly">${label("只知道 PR", "PR only")}</option>
+          <option value="manual">${label("手动自定义", "Manual custom")}</option>
+        </select>
+      </label>
+      <label>
+        ${label("训练水平", "Training level")}
+        <select data-survey-key="system905Level">
+          <option value="beginner">${label("新手", "Beginner")}</option>
+          <option value="intermediate">${label("中级", "Intermediate")}</option>
+          <option value="advanced">${label("进阶", "Advanced")}</option>
+          <option value="veryAdvanced">${label("高级", "High advanced")}</option>
+        </select>
+      </label>
+      <label>
+        ${label("每周训练天数", "Weekly training days")}
+        <select data-survey-key="system905Days">
+          <option value="5">${label("5 天", "5 days")}</option>
+          <option value="4">${label("4 天", "4 days")}</option>
+        </select>
+      </label>
+      <label>
+        ${label("是否比赛备赛", "Cycle goal")}
+        <select data-survey-key="system905Goal">
+          <option value="general">${label("普通训练", "General training")}</option>
+          <option value="meetPrep">${label("比赛备赛", "Meet prep")}</option>
+        </select>
+      </label>
+      <label>
+        ${label("主要弱项", "Weak point")}
+        <select data-survey-key="system905WeakPoint">
+          <option value="none">${label("无明显弱项", "No clear weak point")}</option>
+          <option value="posterior">${label("后侧链薄弱", "Posterior chain")}</option>
+          <option value="anterior">${label("前侧薄弱", "Anterior / quads")}</option>
+          <option value="chest">${label("胸弱", "Chest")}</option>
+          <option value="back">${label("背弱", "Back")}</option>
+          <option value="armsCore">${label("手臂核心弱", "Arms / core")}</option>
+        </select>
+      </label>
+      <label>
+        ${label("取整单位", "Rounding")}
+        <select data-survey-key="system905Round">
+          <option value="1.25">1.25 kg</option>
+          <option value="2.5">2.5 kg</option>
+          <option value="5">5 kg</option>
+        </select>
+      </label>
+      <div class="system-builder-head">
+        <strong>${label("TM 系数（可留空）", "TM factors (optional)")}</strong>
+        <p>${label(
+          "留空时按模式自动选择：三项完整约 87.5%-90%，膝盖友好深蹲会降低，卧推专项只启用卧推。",
+          "Leave blank for automatic mode-based factors: full SBD uses about 87.5%-90%, knee-friendly lowers squat, and bench specialization only loads bench."
+        )}</p>
+      </div>
+      <div class="system-905-tm-grid">
+        <label>${label("深蹲 TM 系数", "Squat TM factor")}${input("system905SquatTmFactor", "0.90")}</label>
+        <label>${label("卧推 TM 系数", "Bench TM factor")}${input("system905BenchTmFactor", "0.90")}</label>
+        <label>${label("硬拉 TM 系数", "Deadlift TM factor")}${input("system905DeadliftTmFactor", "0.875")}</label>
+      </div>
+      <div class="system-builder-head">
+        <strong>${label("近期代表组 / 手动 TM", "Recent set / Manual TM")}</strong>
+        <p>${label(
+          "e1RM = 重量 × [1 + (次数 + RIR) / 30]，RIR = 10 - RPE；手动 TM 有填写时优先。",
+          "e1RM = load × [1 + (reps + RIR) / 30], where RIR = 10 - RPE. Manual TM overrides the suggestion."
+        )}</p>
+      </div>
+      <div class="system-905-tm-grid">
+        <fieldset>
+          <legend>${label("深蹲", "Squat")}</legend>
+          ${input("system905SquatRecentWeight", "weight")}
+          ${input("system905SquatRecentReps", "reps")}
+          ${input("system905SquatRecentRpe", "RPE")}
+          ${input("system905SquatManualTm", "manual TM")}
+        </fieldset>
+        <fieldset>
+          <legend>${label("卧推", "Bench")}</legend>
+          ${input("system905BenchTrainingBest", label("训练最好", "training best"))}
+          ${input("system905BenchRecentWeight", "weight")}
+          ${input("system905BenchRecentReps", "reps")}
+          ${input("system905BenchRecentRpe", "RPE")}
+          ${input("system905BenchManualTm", "manual TM")}
+        </fieldset>
+        <fieldset>
+          <legend>${label("硬拉", "Deadlift")}</legend>
+          ${input("system905DeadliftRecentWeight", "weight")}
+          ${input("system905DeadliftRecentReps", "reps")}
+          ${input("system905DeadliftRecentRpe", "RPE")}
+          ${input("system905DeadliftManualTm", "manual TM")}
+        </fieldset>
+      </div>
+      <small class="source-note">${label(
+        "休息固定展示：主项 5 分钟，变式 3 分钟，辅项 60-90 秒；超过 90 分钟优先删低优先级辅项。",
+        "Fixed rest display: main lifts 5 min, variations 3 min, accessories 60-90 sec. If the session exceeds 90 min, remove low-priority accessories first."
+      )}</small>
+    </div>
+  `;
+}
+
 function renderSystemChrome() {
   const system = currentProgramSystem();
   const usesJts = Boolean(system.usesJtsSurvey);
@@ -8685,7 +8843,10 @@ function renderSystemChrome() {
   if (systemQuestionnaire) {
     systemQuestionnaire.classList.toggle("hidden", usesJts);
     if (!usesJts) {
-      if (system.isBodybuilding) {
+      if ((state.survey.programSystem || "") === "905") {
+        systemQuestionnaire.innerHTML = system905QuestionnaireHtml();
+        bindDynamicSurveyFields(systemQuestionnaire);
+      } else if (system.isBodybuilding) {
         systemQuestionnaire.innerHTML = isEnglish()
           ? `
           <div class="system-builder-form">
@@ -9414,6 +9575,260 @@ function row905(name, sets, reps, rpe, percent = "", notes = "", kind = "", acce
   return item;
 }
 
+const SYSTEM_905_WEEK_BLUEPRINTS = [
+  { phase: "hypertrophy", d1: [[1, 5, 7, 0.725], [3, 5, 7, 0.675]], d2: [[1, 3, 7.5, 0.8], [3, 5, 7, 0.725], [2, 4, 6.5, 0.7]], d3: [[3, "4-6", 7, 0.775], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.75], [3, 3, 7, 0.7], [2, "6-8", 6.5, 0.65]], d5: [[1, 3, 8, 0.725], [3, 3, 7.5, 0.675], [2, 5, 7, 0.725]] },
+  { phase: "hypertrophy", d1: [[1, 5, 7, 0.75], [3, 5, 7, 0.7]], d2: [[1, 3, 7.5, 0.825], [3, 5, 7, 0.75], [2, 4, 6.5, 0.725]], d3: [[3, "4-6", 7, 0.8], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.775], [3, 3, 7, 0.725], [2, "6-8", 6.5, 0.675]], d5: [[1, 3, 8, 0.75], [3, 3, 7.5, 0.7], [2, 5, 7, 0.75]] },
+  { phase: "hypertrophy", d1: [[1, 5, 7, 0.775], [3, 5, 7, 0.725]], d2: [[1, 3, 7.5, 0.85], [3, 5, 7, 0.775], [2, 4, 6.5, 0.75]], d3: [[4, "4-6", 7, 0.825], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.8], [3, 3, 7, 0.75], [2, "6-8", 6.5, 0.7]], d5: [[1, 3, 8, 0.775], [3, 3, 7.5, 0.725], [2, 5, 7, 0.775]] },
+  { phase: "deload", d1: [[1, 5, 7, 0.65], [2, 5, 7, 0.6]], d2: [[1, 3, 7.5, 0.7], [3, 5, 7, 0.625], [2, 4, 6.5, 0.6]], d3: [[2, "4-6", 7, 0.7], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.65], [3, 3, 7, 0.6], [2, "6-8", 6.5, 0.55]], d5: [[1, 3, 8, 0.65], [3, 3, 7.5, 0.6], [2, 5, 7, 0.65]] },
+  { phase: "strength", d1: [[1, 5, 7, 0.775], [3, 5, 7, 0.725]], d2: [[1, 3, 7.5, 0.875], [3, 5, 7, 0.8], [2, 4, 6.5, 0.75]], d3: [[3, "4-6", 7, 0.85], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.825], [3, 3, 7, 0.775], [2, "6-8", 6.5, 0.7]], d5: [[1, 3, 8, 0.8], [3, 3, 7.5, 0.75], [2, 5, 7, 0.8]] },
+  { phase: "strength", d1: [[1, 5, 7, 0.8], [3, 5, 7, 0.75]], d2: [[1, 3, 7.5, 0.9], [3, 5, 7, 0.825], [2, 4, 6.5, 0.75]], d3: [[3, "4-6", 7, 0.875], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.85], [3, 3, 7, 0.8], [2, "6-8", 6.5, 0.7]], d5: [[1, 3, 8, 0.825], [3, 3, 7.5, 0.775], [2, 5, 7, 0.825]] },
+  { phase: "peaking", d1: [[1, 5, 7, 0.75], [2, 5, 7, 0.7]], d2: [[1, 3, 7.5, 0.925], [3, 5, 7, 0.8], [2, 4, 6.5, 0.7]], d3: [[2, "4-6", 7, 0.9], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.875], [3, 3, 7, 0.8], [2, "6-8", 6.5, 0.6]], d5: [[1, 3, 8, 0.8], [3, 3, 7.5, 0.75], [2, 5, 7, 0.85]] },
+  { phase: "peaking", d1: [[1, 5, 7, 0.65], [1, 5, 7, 0.6]], d2: [[1, 3, 7.5, 0.75], [3, 5, 7, 0.65], [2, 4, 6.5, 0.6]], d3: [[1, "4-6", 7, 0.75], [2, 5, 6, 0.65]], d4: [[1, 3, 7.5, 0.75], [3, 3, 7, 0.65], [2, "6-8", 6.5, 0.5]], d5: [[1, 3, 8, 0.65], [3, 3, 7.5, 0.6], [2, 5, 7, 0.7]] },
+];
+
+const SYSTEM_905_VARIANT_COEFFICIENTS = {
+  squat: {
+    "PAUSED SQUAT": 0.82,
+    "TEMPO SQUAT": 0.75,
+    "BOX SQUAT / HIGH BOX SQUAT": 0.7,
+    "BELT SQUAT": 0.7,
+  },
+  bench: {
+    "CLOSE GRIP BENCH PRESS": 0.88,
+    "SPOTO BENCH PRESS": 0.85,
+    "2BOARD BENCH PRESS": 0.95,
+    "BOARD PRESS": 0.95,
+    "PAUSED BENCH PRESS": 0.88,
+  },
+  deadlift: {
+    "PAUSED DEADLIFT": 0.78,
+    "ROMANIAN DEADLIFT": 0.6,
+    "DEFICIT DEADLIFT": 0.85,
+    "BLOCK PULL": 0.85,
+  },
+};
+
+const SYSTEM_905_WEAK_ACCESSORIES = {
+  posterior: ["CHEST SUPPORTED ROWS", "LEG CURLS", "ROMANIAN DEADLIFT", "REVERSE HYPER-EXTENSIONS", "GLUTE BRIDGE / REVERSE HYPER", "LEG CURLS"],
+  anterior: ["INCLINE DB PRESS", "BELT SQUAT", "LEG PRESS", "LEG EXTENSIONS", "LEG PRESS", "TRICEP PUSHDOWNS"],
+  chest: ["INCLINE DB PRESS", "CHEST SUPPORTED ROWS", "LEG CURLS", "PAUSED BENCH PRESS", "REVERSE HYPER-EXTENSIONS", "SPOTO BENCH PRESS"],
+  back: ["CHEST SUPPORTED ROWS", "NEUTRAL GRIP PULL-DOWNS", "LEG CURLS", "CABLE ROWS", "REVERSE HYPER-EXTENSIONS", "BARBELL ROWS"],
+  armsCore: ["TRICEP PUSHDOWNS", "CABLE CURLS", "CABLE CRUNCHES", "SIDE PLANK", "GHD CORE ISO HOLD", "BARBELL CURLS"],
+  none: ["CHEST SUPPORTED ROWS", "DB LATERAL RAISES", "LEG CURLS", "CABLE ROWS", "REVERSE HYPER-EXTENSIONS", "TRICEP PUSHDOWNS"],
+};
+
+function calculateE1RM(weight, reps, rpe = "") {
+  const load = Number(weight || 0);
+  const count = Number(reps || 0);
+  if (!load || !count) return 0;
+  const numericRpe = Number(rpe || 0);
+  const rir = numericRpe ? clamp(10 - numericRpe, 0, 4) : 0;
+  return load * (1 + (count + rir) / 30);
+}
+
+function roundToIncrement(value, increment = 2.5) {
+  const step = Number(increment || 2.5) || 2.5;
+  const numeric = Number(value || 0);
+  return numeric ? Math.round(numeric / step) * step : 0;
+}
+
+function system905Mode() {
+  return state.survey.system905Mode || "full";
+}
+
+function system905TrainingDays() {
+  const raw = Number(state.survey.system905Days || state.survey.trainingDays || 5);
+  return raw === 4 ? 4 : 5;
+}
+
+function system905RoundStep() {
+  return Number(state.survey.system905Round || 2.5) || 2.5;
+}
+
+function system905PrForLift(lift) {
+  if (lift === "bench") return Math.max(Number(state.profile.bench || 0), Number(state.survey.system905BenchTrainingBest || 0));
+  if (lift === "squat") return Number(state.profile.squat || 0);
+  if (lift === "deadlift") return Number(state.profile.deadlift || 0);
+  return 0;
+}
+
+function system905RecentForLift(lift) {
+  const prefix = lift === "squat" ? "system905Squat" : lift === "bench" ? "system905Bench" : "system905Deadlift";
+  return {
+    weight: Number(state.survey[`${prefix}RecentWeight`] || 0),
+    reps: Number(state.survey[`${prefix}RecentReps`] || 0),
+    rpe: Number(state.survey[`${prefix}RecentRpe`] || 0),
+    manualTm: Number(state.survey[`${prefix}ManualTm`] || 0),
+  };
+}
+
+function system905TmFactor(lift) {
+  const manual = Number(
+    lift === "squat"
+      ? state.survey.system905SquatTmFactor
+      : lift === "bench"
+        ? state.survey.system905BenchTmFactor
+        : state.survey.system905DeadliftTmFactor
+  );
+  if (manual) return manual;
+  const mode = system905Mode();
+  const level = state.survey.system905Level || state.survey.experience || "intermediate";
+  const advanced = ["advanced", "veryAdvanced"].includes(level);
+  if (mode === "kneeFriendly" && lift === "squat") return 0.7;
+  if (mode === "benchSpecialization" && lift === "bench") return 0.9;
+  if (mode === "prOnly") return lift === "deadlift" ? 0.85 : lift === "bench" ? 0.875 : 0.875;
+  if (lift === "deadlift") return advanced ? 0.875 : 0.85;
+  return advanced ? 0.9 : 0.875;
+}
+
+function calculateSuggestedTM(lift) {
+  const pr = system905PrForLift(lift);
+  const recent = system905RecentForLift(lift);
+  const e1rm = calculateE1RM(recent.weight, recent.reps, recent.rpe);
+  const factor = system905TmFactor(lift);
+  if (recent.manualTm) return roundToIncrement(recent.manualTm, system905RoundStep());
+  if (e1rm) {
+    const conservative = pr ? Math.min(pr, e1rm) : e1rm;
+    return roundToIncrement(conservative * factor, system905RoundStep());
+  }
+  return roundToIncrement(pr * factor, system905RoundStep());
+}
+
+function system905VariantName(lift) {
+  if (lift === "bench") return state.profile.benchVariant || "Close Grip Bench Press";
+  if (lift === "squat") return state.profile.squatVariant || "Paused Squat";
+  if (lift === "deadlift") return state.profile.deadliftVariant || "Paused Deadlift";
+  return "";
+}
+
+function system905VariantCoeff(lift) {
+  const name = system905VariantName(lift).toUpperCase();
+  return SYSTEM_905_VARIANT_COEFFICIENTS[lift]?.[name] || (lift === "deadlift" ? 0.78 : lift === "bench" ? 0.88 : 0.82);
+}
+
+function getVariantWeight(lift, percent = 1) {
+  return roundToIncrement(calculateSuggestedTM(lift) * system905VariantCoeff(lift) * Number(percent || 1), system905RoundStep());
+}
+
+function system905BaseForType(type) {
+  if (type === "squatVariant") return calculateSuggestedTM("squat") * system905VariantCoeff("squat");
+  if (type === "benchVariant") return calculateSuggestedTM("bench") * system905VariantCoeff("bench");
+  if (type === "deadliftVariant") return calculateSuggestedTM("deadlift") * system905VariantCoeff("deadlift");
+  if (type === "squat") return calculateSuggestedTM("squat");
+  if (type === "bench") return calculateSuggestedTM("bench");
+  if (type === "deadlift") return calculateSuggestedTM("deadlift");
+  return 0;
+}
+
+function system905EstimatedLoad(item, type) {
+  const percent = Number(item.percent || 0);
+  const base = system905BaseForType(type);
+  if (!percent || !base || String(item.sets) === "0") return "";
+  const load = roundToIncrement(base * percent, system905RoundStep());
+  return load > 0 ? `${load} kg` : "";
+}
+
+function system905WeakAccessory(slot) {
+  const key = state.survey.system905WeakPoint || "none";
+  const pool = SYSTEM_905_WEAK_ACCESSORIES[key] || SYSTEM_905_WEAK_ACCESSORIES.none;
+  return pool[(slot - 1) % pool.length];
+}
+
+function system905WeakGroup(name) {
+  const upper = String(name || "").toUpperCase();
+  if (["BELT SQUAT", "LEG PRESS", "LEG EXTENSIONS"].includes(upper)) return "lower";
+  if (["LEG CURLS", "ROMANIAN DEADLIFT", "REVERSE HYPER-EXTENSIONS", "GLUTE BRIDGE / REVERSE HYPER"].includes(upper)) return "lower";
+  if (["CABLE CRUNCHES", "SIDE PLANK", "GHD CORE ISO HOLD"].includes(upper)) return "core";
+  return "upper";
+}
+
+function row905Excel(name, spec, notes = "", kind = "", accessoryGroup = "") {
+  const [sets, reps, rpe, percent] = spec;
+  const item = row905(name, sets, reps, rpe, percent, notes, kind, accessoryGroup);
+  item.rest = ["bench", "squat", "deadlift"].includes(kind)
+    ? "5 min"
+    : ["benchVariant", "squatVariant", "deadliftVariant"].includes(kind)
+      ? "3 min"
+      : "60-90 sec";
+  return item;
+}
+
+function system905Accessory(slot, sets = 2, reps = "8-12", rpe = 7) {
+  const name = system905WeakAccessory(slot);
+  return row905Excel(name, [sets, reps, rpe, ""], "弱项辅项：90 分钟内优先保留关键弱项，超时先删低优先级辅项。", "accessory", system905WeakGroup(name));
+}
+
+function system905RestDay() {
+  return [row("REST / RECOVERY", 0, "-", "-", "4 天模式：D5 变成休息 / 恢复，不继续排训练。", "recovery")];
+}
+
+function system905PrRowsFor(dayNumber) {
+  const attempts = {
+    1: [["SQUAT", 1, 1, "8-9", 0.9, "开把：保守、成功率高。"], ["SQUAT", 1, 1, "9", 0.97, "二把：接近当前水平。"], ["SQUAT", 1, 1, "9-10", 1.01, "三把：PR 或小幅 PR。"]],
+    2: [["BENCH PRESS", 1, 1, "8-9", 0.9, "开把：保守、成功率高。"], ["BENCH PRESS", 1, 1, "9", 0.97, "二把：接近当前水平。"], ["BENCH PRESS", 1, 1, "9-10", 1.01, "三把：PR 或小幅 PR。"]],
+    3: [["DEADLIFT", 1, 1, "8-9", 0.88, "开把：保守、成功率高。"], ["DEADLIFT", 1, 1, "9", 0.95, "二把：接近当前水平。"], ["DEADLIFT", 1, 1, "9-10", 1, "三把：PR 或小幅 PR。"]],
+  };
+  if (!attempts[dayNumber]) return system905RestDay();
+  return attempts[dayNumber].map(([name, sets, reps, rpe, percent, note]) => row905Excel(name, [sets, reps, rpe, percent], note, movementType({ name })));
+}
+
+function system905RowsFor(weekIndex, dayNumber) {
+  if (weekIndex >= 8) return system905PrRowsFor(dayNumber);
+  const week = SYSTEM_905_WEEK_BLUEPRINTS[Math.min(Math.max(weekIndex, 0), SYSTEM_905_WEEK_BLUEPRINTS.length - 1)];
+  const mode = system905Mode();
+  const benchOnly = mode === "benchSpecialization";
+  const kneeFriendly = mode === "kneeFriendly";
+  const dayKey = `d${dayNumber}`;
+  const spec = week?.[dayKey] || week?.d1;
+  if (system905TrainingDays() === 4 && dayNumber === 5) return system905RestDay();
+  if (benchOnly && [2, 4].includes(dayNumber)) {
+    return [
+      row905Excel(dayNumber === 2 ? "CHEST SUPPORTED ROWS" : "CABLE ROWS", [3, "8-12", 7, ""], "卧推专项模式：这一天改成背部、肩袖和手臂，不启用下肢主项。", "accessory", "upper"),
+      row905Excel(dayNumber === 2 ? "NEUTRAL GRIP PULL-DOWNS" : "REAR DELT FLYS", [3, "10-15", 7, ""], "", "accessory", "upper"),
+      row905Excel(dayNumber === 2 ? "TRICEP PUSHDOWNS" : "CABLE CURLS", [2, "10-15", 7, ""], "", "accessory", "upper"),
+      system905Accessory(dayNumber === 2 ? 3 : 5, 2, "10-15", 7),
+    ];
+  }
+  if (dayNumber === 1) {
+    return [
+      row905Excel("BENCH PRESS", spec[0], "顶组：动作稳，不力竭；当天 RPE 超标就下调。", "bench"),
+      row905Excel("BENCH PRESS BACKDOWN", spec[1], "降重组：保持目标 RPE，不要超过顶组。", "bench"),
+      system905Accessory(1, 3, "8-12", 7),
+      system905Accessory(2, 2, "10-15", 7),
+    ];
+  }
+  if (dayNumber === 2) {
+    return [
+      row905Excel(kneeFriendly ? "BOX SQUAT / HIGH BOX SQUAT" : "SQUAT", spec[0], kneeFriendly ? "膝盖友好：疼痛大于 3/10 时停止或替换。" : "深蹲强度顶组。", kneeFriendly ? "squatVariant" : "squat"),
+      row905Excel(kneeFriendly ? "BOX SQUAT / HIGH BOX SQUAT" : "SQUAT BACKDOWN", spec[1], "降重组：目标 RPE 优先。", kneeFriendly ? "squatVariant" : "squat"),
+      row905Excel("DEADLIFT VARIANT", spec[2], "硬拉变式：按已选择的暂停/罗马尼亚/缺口/架拉执行。", "deadliftVariant"),
+      system905Accessory(3, 2, "8-12", 7),
+    ];
+  }
+  if (dayNumber === 3) {
+    return [
+      row905Excel("BENCH PRESS VARIANT", spec[0], "卧推变式：周期内建议固定，不要频繁更换。", "benchVariant"),
+      row905Excel("BENCH PRESS TECHNIQUE", spec[1], "技术补量：速度、停顿和路径优先。", "bench"),
+      system905Accessory(4, 3, "8-12", 7),
+      row905Excel("EXTERNAL ROTATION", [2, "12-15", 7, ""], "肩袖和后束保养。", "accessory", "upper"),
+    ];
+  }
+  if (dayNumber === 4) {
+    return [
+      row905Excel(kneeFriendly ? "ROMANIAN DEADLIFT" : "DEADLIFT", spec[0], kneeFriendly ? "膝盖友好：用髋主导拉法降低膝部压力。" : "硬拉强度顶组。", kneeFriendly ? "deadliftVariant" : "deadlift"),
+      row905Excel(kneeFriendly ? "ROMANIAN DEADLIFT" : "DEADLIFT BACKDOWN", spec[1], "降重组：保持起始位稳定。", kneeFriendly ? "deadliftVariant" : "deadlift"),
+      row905Excel(kneeFriendly ? "GLUTE BRIDGE / REVERSE HYPER" : "SQUAT VARIANT", spec[2], "副项：只做技术和后链补量，不抢主项恢复。", kneeFriendly ? "accessory" : "squatVariant", kneeFriendly ? "lower" : ""),
+      system905Accessory(5, 2, "8-12", 7),
+    ];
+  }
+  return [
+    row905Excel("BENCH PRESS", spec[0], "卧推强度顶组。", "bench"),
+    row905Excel("BENCH PRESS BACKDOWN", spec[1], "降重组。", "bench"),
+    row905Excel("BENCH PRESS VARIANT", spec[2], "副项卧推变式。", "benchVariant"),
+    system905Accessory(6, 2, "8-12", 7),
+  ];
+}
+
 const SYSTEM_905_WEEKS = [
   {
     phase: "hypertrophy",
@@ -9572,7 +9987,7 @@ const SYSTEM_905_WEEKS = [
   },
 ];
 
-function system905RowsFor(weekIndex, dayNumber) {
+function system905LegacyRowsFor(weekIndex, dayNumber) {
   const week = SYSTEM_905_WEEKS[Math.min(Math.max(weekIndex, 0), SYSTEM_905_WEEKS.length - 1)];
   const day = week?.days?.[(dayNumber - 1) % week.days.length] || week?.days?.[0] || [];
   return day.map((item) => ({ ...item }));
@@ -10311,12 +10726,12 @@ function labelForKind(kind) {
 
 function movementType(item) {
   const name = item.name.toUpperCase();
-  if (name === "BENCH PRESS") return "bench";
-  if (name === "SQUAT") return "squat";
-  if (name === "DEADLIFT") return "deadlift";
-  if (["BENCH PRESS VARIANT", "CLOSE GRIP BENCH PRESS", "CLOSE GRIP INCLINE BENCH PRESS"].includes(name)) return "benchVariant";
-  if (["SQUAT VARIANT", "BELT SQUAT"].includes(name)) return "squatVariant";
-  if (name === "DEADLIFT VARIANT") return "deadliftVariant";
+  if (["BENCH PRESS", "BENCH PRESS BACKDOWN", "BENCH PRESS TECHNIQUE"].includes(name)) return "bench";
+  if (["SQUAT", "SQUAT BACKDOWN"].includes(name)) return "squat";
+  if (["DEADLIFT", "DEADLIFT BACKDOWN"].includes(name)) return "deadlift";
+  if (["BENCH PRESS VARIANT", "CLOSE GRIP BENCH PRESS", "CLOSE GRIP INCLINE BENCH PRESS", "2BOARD BENCH PRESS"].includes(name)) return "benchVariant";
+  if (["SQUAT VARIANT", "BELT SQUAT", "BOX SQUAT / HIGH BOX SQUAT"].includes(name)) return "squatVariant";
+  if (["DEADLIFT VARIANT", "ROMANIAN DEADLIFT"].includes(name)) return "deadliftVariant";
   return "accessory";
 }
 
@@ -10561,6 +10976,9 @@ function estimatedLoad(item) {
   if (!oneRm && type === "squatVariant") oneRm = Number(state.profile.squat || 0) * 0.9;
   if (!oneRm && type === "deadliftVariant") oneRm = Number(state.profile.deadlift || 0) * 0.9;
   const templatePercent = Number(item.percent || 0);
+  if ((state.survey.programSystem || "") === "905" && templatePercent && item.trainingMaxPercent) {
+    return system905EstimatedLoad(item, type);
+  }
   if (templatePercent && oneRm && String(item.sets) !== "0") {
     const tmFactor = item.trainingMaxPercent ? trainingMaxFactorForItem(type) : 1;
     const load = roundLoad(oneRm * tmFactor * templatePercent);
@@ -11128,9 +11546,12 @@ function recommendedDaysForSystem(systemKey = state.survey.programSystem) {
 }
 
 function systemFrequencies(days, systemKey = state.survey.programSystem) {
+  if (systemKey === "905" && system905Mode() === "benchSpecialization") {
+    return { squat: 0, bench: system905TrainingDays() >= 5 ? 4 : 3, deadlift: 0 };
+  }
   const presets = {
     bodybuilding: { chest: days >= 5 ? 2 : 1.5, back: days >= 5 ? 2 : 1.5, delts: days >= 4 ? 2 : 1.5, legs: days >= 4 ? 2 : 1.5, arms: days >= 5 ? 2 : 1, core: 1 },
-    "905": { squat: days >= 5 ? 2 : 1.5, bench: days >= 5 ? 4 : 3, deadlift: 2 },
+    "905": { squat: system905TrainingDays() >= 5 ? 2 : 1.5, bench: system905TrainingDays() >= 5 ? 4 : 3, deadlift: 2 },
     sstt3: { squat: 1, bench: 1.5, deadlift: 1 },
     norwegian: { squat: days >= 6 ? 5 : Math.max(3, days - 1), bench: Math.min(days, days >= 6 ? 5 : days), deadlift: days >= 5 ? 2 : 1.5 },
     rpeBlock: { squat: 2.5, bench: 4, deadlift: 2 },
@@ -11472,9 +11893,13 @@ function makePlanner() {
   const capacities = makeCapacities();
   const totalWeeks = FIXED_SYSTEM_WEEKS[systemKey] || weeksUntilMeet();
   if (systemKey !== "jtsSstt") {
-    const recommendedDays = recommendedDaysForSystem(systemKey);
+    let recommendedDays = recommendedDaysForSystem(systemKey);
     const requestedDays = state.survey.trainingDays === "auto" ? recommendedDays : Number(state.survey.trainingDays);
-    const days = clamp(requestedDays || recommendedDays, 3, 6);
+    let days = clamp(requestedDays || recommendedDays, 3, 6);
+    if (systemKey === "905") {
+      recommendedDays = 5;
+      days = 5;
+    }
     const usesJtsVolume = systemKey === "jts" || systemKey === "905";
     const phases = systemKey === "jts" ? allocatePhaseWeeks(totalWeeks) : allocateSystemPhaseWeeks(totalWeeks, systemKey);
     const frequencies = systemKey === "jts" ? makeFrequencies(capacities).frequencies : systemFrequencies(days, systemKey);
@@ -11909,7 +12334,7 @@ function renderSystemPlanner(plan) {
     frequencyRows +
     `<div class="phase-row"><strong>${isEnglish() ? "Weekly Template" : "周模板"}</strong><span>${isEnglish() ? `${escapeHtml(systemName)} ${plan.days}-day layout:` : `${escapeHtml(system.short)} 下的 ${plan.days} 天安排如下。`}</span></div>` +
     layoutRows;
-  const reasons = isBodybuildingPlan
+  let reasons = isBodybuildingPlan
     ? isEnglish()
       ? [
           "This v2 system is for hypertrophy and bodybuilding-style training, driven by muscle-group volume, split structure, and recovery review.",
@@ -11928,10 +12353,10 @@ function renderSystemPlanner(plan) {
     : plan.systemKey === "905"
     ? isEnglish()
       ? [
-          "905 keeps the provided 90-minute template structure: bench volume, squat intensity, bench variation, deadlift intensity, and bench intensity.",
-          "MEV/MRV and the injury-filter buttons use the existing JTS questionnaire logic, so volume advice still responds to sex, bodyweight, experience, stress, sleep, and recovery history.",
-          "Main-lift estimates use training max percentages from the template. For 905, training max is intentionally conservative instead of using old PRs directly.",
-          "Variation rows use your selected bench, squat, and deadlift variants. If no variant max is entered, the app falls back to a conservative estimate from the main lift.",
+          "905 keeps the provided 90-minute workbook structure: W1-W8 training plus a Week 9 PR test.",
+          "DIY inputs now drive the generator: training mode, level, 4/5-day choice, recent top sets, optional manual TM, weak point, and rounding step.",
+          "Loads use the workbook logic: conservative TM first, then variant coefficient and weekly percentage. Old PRs are not used directly unless no better data exists.",
+          "Weak-point rows come from the workbook accessory pools and stay capped by the 90-minute limit. If time runs over, remove low-priority accessories first.",
           "If target RPE is overshot, repeat or reduce the next exposure rather than forcing the spreadsheet percentage upward.",
         ]
       : [
@@ -11972,6 +12397,15 @@ function renderSystemPlanner(plan) {
         "辅助项下拉会根据最近的主项/变式判断上肢或下肢，不会在上肢日混入腿部辅助。",
         "所有主项重量仍按你的三项 PR、次数和 RPE 自动估算；辅助项默认不绑定三项 PR。",
       ];
+  if (plan.systemKey === "905" && !isEnglish()) {
+    reasons = [
+      "905 保留你提供的 90 分钟 Excel 结构：W1-W8 训练，加第 9 周 PR 测试。",
+      "DIY 输入会影响生成结果：训练模式、训练水平、4/5 天、近期代表组、手动 TM、弱项和取整单位。",
+      "估重逻辑先算保守 TM，再乘变式系数和当周百分比；除非没有更好的近期数据，否则不直接拿历史 PR 硬套。",
+      "弱项辅项来自 Excel 的弱项池，并受 90 分钟上限约束；超时时优先删除低优先级辅项。",
+      "如果实际 RPE 超标，下次同动作优先重复或下调，不要机械按百分比继续加重。",
+    ];
+  }
   $("reasonList").innerHTML = reasons.map((reason) => `<li>${reason}</li>`).join("");
 
   let week = 1;

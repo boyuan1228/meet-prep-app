@@ -1125,6 +1125,35 @@ textarea:focus {
   margin-top: 0;
 }
 
+.system-905-tm-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.system-905-tm-grid fieldset,
+.system-905-tm-grid label {
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.system-905-tm-grid legend {
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.system-905-tm-grid input {
+  width: 100%;
+  margin-top: 7px;
+}
+
 .icon-button {
   width: 42px;
   height: 42px;
@@ -3276,6 +3305,10 @@ td {
   }
 
   .system-builder-form {
+    grid-template-columns: 1fr;
+  }
+
+  .system-905-tm-grid {
     grid-template-columns: 1fr;
   }
 

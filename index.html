@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ForgePlan 自定义训练计划库</title>
-    <link rel="stylesheet" href="./styles.css?v=20260630-v221-sstt3-variants" />
+    <link rel="stylesheet" href="./styles.css?v=20260701-v222-905-excel" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260630-v221-sstt3-variants"></script>
+    <script defer src="./app.js?v=20260701-v222-905-excel"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.21">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.22">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -62,16 +62,17 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v2.21 · SSTT 三天变式补齐</strong>
-          <small class="update-time">2026-06-30 22:04 更新</small>
+          <strong>v2.22 · 905 Excel 动态版</strong>
+          <small class="update-time">2026-07-01 07:22 更新</small>
           <ul>
-            <li>SSTT 三天力量的 D1/D2/D3 现在都会显示对应三大项变式。</li>
-            <li>D1 加入深蹲变式，D2 加入卧推变式，D3 加入硬拉变式。</li>
-            <li>变式会跟随个人数据里选择的动作切换，并按变式最大值或主项保守估重。</li>
-            <li>减少把三大项变式混进普通辅助项导致看不出来的情况。</li>
+            <li>905 体系接入 Excel DIY 输入：训练模式、训练水平、4/5 天、弱项、近期代表组、手动 TM 和取整单位。</li>
+            <li>905 估重改为保守 TM × 变式系数 × 当周百分比，不再直接用历史 PR 硬套。</li>
+            <li>4 天模式 D5 自动变成休息 / 恢复，5 天模式保留卧推强度日。</li>
+            <li>弱项辅项跟随 Excel 弱项池切换，并保留 90 分钟训练上限提示。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v2.22</strong> 2026-07-01 07:22：905 体系接入 Excel DIY 输入、保守 TM/e1RM、变式系数、弱项辅项池、4/5 天切换和第 9 周 PR 测试周；估重按 TM × 变式系数 × 周百分比生成。</p>
             <p><strong>v2.21</strong> 2026-06-30 22:04：SSTT 三天力量 D1/D2/D3 补齐对应三大项变式：D1 深蹲变式、D2 卧推变式、D3 硬拉变式；变式跟随个人数据里的动作选择和估重逻辑。</p>
             <p><strong>v2.20</strong> 2026-06-30 21:37：新增 SSTT 三天力量体系，按上传的 3 天力量表改写成 9 周、每周 3 练，包含 Week 5 减载、Week 9 测试、百分比估重和可替换辅助项。</p>
             <p><strong>v2.19</strong> 2026-06-30 21:37：新增 905 · 90 分钟力量周期，按 8 周主体 + 第 9 周测试改写，D1-D5 保留卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度，并复用 JTS MEV/MRV 问卷。</p>
@@ -129,7 +130,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.21">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.22">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -990,6 +991,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v2.22</strong><span>2026-07-01 07:22</span><p>905 体系接入 Excel DIY 输入、保守 TM/e1RM、变式系数、弱项辅项池、4/5 天切换和第 9 周 PR 测试周；估重按 TM × 变式系数 × 周百分比生成。</p></article>
           <article><strong>v2.21</strong><span>2026-06-30 22:04</span><p>SSTT 三天力量 D1/D2/D3 补齐对应三大项变式：D1 深蹲变式、D2 卧推变式、D3 硬拉变式；变式跟随个人数据里的动作选择和估重逻辑。</p></article>
           <article><strong>v2.20</strong><span>2026-06-30 21:37</span><p>新增 SSTT 三天力量体系，按上传的 3 天力量表改写成 9 周、每周 3 练，包含 Week 5 减载、Week 9 测试、百分比估重和可替换辅助项。</p></article>
           <article><strong>v2.19</strong><span>2026-06-30 21:37</span><p>新增 905 · 90 分钟力量周期，按 8 周主体 + 第 9 周测试改写，D1-D5 保留卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度，并复用 JTS MEV/MRV 问卷。</p></article>
