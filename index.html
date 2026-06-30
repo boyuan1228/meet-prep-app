@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ForgePlan 自定义训练计划库</title>
-    <link rel="stylesheet" href="./styles.css?v=20260630-v220-sstt3" />
+    <link rel="stylesheet" href="./styles.css?v=20260630-v221-sstt3-variants" />
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script defer src="./app.js?v=20260630-v220-sstt3"></script>
+    <script defer src="./app.js?v=20260630-v221-sstt3-variants"></script>
   </head>
   <body>
     <section id="activationGate" class="activation-gate hidden" aria-label="激活">
       <div class="activation-card">
         <div class="activation-brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.20">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.21">
             <img class="brand-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -62,16 +62,17 @@
             <span>更新内容</span>
             <a id="historyLogLink" href="#historyLog">历史日志</a>
           </div>
-          <strong>v2.20 · SSTT 三天力量体系</strong>
-          <small class="update-time">2026-06-30 21:37 更新</small>
+          <strong>v2.21 · SSTT 三天变式补齐</strong>
+          <small class="update-time">2026-06-30 22:04 更新</small>
           <ul>
-            <li>新增 SSTT 三天力量体系，基于上传的 3 天力量表改写成 9 周、每周 3 练。</li>
-            <li>保留深蹲日、卧推日、硬拉日结构，并加入 Week 5 减载与 Week 9 测试。</li>
-            <li>主项按百分比与 RPE 给出估重，辅助项按上肢、下肢、核心分组可替换。</li>
-            <li>同步加入 905 · 90 分钟力量周期体系，并复用 JTS MEV/MRV 问卷建议。</li>
+            <li>SSTT 三天力量的 D1/D2/D3 现在都会显示对应三大项变式。</li>
+            <li>D1 加入深蹲变式，D2 加入卧推变式，D3 加入硬拉变式。</li>
+            <li>变式会跟随个人数据里选择的动作切换，并按变式最大值或主项保守估重。</li>
+            <li>减少把三大项变式混进普通辅助项导致看不出来的情况。</li>
           </ul>
           <details id="historyLog">
             <summary>查看历史日志</summary>
+            <p><strong>v2.21</strong> 2026-06-30 22:04：SSTT 三天力量 D1/D2/D3 补齐对应三大项变式：D1 深蹲变式、D2 卧推变式、D3 硬拉变式；变式跟随个人数据里的动作选择和估重逻辑。</p>
             <p><strong>v2.20</strong> 2026-06-30 21:37：新增 SSTT 三天力量体系，按上传的 3 天力量表改写成 9 周、每周 3 练，包含 Week 5 减载、Week 9 测试、百分比估重和可替换辅助项。</p>
             <p><strong>v2.19</strong> 2026-06-30 21:37：新增 905 · 90 分钟力量周期，按 8 周主体 + 第 9 周测试改写，D1-D5 保留卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度，并复用 JTS MEV/MRV 问卷。</p>
             <p><strong>v2.18</strong> 2026-06-30 13:53：热身弹窗新增目标重量生成器；按空杆、35%、50%、65%、80-85% 递进生成热身重量；打开时尝试读取当前训练日第一条可估重主项；补齐中英文文案。</p>
@@ -128,7 +129,7 @@
     <div id="appShell" class="app-shell hidden">
       <aside class="sidebar">
         <div class="brand">
-          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.20">
+          <button class="logo-button" data-changelog-open type="button" title="当前版本 v2.21">
             <img class="brand-logo sidebar-logo" src="./assets/power-logo-small.jpg" alt="查看更新日志" />
           </button>
           <div>
@@ -989,6 +990,7 @@
           </button>
         </div>
         <div class="changelog-list">
+          <article><strong>v2.21</strong><span>2026-06-30 22:04</span><p>SSTT 三天力量 D1/D2/D3 补齐对应三大项变式：D1 深蹲变式、D2 卧推变式、D3 硬拉变式；变式跟随个人数据里的动作选择和估重逻辑。</p></article>
           <article><strong>v2.20</strong><span>2026-06-30 21:37</span><p>新增 SSTT 三天力量体系，按上传的 3 天力量表改写成 9 周、每周 3 练，包含 Week 5 减载、Week 9 测试、百分比估重和可替换辅助项。</p></article>
           <article><strong>v2.19</strong><span>2026-06-30 21:37</span><p>新增 905 · 90 分钟力量周期，按 8 周主体 + 第 9 周测试改写，D1-D5 保留卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度，并复用 JTS MEV/MRV 问卷。</p></article>
           <article><strong>v2.18</strong><span>2026-06-30 13:53</span><p>热身弹窗新增目标重量生成器；按空杆、35%、50%、65%、80-85% 递进生成热身重量；打开时尝试读取当前训练日第一条可估重主项；补齐中英文文案。</p></article>

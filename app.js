@@ -9769,9 +9769,12 @@ function sstt3MainRows(lift, rows, note) {
 
 function sstt3Accessories(dayNumber, weekIndex, effort) {
   const late = weekIndex >= 5;
+  const deload = SYSTEM_SSTT3_WEEKS[Math.min(Math.max(weekIndex, 0), SYSTEM_SSTT3_WEEKS.length - 1)]?.phase === "deload";
+  const test = SYSTEM_SSTT3_WEEKS[Math.min(Math.max(weekIndex, 0), SYSTEM_SSTT3_WEEKS.length - 1)]?.phase === "test";
+  const variantSets = test ? 1 : deload ? 2 : late ? 2 : 3;
   if (dayNumber === 1) {
     return [
-      row905("CLOSE GRIP INCLINE BENCH PRESS", late ? 3 : 3, late ? "8-10" : "10,8,6", effort, "", "卧推变式，保留余力。", "benchVariant"),
+      row905("SQUAT VARIANT", variantSets, late ? "5" : "6", deload || test ? "6" : effort, test ? 0.55 : deload ? 0.55 : late ? 0.62 : 0.6, "深蹲变式：按已选择的暂停/节奏/腰带深蹲执行，不要抢主项恢复。", "squatVariant"),
       row905(late ? "NEUTRAL GRIP PULL-DOWNS" : "NEUTRAL GRIP PULL-DOWNS", 4, late ? "12,8,8,12" : "15,10,8,15", effort, "", "", "accessory", "upper"),
       row905("LEG EXTENSIONS", late ? 3 : 2, late ? "10-12" : "12-15", effort, "", "", "accessory", "lower"),
       row905(late ? "NORDIC CURLS" : "HAMSTRING SLIDERS", late ? 3 : 1, late ? "8-10" : "10-12", effort, "", "", "accessory", "lower"),
@@ -9783,8 +9786,8 @@ function sstt3Accessories(dayNumber, weekIndex, effort) {
   }
   if (dayNumber === 2) {
     return [
+      row905("BENCH PRESS VARIANT", variantSets + (test ? 0 : 1), late ? "5" : "6", deload || test ? "6" : effort, test ? 0.6 : deload ? 0.6 : late ? 0.7 : 0.65, "卧推变式：按已选择的上斜窄握/窄握/暂停卧推执行，优先动作质量。", "benchVariant"),
       row905(late ? "DB STAGGERED STANCE RDL" : "DB RDLS", 3, late ? "8" : "10", late ? "4,5,6" : "4,5,6", "", "", "accessory", "lower"),
-      row905("BELT SQUAT", late ? 4 : 4, late ? "8" : "10", late ? "4,5,6,7" : "5,6,7,8", "", "递增组，最后一组不要硬磨。", "squatVariant"),
       row905(late ? "SEAL ROWS" : "CHEST SUPPORTED ROWS", 4, late ? "9,5,5,9" : "10,6,6,10", effort, "", "", "accessory", "upper"),
       row905(late ? "CABLE CURLS" : "EZ BAR CURLS", 3, late ? "8-10" : "10-12", effort, "", "", "accessory", "upper"),
       row905(late ? "DIPS" : "TRICEP PUSHDOWNS", 3, late ? "8+8" : "10+10", effort, "", "", "accessory", "upper"),
@@ -9794,6 +9797,7 @@ function sstt3Accessories(dayNumber, weekIndex, effort) {
     ];
   }
   return [
+    row905("DEADLIFT VARIANT", variantSets, late ? "4" : "5", deload || test ? "6" : effort, test ? 0.55 : deload ? 0.55 : late ? 0.62 : 0.6, "硬拉变式：按已选择的罗马尼亚/暂停/垫高/架拉执行，只做技术和后链补量。", "deadliftVariant"),
     row905(late ? "FLAT DB PRESS" : "INCLINE DB PRESS", 4, late ? "10,5,5,10" : "12,10,6,12", effort, "", "", "accessory", "upper"),
     row905(late ? "PULL-UPS" : "WIDE GRIP PULLDOWNS", 1, "DENSITY", "-", "", "密度组：在动作质量允许范围内累积总次数。", "accessory", "upper"),
     row905("HATSFIELD SPLIT SQUAT", 3, late ? "8-10" : "10-12", effort, "", "", "accessory", "lower"),
