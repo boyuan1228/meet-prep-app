@@ -1139,7 +1139,25 @@ textarea:focus {
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 7px;
-  background: #fff;
+  background: #fff9db;
+}
+
+.system-905-form > label {
+  background: #fff9db;
+  border-color: #fde68a;
+}
+
+.system-905-form .system-mini-grid article {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.system-905-form .system-mini-grid article small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
 }
 
 .system-905-tm-grid legend {
@@ -1149,7 +1167,8 @@ textarea:focus {
   color: var(--ink);
 }
 
-.system-905-tm-grid input {
+.system-905-tm-grid input,
+.system-905-tm-grid select {
   width: 100%;
   margin-top: 7px;
 }

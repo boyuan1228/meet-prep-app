@@ -6902,6 +6902,7 @@ const state = {
     system905Days: "5",
     system905WeakPoint: "none",
     system905Round: "2.5",
+    system905Advanced: "false",
     system905SquatTmFactor: "",
     system905BenchTmFactor: "",
     system905DeadliftTmFactor: "",
@@ -6909,12 +6910,18 @@ const state = {
     system905SquatRecentWeight: "",
     system905SquatRecentReps: "",
     system905SquatRecentRpe: "",
+    system905SquatRecentRpeKnown: "known",
+    system905SquatRecentNote: "",
     system905BenchRecentWeight: "",
     system905BenchRecentReps: "",
     system905BenchRecentRpe: "",
+    system905BenchRecentRpeKnown: "known",
+    system905BenchRecentNote: "",
     system905DeadliftRecentWeight: "",
     system905DeadliftRecentReps: "",
     system905DeadliftRecentRpe: "",
+    system905DeadliftRecentRpeKnown: "known",
+    system905DeadliftRecentNote: "",
     system905SquatManualTm: "",
     system905BenchManualTm: "",
     system905DeadliftManualTm: "",
@@ -8317,6 +8324,7 @@ const STATIC_I18N = new Map(
     "深蹲变式": "Squat Variant",
     "硬拉变式": "Deadlift Variant",
     "动作": "Exercise",
+    "休息": "Rest",
     "变式训练最大值": "Variant Training Max",
     "自定义力量周期训练体系": "Custom Strength Cycle System",
     "力量周期计划生成器": "Strength Cycle Plan Builder",
@@ -8609,28 +8617,58 @@ function translateStaticTextNodes() {
 }
 
 function system905QuestionnaireHtml() {
-  const tm = {
-    squat: calculateSuggestedTM("squat"),
-    bench: calculateSuggestedTM("bench"),
-    deadlift: calculateSuggestedTM("deadlift"),
+  const details = {
+    squat: system905TmDetails("squat"),
+    bench: system905TmDetails("bench"),
+    deadlift: system905TmDetails("deadlift"),
   };
+  const advanced = state.survey.system905Advanced === "true";
   const label = (zh, en) => (isEnglish() ? en : zh);
-  const input = (key, placeholder = "") =>
-    `<input data-survey-key="${key}" type="number" step="0.001" placeholder="${escapeHtml(placeholder)}" />`;
+  const numberInput = (key, placeholder = "", step = "0.001") =>
+    `<input data-survey-key="${key}" type="number" step="${step}" placeholder="${escapeHtml(placeholder)}" />`;
+  const textInput = (key, placeholder = "") =>
+    `<input data-survey-key="${key}" type="text" placeholder="${escapeHtml(placeholder)}" />`;
+  const tmCard = (lift, zh, en) => {
+    const item = details[lift];
+    const confidence = {
+      none: label("未填写", "not entered"),
+      low: label("低可信", "low confidence"),
+      medium: label("中可信", "medium confidence"),
+      high: label("高可信", "high confidence"),
+    }[item.confidence] || item.confidence;
+    return `
+      <article>
+        <span>${label(zh, en)}</span>
+        <strong>${item.finalTm || "-"} kg</strong>
+        <small>e1RM ${item.e1rm ? Math.round(item.e1rm * 10) / 10 : "-"} · ${confidence}</small>
+        <small>${escapeHtml(item.reason || "")}</small>
+      </article>
+    `;
+  };
   return `
     <div class="system-builder-form system-905-form">
       <div class="system-builder-head">
         <strong>${label("905 DIY 输入", "905 DIY Inputs")}</strong>
         <p>${label(
-          "按照 Excel 的可编辑区集中填写：模式、训练水平、训练天数、近期代表组、手动 TM、弱项和取整单位。蓝色计算逻辑由系统自动生成。",
-          "Centralized inputs from the workbook: mode, level, weekly days, recent sets, manual TM, weak point, and rounding. Calculated cells are generated automatically."
+          "普通模式只填写 Excel 黄色区的核心信息；TM、变式系数、容量阈值由系统按蓝色计算区自动处理。",
+          "Normal mode only asks for the core yellow-cell inputs. TM, variant coefficients, and volume thresholds are calculated automatically."
         )}</p>
       </div>
       <div class="system-mini-grid">
-        <article><span>${label("深蹲 TM", "Squat TM")}</span><strong>${tm.squat || "-"} kg</strong></article>
-        <article><span>${label("卧推 TM", "Bench TM")}</span><strong>${tm.bench || "-"} kg</strong></article>
-        <article><span>${label("硬拉 TM", "Deadlift TM")}</span><strong>${tm.deadlift || "-"} kg</strong></article>
+        ${tmCard("squat", "深蹲最终 TM", "Squat final TM")}
+        ${tmCard("bench", "卧推最终 TM", "Bench final TM")}
+        ${tmCard("deadlift", "硬拉最终 TM", "Deadlift final TM")}
       </div>
+      <div class="system-mini-grid">
+        ${system905VolumeCardsHtml()}
+      </div>
+      <label>
+        ${label("高级 / 教练模式", "Advanced / coach mode")}
+        <select data-survey-key="system905Advanced">
+          <option value="false">${label("关闭：普通用户模式", "Off: normal user mode")}</option>
+          <option value="true">${label("开启：允许修改公式参数", "On: allow formula overrides")}</option>
+        </select>
+      </label>
       <label>
         ${label("训练模式", "Training mode")}
         <select data-survey-key="system905Mode">
@@ -8658,7 +8696,7 @@ function system905QuestionnaireHtml() {
         </select>
       </label>
       <label>
-        ${label("是否比赛备赛", "Cycle goal")}
+        ${label("周期目标", "Cycle goal")}
         <select data-survey-key="system905Goal">
           <option value="general">${label("普通训练", "General training")}</option>
           <option value="meetPrep">${label("比赛备赛", "Meet prep")}</option>
@@ -8675,57 +8713,73 @@ function system905QuestionnaireHtml() {
           <option value="armsCore">${label("手臂核心弱", "Arms / core")}</option>
         </select>
       </label>
-      <label>
-        ${label("取整单位", "Rounding")}
-        <select data-survey-key="system905Round">
-          <option value="1.25">1.25 kg</option>
-          <option value="2.5">2.5 kg</option>
-          <option value="5">5 kg</option>
-        </select>
-      </label>
       <div class="system-builder-head">
-        <strong>${label("TM 系数（可留空）", "TM factors (optional)")}</strong>
+        <strong>${label("历史 PR 与近期代表组", "Historical PR and recent representative set")}</strong>
         <p>${label(
-          "留空时按模式自动选择：三项完整约 87.5%-90%，膝盖友好深蹲会降低，卧推专项只启用卧推。",
-          "Leave blank for automatic mode-based factors: full SBD uses about 87.5%-90%, knee-friendly lowers squat, and bench specialization only loads bench."
-        )}</p>
-      </div>
-      <div class="system-905-tm-grid">
-        <label>${label("深蹲 TM 系数", "Squat TM factor")}${input("system905SquatTmFactor", "0.90")}</label>
-        <label>${label("卧推 TM 系数", "Bench TM factor")}${input("system905BenchTmFactor", "0.90")}</label>
-        <label>${label("硬拉 TM 系数", "Deadlift TM factor")}${input("system905DeadliftTmFactor", "0.875")}</label>
-      </div>
-      <div class="system-builder-head">
-        <strong>${label("近期代表组 / 手动 TM", "Recent set / Manual TM")}</strong>
-        <p>${label(
-          "e1RM = 重量 × [1 + (次数 + RIR) / 30]，RIR = 10 - RPE；手动 TM 有填写时优先。",
-          "e1RM = load × [1 + (reps + RIR) / 30], where RIR = 10 - RPE. Manual TM overrides the suggestion."
+          "如果不知道 RPE，选择“不知道”，系统会用普通 Epley 估算并降低可信度。历史 PR 在左侧个人数据里填写。",
+          "If RPE is unknown, choose Unknown. The system uses an Epley estimate and lowers confidence. Historical PRs are entered in the left profile."
         )}</p>
       </div>
       <div class="system-905-tm-grid">
         <fieldset>
           <legend>${label("深蹲", "Squat")}</legend>
-          ${input("system905SquatRecentWeight", "weight")}
-          ${input("system905SquatRecentReps", "reps")}
-          ${input("system905SquatRecentRpe", "RPE")}
-          ${input("system905SquatManualTm", "manual TM")}
+          ${numberInput("system905SquatRecentWeight", label("近期重量", "recent load"))}
+          ${numberInput("system905SquatRecentReps", label("近期次数", "recent reps"), "1")}
+          <select data-survey-key="system905SquatRecentRpeKnown">
+            <option value="known">${label("知道 RPE", "RPE known")}</option>
+            <option value="unknown">${label("不知道 RPE", "RPE unknown")}</option>
+          </select>
+          ${numberInput("system905SquatRecentRpe", "RPE")}
+          ${textInput("system905SquatRecentNote", label("日期或备注，可选", "date or note, optional"))}
         </fieldset>
         <fieldset>
           <legend>${label("卧推", "Bench")}</legend>
-          ${input("system905BenchTrainingBest", label("训练最好", "training best"))}
-          ${input("system905BenchRecentWeight", "weight")}
-          ${input("system905BenchRecentReps", "reps")}
-          ${input("system905BenchRecentRpe", "RPE")}
-          ${input("system905BenchManualTm", "manual TM")}
+          ${numberInput("system905BenchTrainingBest", label("训练最好", "training best"))}
+          ${numberInput("system905BenchRecentWeight", label("近期重量", "recent load"))}
+          ${numberInput("system905BenchRecentReps", label("近期次数", "recent reps"), "1")}
+          <select data-survey-key="system905BenchRecentRpeKnown">
+            <option value="known">${label("知道 RPE", "RPE known")}</option>
+            <option value="unknown">${label("不知道 RPE", "RPE unknown")}</option>
+          </select>
+          ${numberInput("system905BenchRecentRpe", "RPE")}
+          ${textInput("system905BenchRecentNote", label("日期或备注，可选", "date or note, optional"))}
         </fieldset>
         <fieldset>
           <legend>${label("硬拉", "Deadlift")}</legend>
-          ${input("system905DeadliftRecentWeight", "weight")}
-          ${input("system905DeadliftRecentReps", "reps")}
-          ${input("system905DeadliftRecentRpe", "RPE")}
-          ${input("system905DeadliftManualTm", "manual TM")}
+          ${numberInput("system905DeadliftRecentWeight", label("近期重量", "recent load"))}
+          ${numberInput("system905DeadliftRecentReps", label("近期次数", "recent reps"), "1")}
+          <select data-survey-key="system905DeadliftRecentRpeKnown">
+            <option value="known">${label("知道 RPE", "RPE known")}</option>
+            <option value="unknown">${label("不知道 RPE", "RPE unknown")}</option>
+          </select>
+          ${numberInput("system905DeadliftRecentRpe", "RPE")}
+          ${textInput("system905DeadliftRecentNote", label("日期或备注，可选", "date or note, optional"))}
         </fieldset>
       </div>
+      ${advanced ? `
+        <div class="system-builder-head">
+          <strong>${label("高级设置 / 教练模式", "Advanced settings / coach mode")}</strong>
+          <p>${label("这些对应 Excel 蓝色计算区与 DIY 覆盖区；普通用户不需要填写。", "These mirror the workbook calculation and override areas; normal users do not need them.")}</p>
+        </div>
+        <label>
+          ${label("取整单位", "Rounding")}
+          <select data-survey-key="system905Round">
+            <option value="1.25">1.25 kg</option>
+            <option value="2.5">2.5 kg</option>
+            <option value="5">5 kg</option>
+          </select>
+        </label>
+        <div class="system-905-tm-grid">
+          <label>${label("深蹲 TM 系数", "Squat TM factor")}${numberInput("system905SquatTmFactor", "0.90")}</label>
+          <label>${label("卧推 TM 系数", "Bench TM factor")}${numberInput("system905BenchTmFactor", "0.90")}</label>
+          <label>${label("硬拉 TM 系数", "Deadlift TM factor")}${numberInput("system905DeadliftTmFactor", "0.875")}</label>
+        </div>
+        <div class="system-905-tm-grid">
+          <label>${label("深蹲手动 TM", "Squat manual TM")}${numberInput("system905SquatManualTm", "manual TM")}</label>
+          <label>${label("卧推手动 TM", "Bench manual TM")}${numberInput("system905BenchManualTm", "manual TM")}</label>
+          <label>${label("硬拉手动 TM", "Deadlift manual TM")}${numberInput("system905DeadliftManualTm", "manual TM")}</label>
+        </div>
+      ` : ""}
       <small class="source-note">${label(
         "休息固定展示：主项 5 分钟，变式 3 分钟，辅项 60-90 秒；超过 90 分钟优先删低优先级辅项。",
         "Fixed rest display: main lifts 5 min, variations 3 min, accessories 60-90 sec. If the session exceeds 90 min, remove low-priority accessories first."
@@ -9626,6 +9680,31 @@ function calculateE1RM(weight, reps, rpe = "") {
   return load * (1 + (count + rir) / 30);
 }
 
+function calculateE1RMDetails(weight, reps, rpe = "", rpeKnown = "known") {
+  const load = Number(weight || 0);
+  const count = Number(reps || 0);
+  if (!load || !count) {
+    return { value: 0, confidence: "none", rir: null, method: "none" };
+  }
+  const known = rpeKnown !== "unknown" && rpe !== "" && rpe !== null && rpe !== undefined;
+  if (!known) {
+    return {
+      value: load * (1 + count / 30),
+      confidence: "low",
+      rir: null,
+      method: "epley",
+    };
+  }
+  const numericRpe = Number(rpe || 0);
+  const rir = clamp(10 - numericRpe, 0, 4);
+  return {
+    value: load * (1 + (count + rir) / 30),
+    confidence: numericRpe <= 6.5 ? "medium" : "high",
+    rir,
+    method: "rpe",
+  };
+}
+
 function roundToIncrement(value, increment = 2.5) {
   const step = Number(increment || 2.5) || 2.5;
   const numeric = Number(value || 0);
@@ -9658,6 +9737,8 @@ function system905RecentForLift(lift) {
     weight: Number(state.survey[`${prefix}RecentWeight`] || 0),
     reps: Number(state.survey[`${prefix}RecentReps`] || 0),
     rpe: Number(state.survey[`${prefix}RecentRpe`] || 0),
+    rpeKnown: state.survey[`${prefix}RecentRpeKnown`] || "known",
+    note: state.survey[`${prefix}RecentNote`] || "",
     manualTm: Number(state.survey[`${prefix}ManualTm`] || 0),
   };
 }
@@ -9682,16 +9763,116 @@ function system905TmFactor(lift) {
 }
 
 function calculateSuggestedTM(lift) {
+  return system905TmDetails(lift).finalTm;
+}
+
+function system905TmDetails(lift) {
   const pr = system905PrForLift(lift);
   const recent = system905RecentForLift(lift);
-  const e1rm = calculateE1RM(recent.weight, recent.reps, recent.rpe);
+  const e1rm = calculateE1RMDetails(recent.weight, recent.reps, recent.rpe, recent.rpeKnown);
   const factor = system905TmFactor(lift);
-  if (recent.manualTm) return roundToIncrement(recent.manualTm, system905RoundStep());
-  if (e1rm) {
-    const conservative = pr ? Math.min(pr, e1rm) : e1rm;
-    return roundToIncrement(conservative * factor, system905RoundStep());
+  const prBased = pr ? pr * factor : 0;
+  let base = prBased;
+  let reason = isEnglish() ? "PR-only conservative estimate" : "仅按历史 PR 保守估算";
+  if (e1rm.value) {
+    const tooLightToTrust = pr && e1rm.value < pr * 0.82 && Number(recent.rpe || 0) <= 6.5;
+    const deadliftStale = lift === "deadlift" && (!recent.weight || e1rm.confidence === "low");
+    if (tooLightToTrust) {
+      base = prBased;
+      reason = isEnglish() ? "Recent set looks too light to reset TM downward" : "近期组明显偏轻，不直接把 TM 拉低";
+    } else if (deadliftStale) {
+      base = pr ? pr * Math.min(factor, 0.875) : e1rm.value * factor;
+      reason = isEnglish() ? "Deadlift recent heavy work is limited, so TM stays conservative" : "硬拉近期重拉少，TM 自动偏保守";
+    } else {
+      base = (pr ? Math.min(pr, e1rm.value) : e1rm.value) * factor;
+      reason = e1rm.confidence === "low"
+        ? (isEnglish() ? "No RPE entered: Epley estimate with lower confidence" : "未填写 RPE：用 Epley 低可信估算")
+        : (isEnglish() ? "PR and recent e1RM cross-check" : "历史 PR 与近期 e1RM 交叉判断");
+    }
   }
-  return roundToIncrement(pr * factor, system905RoundStep());
+  const suggestedTm = roundToIncrement(base, system905RoundStep());
+  const finalTm = recent.manualTm ? roundToIncrement(recent.manualTm, system905RoundStep()) : suggestedTm;
+  if (recent.manualTm) reason = isEnglish() ? "Manual TM override" : "高级设置手动 TM 覆盖";
+  return {
+    pr,
+    recent,
+    e1rm: e1rm.value,
+    confidence: e1rm.confidence,
+    factor,
+    suggestedTm,
+    finalTm,
+    reason,
+  };
+}
+
+function system905VolumeThresholds() {
+  const mode = system905Mode();
+  const weak = state.survey.system905WeakPoint || "none";
+  const disabledForBenchSpecialization = mode === "benchSpecialization";
+  return {
+    squat: disabledForBenchSpecialization ? [0, 0, 0, 0] : [4, 6, 8, 11],
+    bench: [6, 10, 14, 20],
+    deadlift: disabledForBenchSpecialization ? [0, 0, 0, 0] : [2, 4, 6, 9],
+    quads: disabledForBenchSpecialization || weak !== "anterior" ? [0, 0, 0, 0] : [2, 4, 6, 10],
+    posterior: disabledForBenchSpecialization ? [0, 0, 0, 0] : weak === "posterior" ? [4, 6, 10, 14] : [2, 4, 8, 12],
+    upperBack: [6, 10, 16, 22],
+    armsCore: weak === "armsCore" ? [4, 8, 12, 16] : [2, 6, 10, 14],
+  };
+}
+
+function make905Capacities() {
+  const thresholds = system905VolumeThresholds();
+  const phases = ["hypertrophy", "deload", "strength", "peaking", "test"];
+  return Object.fromEntries(
+    Object.entries(thresholds).map(([key, [mev, mavLow, mavHigh, mrv]]) => [
+      key,
+      {
+        phases: Object.fromEntries(
+          phases.map((phase) => [
+            phase,
+            {
+              mev,
+              mavLow,
+              mavHigh,
+              mrv,
+              gap: Math.max(0, mrv - mev),
+            },
+          ])
+        ),
+      },
+    ])
+  );
+}
+
+function system905VolumeCardsHtml() {
+  const names = isEnglish()
+    ? { squat: "Squat specific", bench: "Bench specific", deadlift: "Deadlift specific", quads: "Quad accessories", posterior: "Posterior chain", upperBack: "Upper back", armsCore: "Arms / core" }
+    : { squat: "深蹲专项", bench: "卧推专项", deadlift: "硬拉专项", quads: "股四头辅助", posterior: "后侧链辅助", upperBack: "上背辅助", armsCore: "手臂核心" };
+  return Object.entries(system905VolumeThresholds())
+    .map(([key, [mev, mavLow, mavHigh, mrv]]) => `
+      <article>
+        <span>${escapeHtml(names[key] || key)}</span>
+        <strong>MEV ${mev} · MAV ${mavLow}-${mavHigh} · MRV ${mrv}</strong>
+      </article>
+    `)
+    .join("");
+}
+
+function system905CapacityCardsHtml(plan) {
+  const names = isEnglish()
+    ? { squat: "Squat specific", bench: "Bench specific", deadlift: "Deadlift specific", quads: "Quad accessories", posterior: "Posterior chain", upperBack: "Upper back", armsCore: "Arms / core" }
+    : { squat: "深蹲专项", bench: "卧推专项", deadlift: "硬拉专项", quads: "股四头辅助", posterior: "后侧链辅助", upperBack: "上背辅助", armsCore: "手臂核心" };
+  return Object.entries(plan.capacities)
+    .map(([key, capacity]) => {
+      const values = capacity.phases.strength || Object.values(capacity.phases)[0];
+      return `<article class="capacity-card">
+        <h4>${escapeHtml(names[key] || key)}</h4>
+        <div><span>MEV</span><strong class="dynamic-value">${values.mev}</strong></div>
+        <div><span>MAV</span><strong class="dynamic-value">${values.mavLow}-${values.mavHigh}</strong></div>
+        <div><span>MRV</span><strong class="dynamic-value">${values.mrv}</strong></div>
+      </article>`;
+    })
+    .join("");
 }
 
 function system905VariantName(lift) {
@@ -9745,12 +9926,69 @@ function system905WeakGroup(name) {
 function row905Excel(name, spec, notes = "", kind = "", accessoryGroup = "") {
   const [sets, reps, rpe, percent] = spec;
   const item = row905(name, sets, reps, rpe, percent, notes, kind, accessoryGroup);
-  item.rest = ["bench", "squat", "deadlift"].includes(kind)
-    ? "5 min"
-    : ["benchVariant", "squatVariant", "deadliftVariant"].includes(kind)
-      ? "3 min"
-      : "60-90 sec";
+  item.rest = restForKind(kind);
   return item;
+}
+
+function restForKind(kind) {
+  if (["bench", "squat", "deadlift"].includes(kind)) return isEnglish() ? "5 min" : "5分钟";
+  if (["benchVariant", "squatVariant", "deadliftVariant"].includes(kind)) return isEnglish() ? "3 min" : "3分钟";
+  if (kind === "recovery") return "-";
+  return isEnglish() ? "60-90 sec" : "60-90秒";
+}
+
+function restForItem(item) {
+  if (item.rest) return formatRestText(item.rest);
+  return restForKind(movementType(item));
+}
+
+function formatRestText(rest) {
+  const text = String(rest || "").trim();
+  if (!text || text === "-") return text || "-";
+  if (isEnglish()) {
+    return text.replace("分钟", " min").replace("秒", " sec");
+  }
+  return text.replace(/\bmin\b/gi, "分钟").replace(/\bsec\b/gi, "秒");
+}
+
+function setCountForTime(item) {
+  const sets = Number(item.sets || 0);
+  return sets > 0 ? sets : 0;
+}
+
+function restMinutesForItem(item) {
+  const type = movementType(item);
+  if (["bench", "squat", "deadlift"].includes(type)) return 5;
+  if (["benchVariant", "squatVariant", "deadliftVariant"].includes(type)) return 3;
+  if (type === "recovery") return 0;
+  return 1.5;
+}
+
+function estimate905SessionMinutes(items) {
+  return Math.round(
+    items.reduce((sum, item) => {
+      const sets = setCountForTime(item);
+      if (!sets) return sum;
+      return sum + sets * (restMinutesForItem(item) + 0.75);
+    }, 12)
+  );
+}
+
+function system905TimeMessage(day) {
+  const minutes = estimate905SessionMinutes(day.items || []);
+  if (minutes >= 90) {
+    return isEnglish()
+      ? `Estimated ${minutes} min. Stop at 90 min; do not make up missed accessories.`
+      : `预计 ${minutes} 分钟。达到 90 分钟直接结束，不补课。`;
+  }
+  if (minutes >= 80) {
+    return isEnglish()
+      ? `Estimated ${minutes} min. If accessories have not started by 80 min, cut low-priority accessories.`
+      : `预计 ${minutes} 分钟。超过 80 分钟还没进入辅项，就砍低优先级辅项。`;
+  }
+  return isEnglish()
+    ? `Estimated ${minutes} min. Main 5 min, variations 3 min, accessories 60-90 sec.`
+    : `预计 ${minutes} 分钟。主项 5 分钟，变式 3 分钟，辅项 60-90 秒。`;
 }
 
 function system905Accessory(slot, sets = 2, reps = "8-12", rpe = 7) {
@@ -11890,7 +12128,7 @@ function makeWeeklyLayout(days, frequencies, model) {
 
 function makePlanner() {
   const systemKey = state.survey.programSystem || "bodybuilding";
-  const capacities = makeCapacities();
+  const capacities = systemKey === "905" ? make905Capacities() : makeCapacities();
   const totalWeeks = FIXED_SYSTEM_WEEKS[systemKey] || weeksUntilMeet();
   if (systemKey !== "jtsSstt") {
     let recommendedDays = recommendedDaysForSystem(systemKey);
@@ -12031,6 +12269,11 @@ function bindDynamicSurveyFields(root) {
     if (!key) return;
     input.value = state.survey[key] || "";
     input.addEventListener("input", () => {
+      state.survey[key] = input.value;
+      saveState();
+      render();
+    });
+    input.addEventListener("change", () => {
       state.survey[key] = input.value;
       saveState();
       render();
@@ -12305,6 +12548,8 @@ function renderSystemPlanner(plan) {
     <article class="capacity-card"><h4>${isEnglish() ? "Weak Point" : "弱项反馈"}</h4><div><span>${isEnglish() ? "Target" : "目标"}</span><strong>${escapeHtml(bodybuildingWeakPointLabel())}</strong></div><div><span>${isEnglish() ? "Priority" : "优先级"}</span><strong>${escapeHtml(state.survey.bodybuildingWeakPriority || "medium")}</strong></div></article>
     <article class="capacity-card"><h4>${isEnglish() ? "Progression" : "进展逻辑"}</h4><div><span>${isEnglish() ? "Load/Reps" : "重量/次数"}</span><strong>${isEnglish() ? "Double progression" : "双进展"}</strong></div><div><span>${isEnglish() ? "Effort" : "努力程度"}</span><strong>RPE/RIR</strong></div></article>
   `
+    : plan.systemKey === "905"
+    ? system905CapacityCardsHtml(plan)
     : plan.usesJtsVolume
     ? Object.entries(plan.capacities)
         .map(([lift, capacity]) => {
@@ -12361,9 +12606,9 @@ function renderSystemPlanner(plan) {
         ]
       : [
           "905 保留你提供的 90 分钟模板结构：卧推容量、深蹲强度、卧推变式、硬拉强度和卧推强度。",
-          "MEV/MRV 与受限部位隐藏按钮复用现有 JTS 问卷逻辑，所以容量建议仍会随性别、体重、经验、压力、睡眠和历史恢复能力变化。",
-          "主项估重按模板里的训练最大值百分比执行。905 会先用保守训练最大值，而不是直接拿历史 PR 硬套。",
-          "变式动作会跟随你在个人数据里选择的卧推、深蹲、硬拉变式；如果没填变式 1RM，则从主项保守估算。",
+          "905 使用自己的 MEV/MAV/MRV 阈值和 90 分钟上限，不再复用 JTS 问卷容量逻辑。",
+          "主项估重按 Excel 的训练最大值百分比执行：先算保守 TM，再乘变式系数和当周百分比。",
+          "普通用户只填核心数据；TM 系数、变式系数、手动 TM 和取整单位放进高级 / 教练模式。",
           "如果目标 RPE 超标，下次优先重复或下调，不要机械按百分比继续加。",
         ]
     : plan.systemKey === "sstt3"
@@ -12752,7 +12997,7 @@ function renderExercises() {
   if (!visibleItems.length) {
     $("exerciseRows").innerHTML = `
       <tr class="filtered-empty-row">
-        <td colspan="6">${escapeHtml(isEnglish()
+        <td colspan="7">${escapeHtml(isEnglish()
           ? "All movements in this day are hidden by the current injury filter. Restore the original plan or choose a pain-free session."
           : "当天动作已被当前受限过滤全部隐藏。可恢复原计划，或改为无痛训练。")}</td>
       </tr>
@@ -12770,7 +13015,7 @@ function renderExercises() {
         const generated = generatedBackdownRows(item, index, log, day.items);
         const controlRow = `
           <tr class="generated-row control-row">
-            <td colspan="6">
+            <td colspan="7">
               <strong>${escapeHtml(displayName(item))} ${isEnglish() ? "Backdown Sets" : "降重组"}</strong>
               <span>${isEnglish() ? "Enter the backdown sets already completed at the current load, for example 2 or 2x4. Remaining sets are generated at a lower load." : "填写已经按当前降重重量完成的组数，例如 2 或 2x4；下面会列出已完成组和再降重后的剩余组。"}</span>
               <div class="backdown-control">
@@ -12790,6 +13035,7 @@ function renderExercises() {
             <td>${escapeHtml(row.reps)}</td>
             <td>${escapeHtml(row.rpe)}</td>
             <td class="estimate">${escapeHtml(formatLoadText(row.load))}</td>
+            <td>${escapeHtml(restForItem(item))}</td>
             <td class="notes-cell"><textarea class="note-edit" data-note="${index}-g${rowIndex}" rows="2">${escapeHtml(log.itemNotes[`${index}-g${rowIndex}`] || "")}</textarea></td>
           </tr>
         `);
@@ -12809,6 +13055,7 @@ function renderExercises() {
           <td>${escapeHtml(item.reps || "-")}</td>
           <td>${escapeHtml(item.rpe || "-")}</td>
           <td class="estimate">${escapeHtml(formatLoadText(estimate || item.weight || "-"))}</td>
+          <td>${escapeHtml(restForItem(item))}</td>
           <td class="notes-cell"><textarea class="note-edit" data-note="${index}" rows="2">${escapeHtml(editableNote || "")}</textarea></td>
         </tr>
       `];
@@ -12822,6 +13069,7 @@ function renderExercises() {
           <td>${escapeHtml(row.reps)}</td>
           <td>${escapeHtml(row.rpe)}</td>
           <td class="estimate">${escapeHtml(formatLoadText(row.load))}</td>
+          <td>${escapeHtml(restForItem(item))}</td>
           <td class="notes-cell"><textarea class="note-edit" data-note="${index}-a${rowIndex}" rows="2">${escapeHtml(log.itemNotes[`${index}-a${rowIndex}`] || "")}</textarea></td>
         </tr>
       `);
@@ -12833,7 +13081,7 @@ function renderExercises() {
   if (filter) {
     $("exerciseRows").insertAdjacentHTML(
       "afterbegin",
-      `<tr class="injury-filter-row"><td colspan="6">${escapeHtml(
+      `<tr class="injury-filter-row"><td colspan="7">${escapeHtml(
         filter === "lower"
           ? (isEnglish() ? "Lower-body movements are hidden for this week. Keep upper-body work controlled; do not turn it into a max-out week." : "本周已隐藏下肢相关动作。上肢可以训练，但建议保持可控中高强度，不要直接变成冲极限周。")
           : (isEnglish() ? "Upper-body movements are hidden for this week. Keep lower-body work pain-free and controlled." : "本周已隐藏上肢相关动作。下肢训练只保留无痛且可控的内容。")
@@ -13063,6 +13311,7 @@ function renderWorkout() {
   $("dayMeta").textContent = isEnglish()
     ? "Target intensity, editable notes, and backdown-set records"
     : "建议强度、可编辑备注和降重组记录";
+  if (plan.systemKey === "905") $("dayMeta").textContent = system905TimeMessage(day);
 
   renderTabs();
   renderMetrics();
